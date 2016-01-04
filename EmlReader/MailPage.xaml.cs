@@ -464,7 +464,7 @@ namespace EmlReader
                 // Expand
                 HeaderExpandButtonText.Text = "\uE010"; // ScrollChevronUpLegacy
                 ToView.ItemsPanel = (ItemsPanelTemplate)Resources["WrapTemplate"];
-                if(message.Cc.Count() > 0) CcArea.Visibility = Visibility.Visible;
+                if(message.Cc.Count() != 0) CcArea.Visibility = Visibility.Visible;
             }
             else
             {
