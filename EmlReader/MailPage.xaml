@@ -1,0 +1,121 @@
+﻿<Page
+    x:Class="EmlReader.MailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EmlReader"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:data="using:MimeKit"
+    RequestedTheme="Light">
+    <!--Need to add [xmlns:data="using:MimeKit"] to use x:Bind in DataTeplate-->
+    <Page.Resources>
+        <!--Need to add to use x:Bind in DataTeplate-->
+        <!--https://msdn.microsoft.com/ja-jp/library/windows/apps/mt204783.aspx-->
+        <DataTemplate x:Key="AddressTemplate" x:DataType="data:InternetAddress">
+            <StackPanel Orientation="Horizontal"  Margin="4,0,0,0" Tapped="AddressTemplate_Tapped">
+                <TextBlock Text="{x:Bind Name}" Foreground="#737373"/>
+                <TextBlock Text=";" Foreground="#737373"/>
+                <!--add flyout-->
+                <!--http://sourcechord.hatenablog.com/entry/2015/09/19/233538-->
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="{Binding Address}" Tapped="Flyout_Tapped"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
+            </StackPanel>
+        </DataTemplate>
+
+        <ItemsPanelTemplate x:Key="WrapTemplate">
+            <ItemsWrapGrid Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+
+        <ItemsPanelTemplate x:Key="StackTemplate">
+            <StackPanel Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+
+        <DataTemplate x:Key="AttachmentTemplate" x:DataType="data:MimePart">
+            <!--add tooltip-->
+            <!--http://sourcechord.hatenablog.com/entry/2015/09/19/233538-->
+            <StackPanel Orientation="Horizontal" RightTapped="AttachmentTemplate_RightTapped" Width="260" Height="56" Background="#F3F3F3" ToolTipService.ToolTip="{x:Bind FileName}">
+                <SymbolIcon Symbol="Page2" Margin="12,0"/>
+                <TextBlock Text="{x:Bind FileName}" VerticalAlignment="Center"/>
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Open" Tapped="OpenFlyoutItem_Tapped"/>
+                        <MenuFlyoutItem Text="Save" Tapped="SaveFlyoutItem_Tapped"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
+            </StackPanel>
+        </DataTemplate>
+
+    </Page.Resources>
+
+    <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="12,0">
+            <Button x:Name="ReplyAllButton" Click="ReplyAllButton_Click" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                        <PathIcon HorizontalAlignment="Center" VerticalAlignment="Center" Data="M11.811861038208,0L12.7149848937988,0.863750159740448 6.84677982330322,6.99501705169678 20,6.99501705169678 20,8.24501705169678 6.84092330932617,8.24501705169678 12.6418600082397,14.305004119873 11.7387361526489,15.1693801879883 4.51562023162842,7.62312793731689 11.811861038208,0z M7.29563665390015,0L8.19876384735107,0.863750159740448 1.73000311851501,7.62312793731689 8.12563800811768,14.305004119873 7.22251176834106,15.1693801879883 0,7.62312793731689 7.29563665390015,0z"/>
+                        <TextBlock Text="Reply All" Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button x:Name="ReplyButton" Click="ReplyButton_Click" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                        <PathIcon HorizontalAlignment="Center" VerticalAlignment="Center" Data="M7.14813137054443,0L8.06875705718994,0.844998598098755 2.27269601821899,7.1612401008606 20,7.1612401008606 20,8.41123867034912 2.26815104484558,8.41123867034912 7.99750709533691,14.654351234436 7.07625722885132,15.4993495941162 0,7.78873729705811 7.14813137054443,0z"/>
+                        <TextBlock Text="Reply" Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="24,0">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Fill="#737373" Width="40" Height="40" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <StackPanel x:Name="FromView" Margin="12,4,44,0" Tapped="FromView_Tapped">
+                    <FlyoutBase.AttachedFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem x:Name="From" Tapped="Flyout_Tapped"/>
+                        </MenuFlyout>
+                    </FlyoutBase.AttachedFlyout>
+                    <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" Foreground="Black"/>
+                    <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="#737373"/>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock x:Name="subjectTextBlock" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" Text="Subject" Margin="0,8,0,0"/>
+            <Grid x:Name="ToArea">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="48"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="TO:"/>
+                <ItemsControl x:Name="ToView" Grid.Column="1" ItemTemplate="{StaticResource AddressTemplate}" ItemsPanel="{StaticResource StackTemplate}"/>
+                <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="2" Width="48" Height="20" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
+                    <Button.Content>
+                        <!--ScrollChevronDownLegacy-->
+                        <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                    </Button.Content>
+                </Button>
+            </Grid>
+            <Grid x:Name="CcArea" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="CC:"/>
+                <ItemsControl x:Name="CcView" Grid.Column="1" ItemTemplate="{StaticResource AddressTemplate}" ItemsPanel="{StaticResource WrapTemplate}"/>
+            </Grid>
+        </StackPanel>
+        <GridView x:Name="attachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="attachmentView_Tapped" Margin="32,8"/>
+        <WebView x:Name="webView" Grid.Row="3" NavigationStarting="webView_NavigationStarting"/>
+    </Grid>
+
+</Page>
