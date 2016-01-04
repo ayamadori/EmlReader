@@ -1,6 +1,0 @@
-MainPackage=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\bin\ARM\Release\EmlReader_1.0.2.0_ARM.appx
-SymbolPackage=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\AppPackages\EmlReader_1.0.2.0_Test\EmlReader_1.0.2.0_ARM.appxsym
-ResourcePack=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\bin\ARM\Release\EmlReader_1.0.2.0_scale-100.appx
-ResourcePack=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\bin\ARM\Release\EmlReader_1.0.2.0_scale-125.appx
-ResourcePack=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\bin\ARM\Release\EmlReader_1.0.2.0_scale-150.appx
-ResourcePack=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\bin\ARM\Release\EmlReader_1.0.2.0_scale-400.appx
