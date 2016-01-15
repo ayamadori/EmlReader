@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -30,6 +31,7 @@ namespace EmlReader
         public MailPage()
         {
             InitializeComponent();
+            //SizeChanged += MailPage_SizeChanged;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -37,7 +39,7 @@ namespace EmlReader
             base.OnNavigatedTo(e);
 
             // Load the message
-            StorageFile file = (StorageFile)e.Parameter;
+            StorageFile file = e.Parameter as StorageFile;
             using (var _stream = await file.OpenReadAsync())
             {
                 Message = MimeMessage.Load(_stream.AsStreamForRead());
@@ -245,23 +247,6 @@ namespace EmlReader
             }
         }
 
-        private async void attachmentView_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            MimePart _item = (MimePart)attachmentView.SelectedItem;
-            // https://social.msdn.microsoft.com/Forums/it-IT/2407812c-2b59-4a7c-972a-778c32b91220/sharing-an-inmemory-png-file
-            var file = await StorageFile.CreateStreamedFileAsync(_item.FileName, async (fileStream) =>
-            {
-                _item.ContentObject.DecodeTo(fileStream.AsStreamForWrite());
-                await fileStream.FlushAsync();
-                fileStream.Dispose();
-            }, null);
-            if (file != null)
-            {
-                // Launch the retrieved file
-                var success = await Windows.System.Launcher.LaunchFileAsync(file);
-            }
-        }
-
         private InternetAddressList FormatList(InternetAddressList list)
         {
             foreach(InternetAddress item in list)
@@ -274,25 +259,52 @@ namespace EmlReader
             return list;
         }
 
-        private void AddressTemplate_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void AddressTemplate_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            //FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
+
+            if ((sender as FrameworkElement).DataContext is GroupAddress) return;
+            var _address = ((MailboxAddress) (sender as FrameworkElement).DataContext).Address;
+            Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
+            // Launch People app
+            bool success = await Launcher.LaunchUriAsync(uri);
+
+        }
+
+        private void attachmentView_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            OpenFile((MimePart)attachmentView.SelectedItem);
+        }
+
+        private void AttachmentTemplate_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
         }
 
-        private async void OpenFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private void OpenFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MimePart _item = (MimePart)(sender as FrameworkElement).DataContext;
+            OpenFile((MimePart)(sender as FrameworkElement).DataContext);
+        }
+
+        private async void OpenFile(MimePart item)
+        {
             // https://social.msdn.microsoft.com/Forums/it-IT/2407812c-2b59-4a7c-972a-778c32b91220/sharing-an-inmemory-png-file
-            var file = await StorageFile.CreateStreamedFileAsync(_item.FileName, async (fileStream) =>
+            var file = await StorageFile.CreateStreamedFileAsync(item.FileName, async (fileStream) =>
             {
-                _item.ContentObject.DecodeTo(fileStream.AsStreamForWrite());
+                item.ContentObject.DecodeTo(fileStream.AsStreamForWrite());
                 await fileStream.FlushAsync();
                 fileStream.Dispose();
             }, null);
             if (file != null)
             {
+                // https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/AssociationLaunching
+                //Can't launch files directly from install folder so copy it over 
+                //to temporary folder first
+                // ** Unnessesary for PC, but needed on Mobile
+                file = await file.CopyAsync(ApplicationData.Current.TemporaryFolder, item.FileName, NameCollisionOption.ReplaceExisting);
+
                 // Launch the retrieved file
-                var success = await Windows.System.Launcher.LaunchFileAsync(file);
+                var success = await Launcher.LaunchFileAsync(file);
             }
         }
 
@@ -305,16 +317,20 @@ namespace EmlReader
             savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
             // Dropdown of file types the user can save the file as
             // http://stackoverflow.com/questions/17070908/how-can-i-accept-any-file-type-in-filesavepicker
-            savePicker.FileTypeChoices.Add("All files", new List<string>() { "." });
+            // The file is NOT saved in case of "All files"
+            // savePicker.FileTypeChoices.Add("All files", new List<string>() { "." });
+            string _extention = _item.FileName.Substring(_item.FileName.LastIndexOf("."));
+            savePicker.FileTypeChoices.Add(_extention + " file", new List<string>() { _extention });
             // Default file name if the user does not type one in or select a file to replace
-            savePicker.SuggestedFileName = _item.FileName;
+            // The filename must NOT include extention
+            savePicker.SuggestedFileName = _item.FileName.Remove(_item.FileName.LastIndexOf("."));
 
             StorageFile file = await savePicker.PickSaveFileAsync();
             if (file != null)
             {
                 // Prevent updates to the remote version of the file until
                 // we finish making changes and call CompleteUpdatesAsync.
-                Windows.Storage.CachedFileManager.DeferUpdates(file);
+                CachedFileManager.DeferUpdates(file);
                 // write to file
                 using (Stream _stream = await file.OpenStreamForWriteAsync())
                 {
@@ -324,7 +340,7 @@ namespace EmlReader
                 // the other app can update the remote version of the file.
                 // Completing updates may require Windows to ask for user input.
                 Windows.Storage.Provider.FileUpdateStatus status =
-                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
+                    await CachedFileManager.CompleteUpdatesAsync(file);
                 if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
                 {
                     //this.textBlock.Text = "File " + file.Name + " was saved.";
@@ -338,24 +354,24 @@ namespace EmlReader
             }
         }
 
-        private void AttachmentTemplate_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        private async void FromView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
-        }
+            //From.Text = (message.From.First() as MailboxAddress).Address;
+            //FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
 
-        private void FromView_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            From.Text = (message.From.First() as MailboxAddress).Address;
-            FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
-        }
-
-        private async void Flyout_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            var _address = (sender as MenuFlyoutItem).Text;
-            Uri uri = new Uri("mailto:" + _address);
-            // Launch browser
+            string _address = (message.From.First() as MailboxAddress).Address;
+            Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
+            // Launch People app
             bool success = await Launcher.LaunchUriAsync(uri);
         }
+
+        //private async void Flyout_Tapped(object sender, TappedRoutedEventArgs e)
+        //{
+        //    var _address = (sender as MenuFlyoutItem).Text;
+        //    Uri uri = new Uri("mailto:" + _address);
+        //    // Launch Mail app
+        //    bool success = await Launcher.LaunchUriAsync(uri);
+        //}
 
         private async void ReplyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -412,50 +428,57 @@ namespace EmlReader
         }
 
 
-        private async void webView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        {
-            // Autosize WebView to its Content
-            // http://www.jasonpoon.ca/2015/01/08/resizing-webview-to-its-content/
+        //private async void webView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        //{
+        //    // Autosize WebView to its Content
+        //    // http://www.jasonpoon.ca/2015/01/08/resizing-webview-to-its-content/
 
-            //ResizeToContent(webView);
+        //    //ResizeToContent(webView);
 
-            // Disable scrolling in WebView
-            // http://blogs.msdn.com/b/ashish/archive/2014/09/17/universal-windows-app-how-to-disable-scroll-in-webview.aspx
+        //    // Disable scrolling in WebView
+        //    // http://blogs.msdn.com/b/ashish/archive/2014/09/17/universal-windows-app-how-to-disable-scroll-in-webview.aspx
 
-            string SetBodyOverFlowHiddenString = 
-                @"function SetBodyOverFlowHidden()
-                  {
-                     document.body.style.overflow = 'hidden';
-                     return 'Set Style to hidden';
-                  }
-                  SetBodyOverFlowHidden();";
+        //    string SetBodyOverFlowHiddenString = 
+        //        @"function SetBodyOverFlowHidden()
+        //          {
+        //             document.body.style.overflow = 'hidden';
+        //             return 'Set Style to hidden';
+        //          }
+        //          SetBodyOverFlowHidden();";
 
-            string returnStr = await webView.InvokeScriptAsync("eval", new string[] { SetBodyOverFlowHiddenString });
-        }
+        //    string returnStr = await webView.InvokeScriptAsync("eval", new string[] { SetBodyOverFlowHiddenString });
+        //}
 
-        // http://www.jasonpoon.ca/2015/01/08/resizing-webview-to-its-content/
-        private async void ResizeToContent(WebView webView)
-        {
-            string heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
-            int height;
-            if (int.TryParse(heightString, out height))
-            {
-                webView.Height = height;
-            }
+        //// http://www.jasonpoon.ca/2015/01/08/resizing-webview-to-its-content/
+        //private async void ResizeToContent(WebView webView)
+        //{
+        //    string heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
+        //    int height;
+        //    if (int.TryParse(heightString, out height))
+        //    {
+        //        webView.Height = height;
+        //    }
 
-            string widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
-            int width;
-            if (int.TryParse(widthString, out width))
-            {
-                webView.Width = width;
-            }
-        }
-		
-		private void MailPage_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            webView.Width = Window.Current.Bounds.Width;
-            webView.Height = Window.Current.Bounds.Height;
-        }
+        //    string widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
+        //    int width;
+        //    if (int.TryParse(widthString, out width))
+        //    {
+        //        webView.Width = width;
+        //    }
+        //}
+
+        //private void MailPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        //      {
+        //          webView.Width = Window.Current.Bounds.Width;
+        //          webView.Height = Window.Current.Bounds.Height;
+        //      }
+
+        //// Show and hide the bottom app bar
+        //private void MailPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        //{
+        //    double _currentWidth = Window.Current.Bounds.Width;
+        //    BottomAppBar.Visibility = (_currentWidth < 720) ? Visibility.Visible : Visibility.Collapsed;
+        //}
 
         private void HeaderExpandButton_Click(object sender, RoutedEventArgs e)
         {         

@@ -17,7 +17,7 @@
             </PivotItem>
             <PivotItem Header="About">
                 <StackPanel>
-                    <TextBlock Text="EML Reader&#xA;Version 1.0.2&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
+                    <TextBlock Text="EML Reader&#xA;Version 1.1.0&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
                     <HyperlinkButton Content="https://sites.google.com/site/ayamadori/" NavigateUri="https://sites.google.com/site/ayamadori/" HorizontalContentAlignment="Left"/>
                     <HyperlinkButton Content="Twitter: @ayamadori" NavigateUri="https://twitter.com/ayamadori" HorizontalContentAlignment="Left" />
                     <HyperlinkButton Content="Mail: ayamadori@gmail.com" NavigateUri="mailto:ayamadori@gmail.com" HorizontalContentAlignment="Left" />
