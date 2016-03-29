@@ -11,13 +11,15 @@
         <Pivot>
             <PivotItem Header="Usage">
                 <StackPanel HorizontalAlignment="Left">
-                    <TextBlock Text="Open *.eml file via:&#xA;&#xA; - [Open File] Button shown below&#xA;&#xA; - Click *.eml file&#xA;&#xA; - Drag &amp; Drop to this app (PC only)" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <Button Content="Open File" Click="FileOpenButton_Click" VerticalAlignment="Stretch" Margin="0,24,0,0"/>
+                    <TextBlock Text="Open *.eml file via:&#xA;&#xA; - [Open File] Button shown below&#xA;&#xA; - Click *.eml file directly&#xA;&#xA; - [Share] menu (in File Explorer etc.)&#xA;&#xA; - Drag &amp; Drop to this app (PC only)" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <Button Content="Open File" Click="FileOpenButton_Click" Margin="0,24,0,0"/>
+                    <!--<Button Content="Associate EML file to this app" Click="AssociationButton_Click" Margin="0,24,0,0"/>
+                    <TextBlock Text="Please select EML Reader in the Open With dialog" TextWrapping="Wrap" Margin="0,4,0,0"/>-->
                 </StackPanel>
             </PivotItem>
             <PivotItem Header="About">
                 <StackPanel>
-                    <TextBlock Text="EML Reader&#xA;Version 1.1.0&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
+                    <TextBlock Text="EML Reader&#xA;Version 1.2.0&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
                     <HyperlinkButton Content="https://sites.google.com/site/ayamadori/" NavigateUri="https://sites.google.com/site/ayamadori/" HorizontalContentAlignment="Left"/>
                     <HyperlinkButton Content="Twitter: @ayamadori" NavigateUri="https://twitter.com/ayamadori" HorizontalContentAlignment="Left" />
                     <HyperlinkButton Content="Mail: ayamadori@gmail.com" NavigateUri="mailto:ayamadori@gmail.com" HorizontalContentAlignment="Left" />

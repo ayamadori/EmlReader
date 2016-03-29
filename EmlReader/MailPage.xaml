@@ -8,32 +8,11 @@
     mc:Ignorable="d"
     xmlns:data="using:MimeKit"
     RequestedTheme="Light">
+    
     <!--Need to add [xmlns:data="using:MimeKit"] to use x:Bind in DataTeplate-->
     <Page.Resources>
         <!--Need to add to use x:Bind in DataTeplate-->
         <!--https://msdn.microsoft.com/ja-jp/library/windows/apps/mt204783.aspx-->
-        <DataTemplate x:Key="AddressTemplate" x:DataType="data:InternetAddress">
-            <StackPanel Orientation="Horizontal"  Margin="4,0,0,0" Tapped="AddressTemplate_Tapped">
-                <TextBlock Text="{x:Bind Name}" Foreground="#737373"/>
-                <TextBlock Text=";" Foreground="#737373"/>
-                <!--add flyout-->
-                <!--http://sourcechord.hatenablog.com/entry/2015/09/19/233538-->
-                <!--<FlyoutBase.AttachedFlyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem Text="{Binding Address}" Tapped="Flyout_Tapped"/>
-                    </MenuFlyout>
-                </FlyoutBase.AttachedFlyout>-->
-            </StackPanel>
-        </DataTemplate>
-
-        <ItemsPanelTemplate x:Key="WrapTemplate">
-            <ItemsWrapGrid Orientation="Horizontal"/>
-        </ItemsPanelTemplate>
-
-        <ItemsPanelTemplate x:Key="StackTemplate">
-            <StackPanel Orientation="Horizontal"/>
-        </ItemsPanelTemplate>
-
         <DataTemplate x:Key="AttachmentTemplate" x:DataType="data:MimePart">
             <!--add tooltip-->
             <!--http://sourcechord.hatenablog.com/entry/2015/09/19/233538-->
@@ -111,11 +90,6 @@
             <StackPanel Orientation="Horizontal">
                 <Ellipse Fill="#737373" Width="40" Height="40" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <StackPanel x:Name="FromView" Margin="12,4,44,0" Tapped="FromView_Tapped">
-                    <!--<FlyoutBase.AttachedFlyout>
-                        <MenuFlyout>
-                            <MenuFlyoutItem x:Name="From" Tapped="Flyout_Tapped"/>
-                        </MenuFlyout>
-                    </FlyoutBase.AttachedFlyout>-->
                     <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" Foreground="Black"/>
                     <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="#737373"/>
                 </StackPanel>
@@ -123,30 +97,20 @@
             <TextBlock x:Name="subjectTextBlock" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" Text="Subject" Margin="0,8,0,0"/>
             <Grid x:Name="ToArea">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="24"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="48"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="TO:"/>
-                <ItemsControl x:Name="ToView" Grid.Column="1" ItemTemplate="{StaticResource AddressTemplate}" ItemsPanel="{StaticResource StackTemplate}"/>
-                <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="2" Width="48" Height="20" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
+                <TextBlock x:Name="AddressBlock" Style="{StaticResource BodyTextBlockStyle}" Grid.Column="0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20"/>
+                <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
                     <Button.Content>
                         <!--ScrollChevronDownLegacy-->
                         <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
                     </Button.Content>
                 </Button>
             </Grid>
-            <Grid x:Name="CcArea" Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="24"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="CC:"/>
-                <ItemsControl x:Name="CcView" Grid.Column="1" ItemTemplate="{StaticResource AddressTemplate}" ItemsPanel="{StaticResource WrapTemplate}"/>
-            </Grid>
         </StackPanel>
-        <GridView x:Name="attachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="attachmentView_Tapped" Margin="32,8"/>
-        <WebView x:Name="webView" Grid.Row="3" NavigationStarting="webView_NavigationStarting"/>
+        <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="32,8"/>
+        <WebView x:Name="webView" Grid.Row="3" Margin="24,12,24,0" NavigationStarting="webView_NavigationStarting"/>
     </Grid>
 
 </Page>

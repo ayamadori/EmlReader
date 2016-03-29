@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
-    "MimeKitLite": "1.2.19"
+    "MimeKitLite": "1.2.22"
   },
   "frameworks": {
     "uap10.0": {}

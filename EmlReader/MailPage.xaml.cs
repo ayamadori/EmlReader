@@ -10,11 +10,14 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // 空白ページのアイテム テンプレートについては、http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 を参照してください
@@ -66,16 +69,23 @@ namespace EmlReader
 
                 InternetAddressList addressList = new InternetAddressList();
 
+                // Set Address
+                // http://blog.okazuki.jp/entry/2016/02/25/232252
                 if (message.To.Count > 0)
-                    ToView.ItemsSource = FormatList(message.To);
-
+                {
+                    AddressBlock.Inlines.Add(new Run { Text = "TO: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    SetAddressList(message.To);
+                }
                 if (message.Cc.Count > 0)
-                    CcView.ItemsSource = FormatList(message.Cc);
+                {
+                    AddressBlock.Inlines.Add(new Run { Text = "CC: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    SetAddressList(message.Cc);
+                }
 
                 if (message.Attachments.Count() > 0)
-                    attachmentView.ItemsSource = message.Attachments;
+                    AttachmentView.ItemsSource = message.Attachments;
                 else
-                    attachmentView.Visibility = Visibility.Collapsed;
+                    AttachmentView.Visibility = Visibility.Collapsed;
 
                 // render the message body
                 Render(message.Body);
@@ -236,7 +246,7 @@ namespace EmlReader
                 {
                     var storageFile = items[0] as StorageFile;
                     string filetype = storageFile.FileType.ToLower();
-                    if (filetype.Equals(".msg") || filetype.Equals(".eml"))
+                    if (filetype.Equals(".eml"))
                     {
                         using (var _stream = await storageFile.OpenReadAsync())
                         {
@@ -247,16 +257,38 @@ namespace EmlReader
             }
         }
 
-        private InternetAddressList FormatList(InternetAddressList list)
+        private void SetAddressList(InternetAddressList list)
         {
-            foreach(InternetAddress item in list)
+            foreach (InternetAddress item in list)
             {
-                if (string.IsNullOrEmpty(item.Name))
-                    item.Name = (item as MailboxAddress).Address;
-                //if (item is GroupAddress)
-                //    list.Remove(item);
+                if (item is MailboxAddress)
+                {
+                    var _address = (item as MailboxAddress).Address;
+                    var link = new Hyperlink {
+                        NavigateUri = new Uri("ms-people:viewcontact?Email=" + _address),
+                        UnderlineStyle = UnderlineStyle.None
+                    };
+                    if (string.IsNullOrEmpty(item.Name))
+                        link.Inlines.Add(new Run {
+                            Text = _address + "; ",
+                            Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
+                        });
+                    else
+                        link.Inlines.Add(new Run {
+                            //Text = item.Name + "<" + _address + ">; ",
+                            Text = item.Name + "; ",
+                            Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
+                        });
+                    AddressBlock.Inlines.Add(link);
+                }
+                else
+                {
+                    AddressBlock.Inlines.Add(new Run {
+                        Text = item.Name + "; ",
+                        Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
+                    });
+                }
             }
-            return list;
         }
 
         private async void AddressTemplate_Tapped(object sender, TappedRoutedEventArgs e)
@@ -271,9 +303,9 @@ namespace EmlReader
 
         }
 
-        private void attachmentView_Tapped(object sender, TappedRoutedEventArgs e)
+        private void AttachmentView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            OpenFile((MimePart)attachmentView.SelectedItem);
+            OpenFile((MimePart)AttachmentView.SelectedItem);
         }
 
         private void AttachmentTemplate_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -300,7 +332,7 @@ namespace EmlReader
                 // https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/AssociationLaunching
                 //Can't launch files directly from install folder so copy it over 
                 //to temporary folder first
-                // ** Unnessesary for PC, but needed on Mobile
+                // ** Unnessesary for PC, but needed for Mobile
                 file = await file.CopyAsync(ApplicationData.Current.TemporaryFolder, item.FileName, NameCollisionOption.ReplaceExisting);
 
                 // Launch the retrieved file
@@ -313,14 +345,14 @@ namespace EmlReader
             MimePart _item = (MimePart)(sender as FrameworkElement).DataContext;
 
             // https://msdn.microsoft.com/ja-jp/library/windows/apps/mt186455.aspx
-            var savePicker = new Windows.Storage.Pickers.FileSavePicker();
-            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.Downloads;
             // Dropdown of file types the user can save the file as
             // http://stackoverflow.com/questions/17070908/how-can-i-accept-any-file-type-in-filesavepicker
             // The file is NOT saved in case of "All files"
             // savePicker.FileTypeChoices.Add("All files", new List<string>() { "." });
-            string _extention = _item.FileName.Substring(_item.FileName.LastIndexOf("."));
-            savePicker.FileTypeChoices.Add(_extention + " file", new List<string>() { _extention });
+            string _extension = _item.FileName.Substring(_item.FileName.LastIndexOf("."));
+            savePicker.FileTypeChoices.Add(_extension + " file", new List<string>() { _extension });
             // Default file name if the user does not type one in or select a file to replace
             // The filename must NOT include extention
             savePicker.SuggestedFileName = _item.FileName.Remove(_item.FileName.LastIndexOf("."));
@@ -364,14 +396,6 @@ namespace EmlReader
             // Launch People app
             bool success = await Launcher.LaunchUriAsync(uri);
         }
-
-        //private async void Flyout_Tapped(object sender, TappedRoutedEventArgs e)
-        //{
-        //    var _address = (sender as MenuFlyoutItem).Text;
-        //    Uri uri = new Uri("mailto:" + _address);
-        //    // Launch Mail app
-        //    bool success = await Launcher.LaunchUriAsync(uri);
-        //}
 
         private async void ReplyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -427,74 +451,20 @@ namespace EmlReader
             bool success = await Launcher.LaunchUriAsync(uri);
         }
 
-
-        //private async void webView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        //{
-        //    // Autosize WebView to its Content
-        //    // http://www.jasonpoon.ca/2015/01/08/resizing-webview-to-its-content/
-
-        //    //ResizeToContent(webView);
-
-        //    // Disable scrolling in WebView
-        //    // http://blogs.msdn.com/b/ashish/archive/2014/09/17/universal-windows-app-how-to-disable-scroll-in-webview.aspx
-
-        //    string SetBodyOverFlowHiddenString = 
-        //        @"function SetBodyOverFlowHidden()
-        //          {
-        //             document.body.style.overflow = 'hidden';
-        //             return 'Set Style to hidden';
-        //          }
-        //          SetBodyOverFlowHidden();";
-
-        //    string returnStr = await webView.InvokeScriptAsync("eval", new string[] { SetBodyOverFlowHiddenString });
-        //}
-
-        //// http://www.jasonpoon.ca/2015/01/08/resizing-webview-to-its-content/
-        //private async void ResizeToContent(WebView webView)
-        //{
-        //    string heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
-        //    int height;
-        //    if (int.TryParse(heightString, out height))
-        //    {
-        //        webView.Height = height;
-        //    }
-
-        //    string widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
-        //    int width;
-        //    if (int.TryParse(widthString, out width))
-        //    {
-        //        webView.Width = width;
-        //    }
-        //}
-
-        //private void MailPage_SizeChanged(object sender, SizeChangedEventArgs e)
-        //      {
-        //          webView.Width = Window.Current.Bounds.Width;
-        //          webView.Height = Window.Current.Bounds.Height;
-        //      }
-
-        //// Show and hide the bottom app bar
-        //private void MailPage_SizeChanged(object sender, SizeChangedEventArgs e)
-        //{
-        //    double _currentWidth = Window.Current.Bounds.Width;
-        //    BottomAppBar.Visibility = (_currentWidth < 720) ? Visibility.Visible : Visibility.Collapsed;
-        //}
-
         private void HeaderExpandButton_Click(object sender, RoutedEventArgs e)
         {         
             if (HeaderExpandButtonText.Text.Equals("\uE011"))
             {
                 // Expand
                 HeaderExpandButtonText.Text = "\uE010"; // ScrollChevronUpLegacy
-                ToView.ItemsPanel = (ItemsPanelTemplate)Resources["WrapTemplate"];
-                if(message.Cc.Count() != 0) CcArea.Visibility = Visibility.Visible;
+                // http://stackoverflow.com/questions/11385026/setting-height-of-textbox-to-auto-in-code-behind-for-a-dynamically-created-textb
+                AddressBlock.Height = Double.NaN;
             }
             else
             {
                 // Shrink
                 HeaderExpandButtonText.Text = "\uE011"; // ScrollChevronDownLegacy
-                ToView.ItemsPanel = (ItemsPanelTemplate)Resources["StackTemplate"];
-                CcArea.Visibility = Visibility.Collapsed;
+                AddressBlock.Height = HeaderExpandButton.Height;
             }
         }
     }

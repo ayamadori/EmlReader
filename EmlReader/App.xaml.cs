@@ -3,6 +3,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -120,7 +121,60 @@ namespace EmlReader
             deferral.Complete();
         }
 
-        protected override void OnFileActivated(FileActivatedEventArgs args)
+        // refer to https://msdn.microsoft.com/en-us/library/windows/apps/mt243292.aspx
+        protected override async void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
+        {
+            // Code to handle activation goes here.	
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                this.DebugSettings.EnableFrameRateCounter = false;
+            }
+#endif
+
+            Frame rootFrame = Window.Current.Content as Frame;
+
+            // ウィンドウに既にコンテンツが表示されている場合は、アプリケーションの初期化を繰り返さずに、
+            // ウィンドウがアクティブであることだけを確認してください
+            if (rootFrame == null)
+            {
+                // ナビゲーション コンテキストとして動作するフレームを作成し、最初のページに移動します
+                rootFrame = new Frame();
+
+                rootFrame.NavigationFailed += OnNavigationFailed;
+
+                if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                {
+                    //TODO: 以前中断したアプリケーションから状態を読み込みます
+                }
+
+                // フレームを現在のウィンドウに配置します
+                Window.Current.Content = rootFrame;
+            }
+
+            if (rootFrame.Content == null)
+            {
+                // https://msdn.microsoft.com/en-us/library/windows/apps/windows.applicationmodel.datatransfer.datapackageview.getstorageitemsasync.aspx?cs-save-lang=1&cs-lang=csharp#code-snippet-1
+                var shareOperation = args.ShareOperation;
+                StorageFile storageFile = null;
+                if (shareOperation.Data.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.StorageItems))
+                {
+                    //shareOperation.ReportStarted();
+                    var items = await shareOperation.Data.GetStorageItemsAsync();
+                    storageFile = items[0] as StorageFile;
+                    //shareOperation.ReportCompleted();
+                }
+
+                // ナビゲーション スタックが復元されない場合は、最初のページに移動します。
+                // このとき、必要な情報をナビゲーション パラメーターとして渡して、新しいページを
+                //構成します
+                rootFrame.Navigate(typeof(MailPage), storageFile);
+            }
+            // 現在のウィンドウがアクティブであることを確認します
+            Window.Current.Activate();
+        }
+
+        protected override async void OnFileActivated(FileActivatedEventArgs args)
         {
             // TODO: Handle file activation
 
@@ -155,7 +209,11 @@ namespace EmlReader
             }
 
             var storageFile = args.Files[0] as StorageFile;
-            rootFrame.Navigate(typeof(MailPage), storageFile);
+
+            if (storageFile.Name.StartsWith("EML_FILE_TYPE_ASSOCIATION.eml"))
+                await new MessageDialog("EML file is associated to this app.", "Success").ShowAsync();
+            else
+                rootFrame.Navigate(typeof(MailPage), storageFile);
 
             // 現在のウィンドウがアクティブであることを確認します
             Window.Current.Activate();
