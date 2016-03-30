@@ -5,7 +5,7 @@ https://www.microsoft.com/ja-jp/store/apps/eml-reader/9nblggh5k5vp
 
 ## Notice
 - Internet connection is used for ONLY showing HTML mail.
-- Now on Mobile device, opening with clicking file is NOT supported. (See http://answers.microsoft.com/en-us/office/forum/office_mobile-outlook/open-eml-attachments-in-outlook-for-windows-phone/22016eae-1879-4faa-a4b1-a3417b8bfe96)
+- Now on Mobile device, open by clicking file directly is NOT supported. (See http://answers.microsoft.com/en-us/office/forum/office_mobile-outlook/open-eml-attachments-in-outlook-for-windows-phone/22016eae-1879-4faa-a4b1-a3417b8bfe96)
 
 ## Test
 Tested on Windows 10 Version 1511, Windows 10 Mobile emulator in Windows 10 SDK
@@ -33,6 +33,12 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 
 
 ## Version History
+- Version 1.2.0
+ * Open file via [Share] menu (in the File Explorer etc.)
+ * Change icon
+ * UI improvements
+ * Update library 
+ 
 - Version 1.1.0
  * UI improvements
  * Fix handling attachments
