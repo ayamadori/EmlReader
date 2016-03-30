@@ -110,7 +110,7 @@
             </Grid>
         </StackPanel>
         <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="32,8"/>
-        <WebView x:Name="webView" Grid.Row="3" Margin="24,12,24,0" NavigationStarting="webView_NavigationStarting"/>
+        <WebView x:Name="webView" Grid.Row="3" Margin="16,12,16,0" NavigationStarting="webView_NavigationStarting"/>
     </Grid>
 
 </Page>
