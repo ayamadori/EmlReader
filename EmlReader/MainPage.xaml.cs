@@ -70,20 +70,12 @@ namespace EmlReader
 
         private async void AssociationButton_Click(object sender, RoutedEventArgs e)
         {
-            // https://msdn.microsoft.com/en-us/library/windows/apps/mt299102.aspx
-
-            // Path to the file in the app package to launch
-            //string emlFile = @"Assets\EML_FILE_TYPE_ASSOCIATION.eml";
-            //string emlFile = @"Assets\FileIcon.targetsize-16.png";
-
-            //var file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(emlFile);
+            // https://msdn.microsoft.com/en-us/library/windows/apps/mt299102.asp
 
             // FileOpenPicker
             // https://msdn.microsoft.com/ja-jp/library/windows/apps/mt186456.aspx
 
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            //picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-            //picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
             picker.FileTypeFilter.Add(".eml");
             picker.FileTypeFilter.Add(".msg");
 

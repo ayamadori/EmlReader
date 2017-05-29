@@ -210,10 +210,7 @@ namespace EmlReader
 
             var storageFile = args.Files[0] as StorageFile;
 
-            if (storageFile.Name.StartsWith("EML_FILE_TYPE_ASSOCIATION.eml"))
-                await new MessageDialog("EML file is associated to this app.", "Success").ShowAsync();
-            else
-                rootFrame.Navigate(typeof(MailPage), storageFile);
+            rootFrame.Navigate(typeof(MailPage), storageFile);
 
             // 現在のウィンドウがアクティブであることを確認します
             Window.Current.Activate();

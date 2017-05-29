@@ -1,0 +1,2 @@
+MainPackage=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\bin\x64\Release\EmlReader_1.2.0.0_x64.appx
+SymbolPackage=C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\AppPackages\EmlReader_1.2.0.0_Test\EmlReader_1.2.0.0_x64.appxsym

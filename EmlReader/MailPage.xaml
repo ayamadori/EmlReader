@@ -5,6 +5,7 @@
     xmlns:local="using:EmlReader"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     xmlns:data="using:MimeKit"
     RequestedTheme="Light">
@@ -86,7 +87,7 @@
                 </Button.Content>
             </Button>
         </StackPanel>
-        <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="24,8,24,0">
+        <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="24,4,24,0">
             <StackPanel Orientation="Horizontal">
                 <Ellipse Fill="#737373" Width="40" Height="40" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <StackPanel x:Name="FromView" Margin="12,4,44,0" Tapped="FromView_Tapped">
@@ -102,6 +103,11 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="AddressBlock" Style="{StaticResource BodyTextBlockStyle}" Grid.Column="0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20"/>
                 <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
+                    <Interactivity:Interaction.Behaviors>
+                        <Core:DataTriggerBehavior Binding="{Binding ElementName=AddressBlock.ActualWidth}" Value="{Binding ElementName=AddressBlock.Width}" ComparisonCondition="GreaterThan">
+                            <Core:ChangePropertyAction TargetObject="{Binding ElementName=HeaderExpandButton}" PropertyName="Visibility" Value=""/>
+                        </Core:DataTriggerBehavior>
+                    </Interactivity:Interaction.Behaviors>
                     <Button.Content>
                         <!--ScrollChevronDownLegacy-->
                         <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
@@ -110,7 +116,7 @@
             </Grid>
         </StackPanel>
         <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="32,8"/>
-        <WebView x:Name="webView" Grid.Row="3" Margin="16,12,16,0" NavigationStarting="webView_NavigationStarting"/>
+        <WebView x:Name="webView" Grid.Row="3" Margin="20,12,20,0" NavigationStarting="webView_NavigationStarting"/>
     </Grid>
 
 </Page>

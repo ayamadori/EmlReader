@@ -34,7 +34,6 @@ namespace EmlReader
         public MailPage()
         {
             InitializeComponent();
-            //SizeChanged += MailPage_SizeChanged;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -352,7 +351,7 @@ namespace EmlReader
             // The file is NOT saved in case of "All files"
             // savePicker.FileTypeChoices.Add("All files", new List<string>() { "." });
             string _extension = _item.FileName.Substring(_item.FileName.LastIndexOf("."));
-            savePicker.FileTypeChoices.Add(_extension + " file", new List<string>() { _extension });
+            savePicker.FileTypeChoices.Add(_extension.ToUpper() + " File", new List<string>() { _extension });
             // Default file name if the user does not type one in or select a file to replace
             // The filename must NOT include extention
             savePicker.SuggestedFileName = _item.FileName.Remove(_item.FileName.LastIndexOf("."));
