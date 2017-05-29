@@ -33,7 +33,7 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 
 ## Version History
 - Version 1.2.1 (2017/05/30)
-  * Minor fixes and improvements
+  * Minor fixes and improvements
   
 - Version 1.2.0 (2016/03/30)
   * Open file via [Share] menu (in the File Explorer etc.)
