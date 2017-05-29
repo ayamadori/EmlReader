@@ -1,14 +1,13 @@
 EmlReader
 =========
-Open EML files(*.eml) that can't opened with Windows Mail app.  
-https://www.microsoft.com/ja-jp/store/apps/eml-reader/9nblggh5k5vp
+Open EML files(*.eml).  
+https://www.microsoft.com/en-us/store/apps/eml-reader/9nblggh5k5vp
 
 ## Notice
-- If you use the newest version of Windows 10, you DON'T HAVE TO use this app because EML file can be opened with the Outlook Mail app ;)
-- Internet connection is used for ONLY showing HTML mail.
+- If you use the newest version of Windows 10, you DON'T HAVE TO use this app because EML file can be opened with the Outlook Mail app;)
 
 ## Test
-Tested on Windows 10 Version 1511, Windows 10 Mobile emulator in Windows 10 SDK
+Tested on Windows 10 Version 1703
 
 ## License
 EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
@@ -33,6 +32,9 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 
 
 ## Version History
+- Version 1.2.1 (2017/05/30)
+  * Minor fixes and improvements
+  
 - Version 1.2.0 (2016/03/30)
   * Open file via [Share] menu (in the File Explorer etc.)
   * Change icon
