@@ -174,7 +174,7 @@ namespace EmlReader
             Window.Current.Activate();
         }
 
-        protected override async void OnFileActivated(FileActivatedEventArgs args)
+        protected override void OnFileActivated(FileActivatedEventArgs args)
         {
             // TODO: Handle file activation
 

@@ -1,1 +1,1 @@
-C:\Users\owner\Documents\Visual Studio 2015\Projects\EmlReader\EmlReader\AppPackages\EmlReader_1.2.0.0\EmlReader_1.2.0.0_x86_x64_arm.appxbundle
+C:\Users\owner\Documents\Visual Studio 2017\Projects\EmlReader\EmlReader\bin\ARM\Release\Upload\EmlReader_1.2.1.0\EmlReader_1.2.1.0_x86_x64_arm.appxbundle
