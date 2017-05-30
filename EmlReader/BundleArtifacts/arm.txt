@@ -1,2 +1,0 @@
-MainPackage=C:\Users\owner\Documents\Visual Studio 2017\Projects\EmlReader\EmlReader\bin\ARM\Release\EmlReader_1.2.1.0_ARM.appx
-SymbolPackage=C:\Users\owner\Documents\Visual Studio 2017\Projects\EmlReader\EmlReader\AppPackages\EmlReader_1.2.1.0_Test\EmlReader_1.2.1.0_ARM.appxsym
