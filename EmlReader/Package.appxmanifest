@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="22164ayamadori.EMLReader" Publisher="CN=9109BDC6-BEAE-4E03-80D8-E9C9FD8B8D53" Version="1.2.1.0" />
+  <Identity Name="22164ayamadori.EMLReader" Publisher="CN=9109BDC6-BEAE-4E03-80D8-E9C9FD8B8D53" Version="1.2.2.0" />
   <mp:PhoneIdentity PhoneProductId="51d9ea72-9d8b-4a3c-9e2f-0dc83814a39b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>EML Reader</DisplayName>
@@ -24,14 +24,6 @@
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation Name="eml">
-            <uap:Logo>Assets\FileIcon.png</uap:Logo>
-            <uap:SupportedFileTypes>
-              <uap:FileType>.eml</uap:FileType>
-            </uap:SupportedFileTypes>
-          </uap:FileTypeAssociation>
-        </uap:Extension>
         <uap:Extension Category="windows.shareTarget">
           <uap:ShareTarget>
             <uap:SupportedFileTypes>
@@ -39,6 +31,14 @@
             </uap:SupportedFileTypes>
             <uap:DataFormat>StorageItems</uap:DataFormat>
           </uap:ShareTarget>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="eml">
+            <uap:Logo>Assets\FileIcon.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.eml</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
         </uap:Extension>
       </Extensions>
     </Application>

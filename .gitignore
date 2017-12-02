@@ -210,6 +210,8 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+# Custom
 /EmlReader/BundleArtifacts
 /EmlReader/_scale-400.appx
 /EmlReader/_scale-150.appx
