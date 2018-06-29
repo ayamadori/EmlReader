@@ -202,7 +202,7 @@ namespace EmlReader
             // https://social.msdn.microsoft.com/Forums/it-IT/2407812c-2b59-4a7c-972a-778c32b91220/sharing-an-inmemory-png-file
             var file = await StorageFile.CreateStreamedFileAsync(item.FileName, async (fileStream) =>
             {
-                item.ContentObject.DecodeTo(fileStream.AsStreamForWrite());
+                item.Content.DecodeTo(fileStream.AsStreamForWrite());
                 await fileStream.FlushAsync();
                 fileStream.Dispose();
             }, null);
@@ -245,7 +245,7 @@ namespace EmlReader
                 // write to file
                 using (Stream _stream = await file.OpenStreamForWriteAsync())
                 {
-                    _item.ContentObject.DecodeTo(_stream);
+                    _item.Content.DecodeTo(_stream);
                 }
                 // Let Windows know that we're finished changing the file so
                 // the other app can update the remote version of the file.
