@@ -19,7 +19,7 @@
             </PivotItem>
             <PivotItem Header="About">
                 <StackPanel>
-                    <TextBlock Text="EML Reader&#xA;Version 1.2.2&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
+                    <TextBlock Text="EML Reader&#xA;Version 1.2.3&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
                     <HyperlinkButton Content="https://ayamadori.github.io/" NavigateUri="https://ayamadori.github.io/" HorizontalContentAlignment="Left"/>
                     <HyperlinkButton Content="Privacy Policy" NavigateUri="https://ayamadori.github.io/EmlReader/PrivacyPolicy.html" HorizontalContentAlignment="Left" />
                     <Button Content="Rate this app" Margin="0,24" Click="RateButton_Click"/>
