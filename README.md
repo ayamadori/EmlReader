@@ -32,6 +32,10 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 
 
 ## Version History
+- Version 1.2.3 (2018/06/30)
+  * Update library
+  * Remove support of Windows 10 Version 1607
+
 - Version 1.2.2 (2017/12/02)
   * Update library
   * Remove support of Windows 10 Version 1511 and older
