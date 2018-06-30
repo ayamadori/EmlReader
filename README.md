@@ -1,7 +1,7 @@
 EmlReader
 =========
 Open EML files(*.eml).  
-https://www.microsoft.com/en-us/store/apps/eml-reader/9nblggh5k5vp
+https://www.microsoft.com/store/apps/9nblggh5k5vp
 
 ## Notice
 - If you use the newest version of Windows 10, you DON'T HAVE TO use this app because EML file can be opened with the Outlook Mail app;)
@@ -34,7 +34,7 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 ## Version History
 - Version 1.2.2 (2017/12/02)
   * Update library
-  * Remove support version 1511 and older
+  * Remove support of Windows 10 Version 1511 and older
   
 - Version 1.2.1 (2017/05/30)
   * Minor fixes and improvements
