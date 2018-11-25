@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="22164ayamadori.EMLReader" Publisher="CN=owner" Version="1.2.3.0" />
-  <mp:PhoneIdentity PhoneProductId="51d9ea72-9d8b-4a3c-9e2f-0dc83814a39b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="22164ayamadori.EMLReader" Publisher="CN=9109BDC6-BEAE-4E03-80D8-E9C9FD8B8D53" Version="1.2.3.0" />
+  <mp:PhoneIdentity PhoneProductId="f5d95121-5d2b-430b-ad64-4a18cd7e0b49" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>EML Reader</DisplayName>
     <PublisherDisplayName>ayamadori</PublisherDisplayName>

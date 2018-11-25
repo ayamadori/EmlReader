@@ -44,7 +44,18 @@ namespace EmlReader
             StorageFile file = e.Parameter as StorageFile;
             using (var _stream = await file.OpenReadAsync())
             {
-                Message = MimeMessage.Load(_stream.AsStreamForRead());
+                try
+                {
+                    Message = MimeMessage.Load(_stream.AsStreamForRead());
+                }
+                catch
+                {
+                    var dlg = new MessageDialog("The app can NOT open this file.", "Unsupported file");
+                    await dlg.ShowAsync();
+
+                    // Exit app
+                    Windows.UI.Xaml.Application.Current.Exit();
+                }
             }
         }
 
@@ -53,10 +64,7 @@ namespace EmlReader
             get { return message; }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value));
-
-                message = value;
+                message = value ?? throw new ArgumentNullException(nameof(value));
 
                 var from = message.From.First() as MailboxAddress;
                 if (string.IsNullOrEmpty(from.Name)) from.Name = from.Address;
