@@ -1,3 +1,4 @@
+using Microsoft.Toolkit.Uwp.Helpers;
 using MimeKit;
 using MimeKit.Text;
 using System;
@@ -67,14 +68,23 @@ namespace EmlReader
                 message = value ?? throw new ArgumentNullException(nameof(value));
 
                 var from = message.From.First() as MailboxAddress;
-                if (string.IsNullOrEmpty(from.Name)) from.Name = from.Address;
-                fromTextBlock.Text = from.Name;
+                if (string.IsNullOrEmpty(from.Name))
+                {
+                    fromPersonPicture.DisplayName = from.Address;
+                    fromTextBlock.Text = from.Address;
+                }
+                else
+                {
+                    fromPersonPicture.DisplayName = from.Name;
+                    fromTextBlock.Text = from.Name + " <" + from.Address + ">";
+                }
 
                 dateTextBlock.Text = message.Date.ToString(CultureInfo.CurrentCulture);
 
                 subjectTextBlock.Text = message.Subject;
 
                 InternetAddressList addressList = new InternetAddressList();
+                AddressBlock.Text = "";
 
                 // Set Address
                 // http://blog.okazuki.jp/entry/2016/02/25/232252
@@ -345,7 +355,7 @@ namespace EmlReader
                 // Expand
                 HeaderExpandButtonText.Text = "\uE010"; // ScrollChevronUpLegacy
                 // http://stackoverflow.com/questions/11385026/setting-height-of-textbox-to-auto-in-code-behind-for-a-dynamically-created-textb
-                AddressBlock.Height = Double.NaN;
+                AddressBlock.Height = double.NaN;
             }
             else
             {
@@ -354,6 +364,41 @@ namespace EmlReader
                 AddressBlock.Height = HeaderExpandButton.Height;
             }
         }
+
+        private async void PrintButton_Click(object sender, RoutedEventArgs e)
+        {
+            //// Create a new PrintHelper instance
+            //// "container" is a XAML panel that will be used to host printable control.
+            //// It needs to be in your visual tree but can be hidden with Opacity = 0
+            //var printHelper = new PrintHelper(container);
+
+            //// Add controls that you want to print
+            //printHelper.AddFrameworkElementToPrint(await PrepareWebViewForPrintingAsync());
+
+            //// Connect to relevant events
+            //printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
+            //printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
+
+            //// Start printing process
+            //await printHelper.ShowPrintUIAsync("Windows Community Toolkit Sample App");
+        }
+
+
+        //// Event handlers
+
+        //private async void PrintHelper_OnPrintSucceeded()
+        //{
+        //    printHelper.Dispose();
+        //    var dialog = new MessageDialog("Printing done.");
+        //    await dialog.ShowAsync();
+        //}
+
+        //private async void PrintHelper_OnPrintFailed()
+        //{
+        //    printHelper.Dispose();
+        //    var dialog = new MessageDialog("Printing failed.");
+        //    await dialog.ShowAsync();
+        //}
     }
 }
 

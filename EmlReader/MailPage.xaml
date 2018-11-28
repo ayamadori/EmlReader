@@ -2,7 +2,6 @@
     x:Class="EmlReader.MailPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:EmlReader"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -33,12 +32,13 @@
     
     <Page.BottomAppBar>
         <CommandBar x:Name="bottomCommandBar">
-            <AppBarButton Icon="MailReply" Label="reply" Click="ReplyButton_Click"/>
-            <AppBarButton Icon="MailReplyAll" Label="reply all" Click="ReplyAllButton_Click"/>
+            <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
+            <AppBarButton Icon="MailReplyAll" Label="Reply All" Click="ReplyAllButton_Click"/>
+            <AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
+    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -69,39 +69,47 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         
-        <StackPanel x:Name="ReplyPanel" Grid.Row="0" Orientation="Horizontal" FlowDirection="RightToLeft" Height="36" Margin="12,0">
-            <Button x:Name="ReplyAllButton" Click="ReplyAllButton_Click" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}">
+        <StackPanel x:Name="ReplyPanel" Grid.Row="0" Orientation="Horizontal" FlowDirection="RightToLeft" Height="32" Margin="32,4">
+            <Button x:Name="PrintButton" Click="PrintButton_Click" Background="White">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-                        <PathIcon HorizontalAlignment="Center" VerticalAlignment="Center" Data="M11.811861038208,0L12.7149848937988,0.863750159740448 6.84677982330322,6.99501705169678 20,6.99501705169678 20,8.24501705169678 6.84092330932617,8.24501705169678 12.6418600082397,14.305004119873 11.7387361526489,15.1693801879883 4.51562023162842,7.62312793731689 11.811861038208,0z M7.29563665390015,0L8.19876384735107,0.863750159740448 1.73000311851501,7.62312793731689 8.12563800811768,14.305004119873 7.22251176834106,15.1693801879883 0,7.62312793731689 7.29563665390015,0z"/>
+                        <SymbolIcon Symbol="Print"/>
+                        <TextBlock Text="Print" Margin="8,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button x:Name="ReplyAllButton" Click="ReplyAllButton_Click" Background="White">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                        <SymbolIcon Symbol="MailReplyAll"/>
                         <TextBlock Text="Reply All" Margin="8,0"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <Button x:Name="ReplyButton" Click="ReplyButton_Click" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}">
+            <Button x:Name="ReplyButton" Click="ReplyButton_Click" Background="White">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-                        <PathIcon HorizontalAlignment="Center" VerticalAlignment="Center" Data="M7.14813137054443,0L8.06875705718994,0.844998598098755 2.27269601821899,7.1612401008606 20,7.1612401008606 20,8.41123867034912 2.26815104484558,8.41123867034912 7.99750709533691,14.654351234436 7.07625722885132,15.4993495941162 0,7.78873729705811 7.14813137054443,0z"/>
+                        <SymbolIcon Symbol="MailReply"/>
                         <TextBlock Text="Reply" Margin="8,0"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
         </StackPanel>
-        <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="24,4,24,0">
-            <StackPanel Orientation="Horizontal">
-                <Ellipse Fill="#737373" Width="40" Height="40" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <StackPanel x:Name="FromView" Margin="12,4,44,0" Tapped="FromView_Tapped">
-                    <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" Foreground="Black"/>
-                    <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="#737373"/>
+        <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="36,0">
+            <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,12"/>
+            <StackPanel Orientation="Horizontal" Margin="0,8">
+                <PersonPicture x:Name="fromPersonPicture" Width="40"/>
+                <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
+                    <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold" Foreground="Black"/>
+                    <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="Gray"/>
                 </StackPanel>
             </StackPanel>
-            <TextBlock x:Name="subjectTextBlock" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" Text="Subject" Margin="0,8,0,0"/>
-            <Grid x:Name="ToArea">
+            <Grid x:Name="ToArea" Margin="0,8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="48"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="AddressBlock" Style="{StaticResource BodyTextBlockStyle}" Grid.Column="0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20"/>
+                <TextBlock x:Name="AddressBlock" Style="{StaticResource CaptionTextBlockStyle}" Grid.Column="0" Height="20" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
                 <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
                     <Interactivity:Interaction.Behaviors>
                         <Core:DataTriggerBehavior Binding="{Binding ElementName=AddressBlock.ActualWidth}" Value="{Binding ElementName=AddressBlock.Width}" ComparisonCondition="GreaterThan">
@@ -115,8 +123,8 @@
                 </Button>
             </Grid>
         </StackPanel>
-        <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="32,8"/>
-        <WebView x:Name="webView" Grid.Row="3" Margin="20,12,20,0" NavigationStarting="webView_NavigationStarting"/>
+        <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="40,0"/>
+        <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
     </Grid>
 
 </Page>
