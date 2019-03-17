@@ -31,6 +31,8 @@ namespace EmlReader
     public sealed partial class MailPage : Page
     {
         MimeMessage message;
+        PrintHelper printHelper;
+        StorageFile file;
 
         public MailPage()
         {
@@ -42,7 +44,7 @@ namespace EmlReader
             base.OnNavigatedTo(e);
 
             // Load the message
-            StorageFile file = e.Parameter as StorageFile;
+            file = e.Parameter as StorageFile;
             using (var _stream = await file.OpenReadAsync())
             {
                 try
@@ -367,38 +369,48 @@ namespace EmlReader
 
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
-            //// Create a new PrintHelper instance
-            //// "container" is a XAML panel that will be used to host printable control.
-            //// It needs to be in your visual tree but can be hidden with Opacity = 0
-            //var printHelper = new PrintHelper(container);
+            // Create a new PrintHelper instance
+            // "container" is a XAML panel that will be used to host printable control.
+            // It needs to be in your visual tree but can be hidden with Opacity = 0
+            //printHelper = new PrintHelper(Container);
+            printHelper = new PrintHelper(PrintableContent);
 
-            //// Add controls that you want to print
-            //printHelper.AddFrameworkElementToPrint(await PrepareWebViewForPrintingAsync());
+            // Add controls that you want to print
+            //printHelper.AddFrameworkElementToPrint(HeaderPanel);
+            //printHelper.AddFrameworkElementToPrint(webView);
+            //printHelper.AddFrameworkElementToPrint(PrintableContent);
 
-            //// Connect to relevant events
-            //printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
-            //printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
+            // Connect to relevant events
+            printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
+            printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
+            printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
 
-            //// Start printing process
-            //await printHelper.ShowPrintUIAsync("Windows Community Toolkit Sample App");
+            // Start printing process
+            await printHelper.ShowPrintUIAsync(file.DisplayName);
         }
 
+        // Event handlers
 
-        //// Event handlers
+        private async void PrintHelper_OnPrintSucceeded()
+        {
+            printHelper.Dispose();
+            var dialog = new MessageDialog("Printing done.");
+            await dialog.ShowAsync();
+        }
 
-        //private async void PrintHelper_OnPrintSucceeded()
-        //{
-        //    printHelper.Dispose();
-        //    var dialog = new MessageDialog("Printing done.");
-        //    await dialog.ShowAsync();
-        //}
+        private async void PrintHelper_OnPrintFailed()
+        {
+            printHelper.Dispose();
+            var dialog = new MessageDialog("Printing failed.");
+            await dialog.ShowAsync();
+        }
 
-        //private async void PrintHelper_OnPrintFailed()
-        //{
-        //    printHelper.Dispose();
-        //    var dialog = new MessageDialog("Printing failed.");
-        //    await dialog.ShowAsync();
-        //}
+        private async void PrintHelper_OnPrintCanceled()
+        {
+            printHelper.Dispose();
+            var dialog = new MessageDialog("Printing canceled.");
+            await dialog.ShowAsync();
+        }
     }
 }
 

@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     xmlns:data="using:MimeKit"
     RequestedTheme="Light">
-    
+
     <!--Need to add [xmlns:data="using:MimeKit"] to use x:Bind in DataTeplate-->
     <Page.Resources>
         <!--Need to add to use x:Bind in DataTeplate-->
@@ -29,7 +29,7 @@
         </DataTemplate>
 
     </Page.Resources>
-    
+
     <Page.BottomAppBar>
         <CommandBar x:Name="bottomCommandBar">
             <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
@@ -38,13 +38,14 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
-        <Grid.RowDefinitions>
+    <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
+        <!--<Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions>-->
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
@@ -68,7 +69,19 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
+
+        <!--// "container" is a XAML panel that will be used to host printable control.
+            // It needs to be in your visual tree but can be hidden with Opacity = 0-->
+        <Grid x:Name="Container" Opacity="0"/>
+
+        <Grid x:Name="PrintableContent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
         <StackPanel x:Name="ReplyPanel" Grid.Row="0" Orientation="Horizontal" FlowDirection="RightToLeft" Height="32" Margin="32,4">
             <Button x:Name="PrintButton" Click="PrintButton_Click" Background="White">
                 <Button.Content>
@@ -95,6 +108,7 @@
                 </Button.Content>
             </Button>
         </StackPanel>
+
         <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="36,0">
             <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,12"/>
             <StackPanel Orientation="Horizontal" Margin="0,8">
@@ -125,6 +139,7 @@
         </StackPanel>
         <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="40,0"/>
         <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
+    </Grid>
     </Grid>
 
 </Page>
