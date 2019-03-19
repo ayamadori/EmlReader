@@ -369,16 +369,17 @@ namespace EmlReader
 
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
+            // Controls cannot be linked to a visual tree.
+            // https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
+            RootGrid.Children.Remove(PrintableContent);
+
             // Create a new PrintHelper instance
             // "container" is a XAML panel that will be used to host printable control.
             // It needs to be in your visual tree but can be hidden with Opacity = 0
-            //printHelper = new PrintHelper(Container);
-            printHelper = new PrintHelper(PrintableContent);
+            printHelper = new PrintHelper(Container);
 
             // Add controls that you want to print
-            //printHelper.AddFrameworkElementToPrint(HeaderPanel);
-            //printHelper.AddFrameworkElementToPrint(webView);
-            //printHelper.AddFrameworkElementToPrint(PrintableContent);
+            printHelper.AddFrameworkElementToPrint(PrintableContent);
 
             // Connect to relevant events
             printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
@@ -391,25 +392,22 @@ namespace EmlReader
 
         // Event handlers
 
-        private async void PrintHelper_OnPrintSucceeded()
+        private void PrintHelper_OnPrintSucceeded()
         {
             printHelper.Dispose();
-            var dialog = new MessageDialog("Printing done.");
-            await dialog.ShowAsync();
+            RootGrid.Children.Add(PrintableContent);
         }
 
-        private async void PrintHelper_OnPrintFailed()
+        private void PrintHelper_OnPrintFailed()
         {
             printHelper.Dispose();
-            var dialog = new MessageDialog("Printing failed.");
-            await dialog.ShowAsync();
+            RootGrid.Children.Add(PrintableContent);
         }
 
-        private async void PrintHelper_OnPrintCanceled()
+        private void PrintHelper_OnPrintCanceled()
         {
             printHelper.Dispose();
-            var dialog = new MessageDialog("Printing canceled.");
-            await dialog.ShowAsync();
+            RootGrid.Children.Add(PrintableContent);
         }
     }
 }

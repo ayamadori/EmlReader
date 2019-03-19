@@ -38,14 +38,10 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
-        <!--<Grid.RowDefinitions>
+    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
+        <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>-->
+        </Grid.RowDefinitions>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
@@ -72,7 +68,7 @@
 
         <!--// "container" is a XAML panel that will be used to host printable control.
             // It needs to be in your visual tree but can be hidden with Opacity = 0-->
-        <Grid x:Name="Container" Opacity="0"/>
+        <Grid x:Name="Container" Grid.RowSpan="2" Opacity="0"/>
 
         <Grid x:Name="PrintableContent">
             <Grid.RowDefinitions>
@@ -81,7 +77,6 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-
         <StackPanel x:Name="ReplyPanel" Grid.Row="0" Orientation="Horizontal" FlowDirection="RightToLeft" Height="32" Margin="32,4">
             <Button x:Name="PrintButton" Click="PrintButton_Click" Background="White">
                 <Button.Content>
