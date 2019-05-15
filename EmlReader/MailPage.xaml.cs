@@ -1,4 +1,4 @@
-using Microsoft.Toolkit.Uwp.Helpers;
+ï»¿using Microsoft.Toolkit.Uwp.Helpers;
 using MimeKit;
 using MimeKit.Text;
 using System;
@@ -20,13 +20,14 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 
-// ‹ó”’ƒy[ƒW‚ÌƒAƒCƒeƒ€ ƒeƒ“ƒvƒŒ[ƒg‚É‚Â‚¢‚Ä‚ÍAhttp://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 ‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢
+// ç©ºç™½ãƒšãƒ¼ã‚¸ã®ã‚¢ã‚¤ãƒ†ãƒ  ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã«ã¤ã„ã¦ã¯ã€http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 ã‚’å‚ç…§ã—ã¦ãã ã•ã„
 
 namespace EmlReader
 {
     /// <summary>
-    /// ‚»‚ê©‘Ì‚Åg—p‚Å‚«‚é‹ó”’ƒy[ƒW‚Ü‚½‚ÍƒtƒŒ[ƒ€“à‚ÉˆÚ“®‚Å‚«‚é‹ó”’ƒy[ƒWB
+    /// ãã‚Œè‡ªä½“ã§ä½¿ç”¨ã§ãã‚‹ç©ºç™½ãƒšãƒ¼ã‚¸ã¾ãŸã¯ãƒ•ãƒ¬ãƒ¼ãƒ å†…ã«ç§»å‹•ã§ãã‚‹ç©ºç™½ãƒšãƒ¼ã‚¸ã€‚
     /// </summary>
     public sealed partial class MailPage : Page
     {
@@ -367,10 +368,44 @@ namespace EmlReader
             }
         }
 
+        // https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
-            // Controls cannot be linked to a visual tree.
-            // https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
+            // https://stackoverflow.com/questions/39033318/how-to-save-webviewbrush-as-image-uwp-universal
+            // ask the content its width
+            var widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
+            int contentWidth;
+            if (!int.TryParse(widthString, out contentWidth))
+            {
+                throw new Exception(string.Format("failure/width:{0}", widthString));
+            }
+            webView.Width = contentWidth;
+
+            // ask the content its height
+            var heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
+            int contentHeight;
+            if (!int.TryParse(heightString, out contentHeight))
+            {
+                throw new Exception(string.Format("failure/height:{0}", heightString));
+            }
+            webView.Height = contentHeight;
+
+            // printing off-thread web content is not directly supported
+            // â€“ you should print an element with WebViewBrush fill instead.
+            // https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.WebView
+            // https://stackoverflow.com/questions/39012591/uwp-print-webview
+            // https://social.msdn.microsoft.com/Forums/en-US/5dea79c3-712e-4326-a93d-a8d3e2c11368/uwp-is-there-no-uwp-webview-api-for-printing-formatted-content?forum=wpdevelop
+            WebViewBrush wvBrush = new WebViewBrush();
+            wvBrush.Stretch = Stretch.Uniform;
+            wvBrush.SetSource(webView);
+            wvBrush.Redraw();
+            myRect.Width = contentWidth;
+            myRect.Height = contentHeight;
+            myRect.Fill = wvBrush;
+            //webView.Visibility = Visibility.Collapsed;
+
+            // The element cannot have a parent; It must not be included in any visual tree.
+            // https://docs.microsoft.com/en-us/dotnet/api/microsoft.toolkit.uwp.helpers.printhelper.addframeworkelementtoprint?view=win-comm-toolkit-dotnet-stable
             RootGrid.Children.Remove(PrintableContent);
 
             // Create a new PrintHelper instance
@@ -408,6 +443,43 @@ namespace EmlReader
         {
             printHelper.Dispose();
             RootGrid.Children.Add(PrintableContent);
+        }
+
+        WebViewBrush GetWebViewBrush(WebView webView)
+        {
+            // resize width to content
+            var _OriginalWidth = webView.Width;
+            var _WidthString = webView.InvokeScript("eval",
+                new[] { "document.body.scrollWidth.toString()" });
+            int _ContentWidth;
+            if (!int.TryParse(_WidthString, out _ContentWidth))
+                throw new Exception(string.Format("failure/width:{0}", _WidthString));
+            webView.Width = _ContentWidth;
+
+            // resize height to content
+            var _OriginalHeight = webView.Height;
+            var _HeightString = webView.InvokeScript("eval",
+                new[] { "document.body.scrollHeight.toString()" });
+            int _ContentHeight;
+            if (!int.TryParse(_HeightString, out _ContentHeight))
+                throw new Exception(string.Format("failure/height:{0}", _HeightString));
+            webView.Height = _ContentHeight;
+
+            // create brush
+            var _OriginalVisibilty = webView.Visibility;
+            webView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            var _Brush = new WebViewBrush
+            {
+                SourceName = webView.Name,
+                Stretch = Stretch.Uniform
+            };
+            _Brush.Redraw();
+
+            // reset, return
+            webView.Width = _OriginalWidth;
+            webView.Height = _OriginalHeight;
+            webView.Visibility = _OriginalVisibilty;
+            return _Brush;
         }
     }
 }

@@ -20,12 +20,28 @@ namespace EmlReader
         public MainPage()
         {
             this.InitializeComponent();
+
+            // https://docs.microsoft.com/en-us/windows/uwp/monetize/launch-feedback-hub-from-your-app
+            if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
+            {
+                this.FeedbackButton.Visibility = Visibility.Visible;
+            }
         }
 
         private async void RateButton_Click(object sender, RoutedEventArgs e)
         {
-            var uriReview = new Uri(@"ms-windows-store://review/?ProductId=9nblggh5k5vp");
-            var success = await Windows.System.Launcher.LaunchUriAsync(uriReview);
+            Uri uriReview = new Uri(@"ms-windows-store://review/?ProductId=9nblggh5k5vp");
+            bool success = await Launcher.LaunchUriAsync(uriReview);
+        }
+
+        private async void FeedbackButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Uri uriFeedback = new Uri($"feedback-hub://?tabid=2&appid={Package.Current.Id.FamilyName}!App");
+            //bool success = await Launcher.LaunchUriAsync(uriFeedback);
+
+            //// https://docs.microsoft.com/en-us/windows/uwp/monetize/launch-feedback-hub-from-your-app
+            var launcher = Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault();
+            await launcher.LaunchAsync();
         }
 
         private void Grid_DragOver(object sender, DragEventArgs e)

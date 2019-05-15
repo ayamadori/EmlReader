@@ -133,8 +133,9 @@
             </Grid>
         </StackPanel>
         <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="40,0"/>
-        <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
-    </Grid>
+            <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
+            <Rectangle x:Name="myRect" Grid.Row="4"/>
+        </Grid>
     </Grid>
 
 </Page>
