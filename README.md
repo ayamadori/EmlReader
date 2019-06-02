@@ -33,6 +33,7 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 
 ## Version History
 - Version 1.2.4 (2019/06/02)
+  * Show multiple windows
   * (A little) better error handling 
   * Support Arm64 device
   * Minor UI change with feedback button
