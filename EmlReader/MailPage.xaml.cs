@@ -1,6 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Helpers;
+﻿//using Microsoft.Toolkit.Uwp.Helpers;
 using MimeKit;
-using MimeKit.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,7 +19,6 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Shapes;
 
 // 空白ページのアイテム テンプレートについては、http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 を参照してください
 
@@ -32,7 +30,7 @@ namespace EmlReader
     public sealed partial class MailPage : Page
     {
         MimeMessage message;
-        PrintHelper printHelper;
+        //PrintHelper printHelper;
         StorageFile file;
 
         public MailPage()
@@ -368,119 +366,155 @@ namespace EmlReader
             }
         }
 
-        // https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
-        private async void PrintButton_Click(object sender, RoutedEventArgs e)
-        {
-            // https://stackoverflow.com/questions/39033318/how-to-save-webviewbrush-as-image-uwp-universal
-            // ask the content its width
-            var widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
-            int contentWidth;
-            if (!int.TryParse(widthString, out contentWidth))
-            {
-                throw new Exception(string.Format("failure/width:{0}", widthString));
-            }
-            webView.Width = contentWidth;
+        //// https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
+        //private async void PrintButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //// https://stackoverflow.com/questions/39033318/how-to-save-webviewbrush-as-image-uwp-universal
+        //    var pages = await GetWebPages(webView, new Windows.Foundation.Size(210, 297)); // A4 size
 
-            // ask the content its height
-            var heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
-            int contentHeight;
-            if (!int.TryParse(heightString, out contentHeight))
-            {
-                throw new Exception(string.Format("failure/height:{0}", heightString));
-            }
-            webView.Height = contentHeight;
+        //    // Create a new PrintHelper instance
+        //    // "container" is a XAML panel that will be used to host printable control.
+        //    // It needs to be in your visual tree but can be hidden with Opacity = 0
+        //    printHelper = new PrintHelper(Container);
 
-            // printing off-thread web content is not directly supported
-            // – you should print an element with WebViewBrush fill instead.
-            // https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.WebView
-            // https://stackoverflow.com/questions/39012591/uwp-print-webview
-            // https://social.msdn.microsoft.com/Forums/en-US/5dea79c3-712e-4326-a93d-a8d3e2c11368/uwp-is-there-no-uwp-webview-api-for-printing-formatted-content?forum=wpdevelop
-            WebViewBrush wvBrush = new WebViewBrush();
-            wvBrush.Stretch = Stretch.Uniform;
-            wvBrush.SetSource(webView);
-            wvBrush.Redraw();
-            myRect.Width = contentWidth;
-            myRect.Height = contentHeight;
-            myRect.Fill = wvBrush;
-            //webView.Visibility = Visibility.Collapsed;
+        //    // Add controls that you want to print
+        //    foreach (FrameworkElement page in pages)
+        //    {
+        //        printHelper.AddFrameworkElementToPrint(page);
+        //    }
 
-            // The element cannot have a parent; It must not be included in any visual tree.
-            // https://docs.microsoft.com/en-us/dotnet/api/microsoft.toolkit.uwp.helpers.printhelper.addframeworkelementtoprint?view=win-comm-toolkit-dotnet-stable
-            RootGrid.Children.Remove(PrintableContent);
+        //    // Connect to relevant events
+        //    printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
+        //    printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
+        //    printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
 
-            // Create a new PrintHelper instance
-            // "container" is a XAML panel that will be used to host printable control.
-            // It needs to be in your visual tree but can be hidden with Opacity = 0
-            printHelper = new PrintHelper(Container);
+        //    // Start printing process
+        //    await printHelper.ShowPrintUIAsync(file.DisplayName);
+        //}
 
-            // Add controls that you want to print
-            printHelper.AddFrameworkElementToPrint(PrintableContent);
+        //// Event handlers
 
-            // Connect to relevant events
-            printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
-            printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
-            printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
+        //private void PrintHelper_OnPrintSucceeded()
+        //{
+        //    printHelper.Dispose();
+        //}
 
-            // Start printing process
-            await printHelper.ShowPrintUIAsync(file.DisplayName);
-        }
+        //private void PrintHelper_OnPrintFailed()
+        //{
+        //    printHelper.Dispose();
+        //}
 
-        // Event handlers
+        //private void PrintHelper_OnPrintCanceled()
+        //{
+        //    printHelper.Dispose();
+        //}
 
-        private void PrintHelper_OnPrintSucceeded()
-        {
-            printHelper.Dispose();
-            RootGrid.Children.Add(PrintableContent);
-        }
+        //public async Task<WebViewBrush> GetWebViewBrush(WebView webView)
+        //{
+        //    // resize width to content
+        //    double originalWidth = webView.Width;
+        //    var widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
+        //    int contentWidth;
 
-        private void PrintHelper_OnPrintFailed()
-        {
-            printHelper.Dispose();
-            RootGrid.Children.Add(PrintableContent);
-        }
+        //    if (!int.TryParse(widthString, out contentWidth))
+        //    {
+        //        throw new Exception(string.Format("failure/width:{0}", widthString));
+        //    }
 
-        private void PrintHelper_OnPrintCanceled()
-        {
-            printHelper.Dispose();
-            RootGrid.Children.Add(PrintableContent);
-        }
+        //    webView.Width = contentWidth;
 
-        WebViewBrush GetWebViewBrush(WebView webView)
-        {
-            // resize width to content
-            var _OriginalWidth = webView.Width;
-            var _WidthString = webView.InvokeScript("eval",
-                new[] { "document.body.scrollWidth.toString()" });
-            int _ContentWidth;
-            if (!int.TryParse(_WidthString, out _ContentWidth))
-                throw new Exception(string.Format("failure/width:{0}", _WidthString));
-            webView.Width = _ContentWidth;
+        //    // resize height to content
+        //    double originalHeight = webView.Height;
+        //    var heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
+        //    int contentHeight;
 
-            // resize height to content
-            var _OriginalHeight = webView.Height;
-            var _HeightString = webView.InvokeScript("eval",
-                new[] { "document.body.scrollHeight.toString()" });
-            int _ContentHeight;
-            if (!int.TryParse(_HeightString, out _ContentHeight))
-                throw new Exception(string.Format("failure/height:{0}", _HeightString));
-            webView.Height = _ContentHeight;
+        //    if (!int.TryParse(heightString, out contentHeight))
+        //    {
+        //        throw new Exception(string.Format("failure/height:{0}", heightString));
+        //    }
 
-            // create brush
-            var _OriginalVisibilty = webView.Visibility;
-            webView.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            var _Brush = new WebViewBrush
-            {
-                SourceName = webView.Name,
-                Stretch = Stretch.Uniform
-            };
-            _Brush.Redraw();
+        //    webView.Height = contentHeight;
 
-            // reset, return
-            webView.Width = _OriginalWidth;
-            webView.Height = _OriginalHeight;
-            webView.Visibility = _OriginalVisibilty;
-            return _Brush;
-        }
+        //    // create brush
+        //    var originalVisibilty = webView.Visibility;
+        //    webView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+        //    WebViewBrush brush = new WebViewBrush
+        //    {
+        //        SourceName = webView.Name,
+        //        Stretch = Stretch.Uniform
+        //    };
+
+        //    brush.Redraw();
+
+        //    // reset, return
+        //    webView.Width = originalWidth;
+        //    webView.Height = originalHeight;
+        //    webView.Visibility = originalVisibilty;
+
+        //    return brush;
+        //}
+
+        //public async Task<IEnumerable<FrameworkElement>> GetWebPages(WebView webView, Windows.Foundation.Size page)
+        //{
+        //    // ask the content its width
+        //    var widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
+        //    int contentWidth;
+
+        //    if (!int.TryParse(widthString, out contentWidth))
+        //    {
+        //        throw new Exception(string.Format("failure/width:{0}", widthString));
+        //    }
+
+        //    webView.Width = contentWidth;
+
+        //    // ask the content its height
+        //    var heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
+        //    int contentHeight;
+
+        //    if (!int.TryParse(heightString, out contentHeight))
+        //    {
+        //        throw new Exception(string.Format("failure/height:{0}", heightString));
+        //    }
+
+        //    webView.Height = contentHeight;
+
+        //    // how many pages will there be?
+        //    double scale = page.Width / contentWidth;
+        //    double scaledHeight = (contentHeight * scale);
+        //    double pageCount = (double)scaledHeight / page.Height;
+        //    pageCount = pageCount + ((pageCount > (int)pageCount) ? 1 : 0);
+
+        //    // create the pages
+        //    var pages = new List<Windows.UI.Xaml.Shapes.Rectangle>();
+
+        //    for (int i = 0; i < (int)pageCount; i++)
+        //    {
+        //        var translateY = -page.Height * i;
+
+        //        var rectanglePage = new Windows.UI.Xaml.Shapes.Rectangle
+        //        {
+        //            Height = page.Height,
+        //            Width = page.Width,
+        //            Margin = new Thickness(5),
+        //            Tag = new TranslateTransform { Y = translateY },
+        //        };
+
+        //        rectanglePage.Loaded += (async (s, e) =>
+        //        {
+        //            var subRectangle = s as Windows.UI.Xaml.Shapes.Rectangle;
+        //            var subBrush = await GetWebViewBrush(webView);
+        //            subBrush.Stretch = Stretch.UniformToFill;
+        //            subBrush.AlignmentY = AlignmentY.Top;
+        //            subBrush.Transform = subRectangle.Tag as TranslateTransform;
+        //            subRectangle.Fill = subBrush;
+        //        });
+
+        //        pages.Add(rectanglePage);
+        //    }
+
+        //    return pages;
+        //}
     }
 }
 

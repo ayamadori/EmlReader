@@ -34,13 +34,16 @@
         <CommandBar x:Name="bottomCommandBar">
             <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
             <AppBarButton Icon="MailReplyAll" Label="Reply All" Click="ReplyAllButton_Click"/>
-            <AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>
+            <!--<AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>-->
         </CommandBar>
     </Page.BottomAppBar>
 
     <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <VisualStateManager.VisualStateGroups>
@@ -66,26 +69,15 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <!--// "container" is a XAML panel that will be used to host printable control.
-            // It needs to be in your visual tree but can be hidden with Opacity = 0-->
-        <Grid x:Name="Container" Grid.RowSpan="2" Opacity="0"/>
-
-        <Grid x:Name="PrintableContent">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
         <StackPanel x:Name="ReplyPanel" Grid.Row="0" Orientation="Horizontal" FlowDirection="RightToLeft" Height="32" Margin="32,4">
-            <Button x:Name="PrintButton" Click="PrintButton_Click" Background="White">
+            <!--<Button x:Name="PrintButton" Click="PrintButton_Click" Background="White">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
                         <SymbolIcon Symbol="Print"/>
                         <TextBlock Text="Print" Margin="8,0"/>
                     </StackPanel>
                 </Button.Content>
-            </Button>
+            </Button>-->
             <Button x:Name="ReplyAllButton" Click="ReplyAllButton_Click" Background="White">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
@@ -133,9 +125,12 @@
             </Grid>
         </StackPanel>
         <GridView x:Name="AttachmentView" Grid.Row="2" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped" Margin="40,0"/>
-            <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
-            <Rectangle x:Name="myRect" Grid.Row="4"/>
-        </Grid>
+        <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
+
+        <!--// "container" is a XAML panel that will be used to host printable control.
+            // It needs to be in your visual tree but can be hidden with Opacity = 0-->
+        <!--<Grid x:Name="Container" Opacity="0"/>-->
+
     </Grid>
 
 </Page>
