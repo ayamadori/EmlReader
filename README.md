@@ -7,7 +7,7 @@ https://www.microsoft.com/store/apps/9nblggh5k5vp
 - If you use the newest version of Windows 10, you DON'T HAVE TO use this app because EML file can be opened with the Outlook Mail app;)
 
 ## Test
-Tested on Windows 10 Version 1803 Desktop
+Tested on Windows 10 Version 1903 Desktop
 
 ## License
 EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
@@ -32,6 +32,12 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 
 
 ## Version History
+- Version 1.2.4 (2019/06/02)
+  * (A little) better error handling 
+  * Support Arm64 device
+  * Minor UI change with feedback button
+  * Remove support for Windows 10 Version 1709 and older
+  
 - Version 1.2.3 (2018/06/30)
   * Update library
   * Remove support of Windows 10 Version 1607

@@ -19,7 +19,7 @@
     <PackageCertificateKeyFile>EmlReader_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
     <PackageCertificateThumbprint>DFC549840E14FE2773C6B1753ADF10D439132996</PackageCertificateThumbprint>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
