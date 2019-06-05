@@ -197,18 +197,6 @@ namespace EmlReader
             }
         }
 
-        private async void AddressTemplate_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            //FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
-
-            if ((sender as FrameworkElement).DataContext is GroupAddress) return;
-            var _address = ((MailboxAddress)(sender as FrameworkElement).DataContext).Address;
-            Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
-            // Launch People app
-            bool success = await Launcher.LaunchUriAsync(uri);
-
-        }
-
         private void AttachmentView_Tapped(object sender, TappedRoutedEventArgs e)
         {
             MimePart item = (MimePart)AttachmentView.SelectedItem;
@@ -251,7 +239,7 @@ namespace EmlReader
         {
             MimePart _item = (MimePart)(sender as FrameworkElement).DataContext;
 
-            // https://msdn.microsoft.com/ja-jp/library/windows/apps/mt186455.aspx
+            // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-save-a-file-with-a-picker
             var savePicker = new FileSavePicker();
             savePicker.SuggestedStartLocation = PickerLocationId.Downloads;
             // Dropdown of file types the user can save the file as
@@ -374,8 +362,30 @@ namespace EmlReader
             }
         }
 
-        private void SaveAllButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void SaveAllButton_Click(object sender, RoutedEventArgs e)
         {
+            // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-using-file-and-folder-pickers
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                Windows.Storage.AccessCache.StorageApplicationPermissions.
+                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                foreach (MimePart _item in message.Attachments)
+                {
+                    file = await folder.CreateFileAsync(_item.FileName);
+                    // write to file
+                    using (Stream _stream = await file.OpenStreamForWriteAsync())
+                    {
+                        _item.Content.DecodeTo(_stream);
+                    }
+                }
+            }
 
         }
 

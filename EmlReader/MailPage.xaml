@@ -124,9 +124,9 @@
                 </Button>
             </Grid>
         </StackPanel>
-        <StackPanel x:Name="AttachmentArea" Grid.Row="2" Margin="40,0">
-            <TextBlock x:Name="SaveAllButton" Text="Save all attachments" Margin="0,8" Tapped="SaveAllButton_Tapped" Foreground="{StaticResource SystemAccentColorDark1}"/>
-            <GridView x:Name="AttachmentView" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
+        <StackPanel x:Name="AttachmentArea" Grid.Row="2">
+            <Button x:Name="SaveAllButton" Margin="30,0" Content="Save all attachments" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}"/>
+            <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
         </StackPanel>
         <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
 
