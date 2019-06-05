@@ -100,10 +100,14 @@ namespace EmlReader
                     SetAddressList(message.Cc);
                 }
 
-                if (message.Attachments.Count() > 0)
+                int count = message.Attachments.Count();
+                if (count > 0)
+                {
                     AttachmentView.ItemsSource = message.Attachments;
+                    SaveAllButton.Visibility = (count > 1) ? Visibility.Visible : Visibility.Collapsed;
+                }
                 else
-                    AttachmentView.Visibility = Visibility.Collapsed;
+                    AttachmentArea.Visibility = Visibility.Collapsed;
 
                 // render the message body
                 Render();
@@ -162,17 +166,20 @@ namespace EmlReader
                 if (item is MailboxAddress)
                 {
                     var _address = (item as MailboxAddress).Address;
-                    var link = new Hyperlink {
+                    var link = new Hyperlink
+                    {
                         NavigateUri = new Uri("ms-people:viewcontact?Email=" + _address),
                         UnderlineStyle = UnderlineStyle.None
                     };
                     if (string.IsNullOrEmpty(item.Name))
-                        link.Inlines.Add(new Run {
+                        link.Inlines.Add(new Run
+                        {
                             Text = _address + "; ",
                             Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
                         });
                     else
-                        link.Inlines.Add(new Run {
+                        link.Inlines.Add(new Run
+                        {
                             //Text = item.Name + "<" + _address + ">; ",
                             Text = item.Name + "; ",
                             Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
@@ -181,7 +188,8 @@ namespace EmlReader
                 }
                 else
                 {
-                    AddressBlock.Inlines.Add(new Run {
+                    AddressBlock.Inlines.Add(new Run
+                    {
                         Text = item.Name + "; ",
                         Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
                     });
@@ -194,7 +202,7 @@ namespace EmlReader
             //FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
 
             if ((sender as FrameworkElement).DataContext is GroupAddress) return;
-            var _address = ((MailboxAddress) (sender as FrameworkElement).DataContext).Address;
+            var _address = ((MailboxAddress)(sender as FrameworkElement).DataContext).Address;
             Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
             // Launch People app
             bool success = await Launcher.LaunchUriAsync(uri);
@@ -203,7 +211,8 @@ namespace EmlReader
 
         private void AttachmentView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            OpenFile((MimePart)AttachmentView.SelectedItem);
+            MimePart item = (MimePart)AttachmentView.SelectedItem;
+            if (item != null) OpenFile(item);
         }
 
         private void AttachmentTemplate_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -334,23 +343,22 @@ namespace EmlReader
             }
             if (message.Cc.Count() != 0)
             {
-                
+
                 foreach (InternetAddress item in message.Cc)
                 {
                     if (item is MailboxAddress)
                         _scheme += (item as MailboxAddress).Address + ",";
                 }
-            }         
+            }
 
             Uri uri = new Uri(_scheme);
-            //uri = new Uri("mailto:a@a.jp?subject=test&cc=c@c.jp,b@b.jp");
 
             // Launch browser
             bool success = await Launcher.LaunchUriAsync(uri);
         }
 
         private void HeaderExpandButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             if (HeaderExpandButtonText.Text.Equals("\uE011"))
             {
                 // Expand
@@ -364,6 +372,11 @@ namespace EmlReader
                 HeaderExpandButtonText.Text = "\uE011"; // ScrollChevronDownLegacy
                 AddressBlock.Height = HeaderExpandButton.Height;
             }
+        }
+
+        private void SaveAllButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
         }
 
         //// https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
