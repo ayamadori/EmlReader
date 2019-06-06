@@ -7,7 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -169,9 +171,15 @@ namespace EmlReader
                     var _address = (item as MailboxAddress).Address;
                     var link = new Hyperlink
                     {
-                        NavigateUri = new Uri("ms-people:viewcontact?Email=" + _address),
+                        //NavigateUri = new Uri("ms-people:viewcontact?Email=" + _address),
                         UnderlineStyle = UnderlineStyle.None
                     };
+                    // https://docs.microsoft.com/ja-jp/uwp/api/windows.ui.xaml.documents.hyperlink.click
+                    link.Click += (sender, args) =>
+                    {
+                        OnUserClickShowContactCard(AddressBlock, _address);
+                    };
+
                     if (string.IsNullOrEmpty(item.Name))
                         link.Inlines.Add(new Run
                         {
@@ -195,6 +203,46 @@ namespace EmlReader
                         Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
                     });
                 }
+            }
+        }
+
+        // https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/contact-card
+        // Gets the rectangle of the element 
+        public static Rect GetElementRect(FrameworkElement element)
+        {
+            // Passing "null" means set to root element. 
+            GeneralTransform elementTransform = element.TransformToVisual(null);
+            Rect rect = elementTransform.TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+            return rect;
+        }
+
+        // https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/contact-card
+        // Display a contact in response to an event
+        private async void OnUserClickShowContactCard(FrameworkElement element, string address)
+        {
+            if (ContactManager.IsShowContactCardSupported())
+            {
+                Rect selectionRect = GetElementRect(element);
+
+                // https://docs.microsoft.com/en-us/windows/uwp/contacts-and-calendar/integrating-with-contacts
+                ContactStore contactStore = await ContactManager.RequestStoreAsync();
+                IReadOnlyList<Contact> contacts = await contactStore.FindContactsAsync(address);
+
+                // Retrieve the contact to display
+                Contact contact;
+                if (contacts.Count > 0)
+                {
+                    contact = contacts[0];
+                }
+                else
+                {
+                    contact = new Contact();
+                    var email = new ContactEmail();
+                    email.Address = address;
+                    contact.Emails.Add(email);
+                }
+
+                ContactManager.ShowContactCard(contact, selectionRect, Placement.Below);
             }
         }
 
@@ -263,12 +311,14 @@ namespace EmlReader
             }
         }
 
-        private async void FromView_Tapped(object sender, TappedRoutedEventArgs e)
+        private void FromView_Tapped(object sender, TappedRoutedEventArgs e)
         {
             string _address = (message.From.First() as MailboxAddress).Address;
-            Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
-            // Launch People app
-            bool success = await Launcher.LaunchUriAsync(uri);
+            //Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
+            //// Launch People app
+            //bool success = await Launcher.LaunchUriAsync(uri);
+
+            OnUserClickShowContactCard(FromView, _address);
         }
 
         private async void ReplyButton_Click(object sender, RoutedEventArgs e)
@@ -379,7 +429,7 @@ namespace EmlReader
             // write to file
             using (Stream _stream = await file.OpenStreamForWriteAsync())
             {
-                item.Content.DecodeTo(_stream);
+                await item.Content.DecodeToAsync(_stream);
             }
 
             // Let Windows know that we're finished changing the file so
