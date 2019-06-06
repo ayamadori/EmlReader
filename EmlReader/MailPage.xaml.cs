@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -215,24 +216,22 @@ namespace EmlReader
 
         private async void OpenFile(MimePart item)
         {
-            // https://social.msdn.microsoft.com/Forums/it-IT/2407812c-2b59-4a7c-972a-778c32b91220/sharing-an-inmemory-png-file
-            var file = await StorageFile.CreateStreamedFileAsync(item.FileName, async (fileStream) =>
+            // https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/AssociationLaunching
+            //Can't launch files directly from install folder so copy it over 
+            //to temporary folder first
+            // ** Unnessesary for PC, but needed for Mobile
+            StorageFolder tempfolder = ApplicationData.Current.TemporaryFolder;
+            StorageFile file = await tempfolder.CreateFileAsync(item.FileName, CreationCollisionOption.ReplaceExisting);
+            bool success = await MimePart2FileAsync(item, file);
+            if (!success)
             {
-                item.Content.DecodeTo(fileStream.AsStreamForWrite());
-                await fileStream.FlushAsync();
-                fileStream.Dispose();
-            }, null);
-            if (file != null)
-            {
-                // https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/AssociationLaunching
-                //Can't launch files directly from install folder so copy it over 
-                //to temporary folder first
-                // ** Unnessesary for PC, but needed for Mobile
-                file = await file.CopyAsync(ApplicationData.Current.TemporaryFolder, item.FileName, NameCollisionOption.ReplaceExisting);
-
-                // Launch the retrieved file
-                var success = await Launcher.LaunchFileAsync(file);
+                var dlg = new MessageDialog("File " + file.Name + " couldn't be opened.");
+                await dlg.ShowAsync();
+                return;
             }
+
+            // Launch the retrieved file
+            success = await Launcher.LaunchFileAsync(file);
         }
 
         private async void SaveFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
@@ -255,26 +254,9 @@ namespace EmlReader
             StorageFile file = await savePicker.PickSaveFileAsync();
             if (file != null)
             {
-                // Prevent updates to the remote version of the file until
-                // we finish making changes and call CompleteUpdatesAsync.
-                CachedFileManager.DeferUpdates(file);
-                // write to file
-                using (Stream _stream = await file.OpenStreamForWriteAsync())
+                bool success = await MimePart2FileAsync(_item, file);
+                if (!success)
                 {
-                    _item.Content.DecodeTo(_stream);
-                }
-                // Let Windows know that we're finished changing the file so
-                // the other app can update the remote version of the file.
-                // Completing updates may require Windows to ask for user input.
-                Windows.Storage.Provider.FileUpdateStatus status =
-                    await CachedFileManager.CompleteUpdatesAsync(file);
-                if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
-                {
-                    //this.textBlock.Text = "File " + file.Name + " was saved.";
-                }
-                else
-                {
-                    //this.textBlock.Text = "File " + file.Name + " couldn't be saved.";
                     var dlg = new MessageDialog("File " + file.Name + " couldn't be saved.");
                     await dlg.ShowAsync();
                 }
@@ -283,9 +265,6 @@ namespace EmlReader
 
         private async void FromView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            //From.Text = (message.From.First() as MailboxAddress).Address;
-            //FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
-
             string _address = (message.From.First() as MailboxAddress).Address;
             Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
             // Launch People app
@@ -365,11 +344,11 @@ namespace EmlReader
         private async void SaveAllButton_Click(object sender, RoutedEventArgs e)
         {
             // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-using-file-and-folder-pickers
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
+            var folderPicker = new FolderPicker();
+            folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
             folderPicker.FileTypeFilter.Add("*");
 
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
             if (folder != null)
             {
                 // Application now has read/write access to all contents in the picked folder
@@ -378,15 +357,46 @@ namespace EmlReader
                 FutureAccessList.AddOrReplace("PickedFolderToken", folder);
                 foreach (MimePart _item in message.Attachments)
                 {
-                    file = await folder.CreateFileAsync(_item.FileName);
-                    // write to file
-                    using (Stream _stream = await file.OpenStreamForWriteAsync())
+                    file = await folder.CreateFileAsync(_item.FileName, CreationCollisionOption.GenerateUniqueName);
+
+                    bool success = await MimePart2FileAsync(_item, file);
+                    if (!success)
                     {
-                        _item.Content.DecodeTo(_stream);
+                        var dlg = new MessageDialog("File " + file.Name + " couldn't be saved. Aborted.");
+                        await dlg.ShowAsync();
+                        return;
                     }
                 }
             }
+        }
 
+        private async Task<bool> MimePart2FileAsync(MimePart item, StorageFile file)
+        {
+            // Prevent updates to the remote version of the file until
+            // we finish making changes and call CompleteUpdatesAsync.
+            CachedFileManager.DeferUpdates(file);
+
+            // write to file
+            using (Stream _stream = await file.OpenStreamForWriteAsync())
+            {
+                item.Content.DecodeTo(_stream);
+            }
+
+            // Let Windows know that we're finished changing the file so
+            // the other app can update the remote version of the file.
+            // Completing updates may require Windows to ask for user input.
+            Windows.Storage.Provider.FileUpdateStatus status =
+                await CachedFileManager.CompleteUpdatesAsync(file);
+            if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
+            {
+                //this.textBlock.Text = "File " + file.Name + " was saved.";
+                return true;
+            }
+            else
+            {
+                //this.textBlock.Text = "File " + file.Name + " couldn't be saved.";
+                return false;
+            }
         }
 
         //// https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
