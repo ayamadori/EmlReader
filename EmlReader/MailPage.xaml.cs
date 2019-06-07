@@ -171,13 +171,12 @@ namespace EmlReader
                     var _address = (item as MailboxAddress).Address;
                     var link = new Hyperlink
                     {
-                        //NavigateUri = new Uri("ms-people:viewcontact?Email=" + _address),
                         UnderlineStyle = UnderlineStyle.None
                     };
                     // https://docs.microsoft.com/ja-jp/uwp/api/windows.ui.xaml.documents.hyperlink.click
                     link.Click += (sender, args) =>
                     {
-                        OnUserClickShowContactCard(AddressBlock, _address);
+                        OnUserClickShowContactCard(ToArea, _address);
                     };
 
                     if (string.IsNullOrEmpty(item.Name))
@@ -204,6 +203,13 @@ namespace EmlReader
                     });
                 }
             }
+        }
+
+        private void FromView_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            string _address = (message.From.First() as MailboxAddress).Address;
+
+            OnUserClickShowContactCard(FromView, _address);
         }
 
         // https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/contact-card
@@ -233,16 +239,29 @@ namespace EmlReader
                 if (contacts.Count > 0)
                 {
                     contact = contacts[0];
+                    // Modify Name to show Address instead of Name
+                    contact.FirstName = "";
+                    contact.MiddleName = "";
+                    contact.LastName = "";
+                    contact.Name = address;
+                    // Modify ID to show ContactCard instead of People app
+                    contact.Id = "";
                 }
                 else
                 {
+                    // Create new contact
                     contact = new Contact();
                     var email = new ContactEmail();
                     email.Address = address;
                     contact.Emails.Add(email);
                 }
 
-                ContactManager.ShowContactCard(contact, selectionRect, Placement.Below);
+                ContactManager.ShowContactCard(contact, selectionRect, Placement.Default);
+            }
+            else
+            {
+                // Launch People app
+                bool success = await Launcher.LaunchUriAsync(new Uri("ms-people:viewcontact?Email=" + address));
             }
         }
 
@@ -309,16 +328,6 @@ namespace EmlReader
                     await dlg.ShowAsync();
                 }
             }
-        }
-
-        private void FromView_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            string _address = (message.From.First() as MailboxAddress).Address;
-            //Uri uri = new Uri("ms-people:viewcontact?Email=" + _address);
-            //// Launch People app
-            //bool success = await Launcher.LaunchUriAsync(uri);
-
-            OnUserClickShowContactCard(FromView, _address);
         }
 
         private async void ReplyButton_Click(object sender, RoutedEventArgs e)
