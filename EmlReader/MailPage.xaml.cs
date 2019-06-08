@@ -276,7 +276,7 @@ namespace EmlReader
             FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
         }
 
-        private void OpenFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private void OpenFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             OpenFile((MimePart)(sender as FrameworkElement).DataContext);
         }
@@ -301,7 +301,7 @@ namespace EmlReader
             success = await Launcher.LaunchFileAsync(file);
         }
 
-        private async void SaveFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void SaveFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             MimePart _item = (MimePart)(sender as FrameworkElement).DataContext;
 

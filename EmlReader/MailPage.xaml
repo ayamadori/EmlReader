@@ -21,8 +21,8 @@
                 <TextBlock Text="{x:Bind FileName}" VerticalAlignment="Center"/>
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout>
-                        <MenuFlyoutItem Text="Open" Tapped="OpenFlyoutItem_Tapped"/>
-                        <MenuFlyoutItem Text="Save" Tapped="SaveFlyoutItem_Tapped"/>
+                        <MenuFlyoutItem Text="Open" Click="OpenFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Save" Click="SaveFlyoutItem_Click"/>
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
             </StackPanel>
