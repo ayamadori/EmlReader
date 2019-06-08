@@ -32,6 +32,11 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 
 
 ## Version History
+- Version 1.2.6 (2019/06/08)
+  * Save all attachments by one-click
+  * Show Contact card on click the email address
+  * Fix the issue that Open/Save button does not respond
+  
 - Version 1.2.4 (2019/06/02)
   * Show multiple windows
   * (A little) better error handling 
