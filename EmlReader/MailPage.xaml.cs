@@ -267,7 +267,7 @@ namespace EmlReader
 
         private void AttachmentView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MimePart item = (MimePart)AttachmentView.SelectedItem;
+            MimePart item = AttachmentView.SelectedItem as MimePart;
             if (item != null) OpenFile(item);
         }
 
@@ -278,7 +278,7 @@ namespace EmlReader
 
         private void OpenFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            OpenFile((MimePart)(sender as FrameworkElement).DataContext);
+            OpenFile((sender as FrameworkElement).DataContext as MimePart);
         }
 
         private async void OpenFile(MimePart item)
