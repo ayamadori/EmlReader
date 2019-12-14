@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Services.Store;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
@@ -30,8 +31,8 @@ namespace EmlReader
 
         private async void RateButton_Click(object sender, RoutedEventArgs e)
         {
-            Uri uriReview = new Uri(@"ms-windows-store://review/?ProductId=9nblggh5k5vp");
-            bool success = await Launcher.LaunchUriAsync(uriReview);
+            // https://docs.microsoft.com/en-us/windows/uwp/monetize/request-ratings-and-reviews
+            var success = await StoreContext.GetDefault().RequestRateAndReviewAppAsync();
         }
 
         private async void FeedbackButton_Click(object sender, RoutedEventArgs e)

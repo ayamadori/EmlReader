@@ -24,7 +24,7 @@
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE728;" Margin="0,0,8,0"/>
-                                <TextBlock Text="Rating &amp; Review"/>
+                                <TextBlock Text="Rate &amp; Review"/>
                             </StackPanel>
                         </Button.Content>
                     </Button>
