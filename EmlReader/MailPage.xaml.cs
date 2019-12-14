@@ -176,7 +176,7 @@ namespace EmlReader
                     // https://docs.microsoft.com/ja-jp/uwp/api/windows.ui.xaml.documents.hyperlink.click
                     link.Click += (sender, args) =>
                     {
-                        OnUserClickShowContactCard(ToArea, _address);
+                        OnUserClickShowContactCard(ToArea, item.Name, _address);
                     };
 
                     if (string.IsNullOrEmpty(item.Name))
@@ -207,9 +207,8 @@ namespace EmlReader
 
         private void FromView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            string _address = (message.From.First() as MailboxAddress).Address;
-
-            OnUserClickShowContactCard(FromView, _address);
+            MailboxAddress item = (message.From.First() as MailboxAddress);
+            OnUserClickShowContactCard(FromView, item.Name, item.Address);
         }
 
         // https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/contact-card
@@ -224,7 +223,7 @@ namespace EmlReader
 
         // https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/contact-card
         // Display a contact in response to an event
-        private async void OnUserClickShowContactCard(FrameworkElement element, string address)
+        private async void OnUserClickShowContactCard(FrameworkElement element, string name, string address)
         {
             if (ContactManager.IsShowContactCardSupported())
             {
@@ -239,13 +238,6 @@ namespace EmlReader
                 if (contacts.Count > 0)
                 {
                     contact = contacts[0];
-                    // Modify Name to show Address instead of Name
-                    contact.FirstName = "";
-                    contact.MiddleName = "";
-                    contact.LastName = "";
-                    contact.Name = address;
-                    // Modify ID to show ContactCard instead of People app
-                    contact.Id = "";
                 }
                 else
                 {
@@ -254,6 +246,7 @@ namespace EmlReader
                     var email = new ContactEmail();
                     email.Address = address;
                     contact.Emails.Add(email);
+                    if (!string.IsNullOrEmpty(name)) contact.Name = name;
                 }
 
                 ContactManager.ShowContactCard(contact, selectionRect, Placement.Default);

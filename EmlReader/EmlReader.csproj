@@ -213,7 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.8</Version>
+      <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Services.Store.Engagement">
       <Version>10.1901.28001</Version>
@@ -222,7 +222,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="MimeKitLite">
-      <Version>2.1.5.1</Version>
+      <Version>2.4.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
