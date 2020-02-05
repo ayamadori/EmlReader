@@ -119,13 +119,13 @@ namespace EmlReader
 
         void Render()
         {
-            var visitor = new HtmlPreviewVisitor(webView);
+            var visitor = new HtmlPreviewVisitor(MailView);
 
             message.Accept(visitor);
         }
 
         // Hook navigation
-        private async void webView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        private async void MailView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             Uri uri = args.Uri;
             if (uri != null && uri.AbsoluteUri.StartsWith("http"))
@@ -455,7 +455,7 @@ namespace EmlReader
         //private async void PrintButton_Click(object sender, RoutedEventArgs e)
         //{
         //    //// https://stackoverflow.com/questions/39033318/how-to-save-webviewbrush-as-image-uwp-universal
-        //    var pages = await GetWebPages(webView, new Windows.Foundation.Size(210, 297)); // A4 size
+        //    var pages = await GetWebPages(MailView, new Windows.Foundation.Size(210, 297)); // A4 size
 
         //    // Create a new PrintHelper instance
         //    // "container" is a XAML panel that will be used to host printable control.
@@ -494,11 +494,11 @@ namespace EmlReader
         //    printHelper.Dispose();
         //}
 
-        //public async Task<WebViewBrush> GetWebViewBrush(WebView webView)
+        //public async Task<WebViewBrush> GetWebViewBrush(WebView MailView)
         //{
         //    // resize width to content
-        //    double originalWidth = webView.Width;
-        //    var widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
+        //    double originalWidth = MailView.Width;
+        //    var widthString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
         //    int contentWidth;
 
         //    if (!int.TryParse(widthString, out contentWidth))
@@ -506,11 +506,11 @@ namespace EmlReader
         //        throw new Exception(string.Format("failure/width:{0}", widthString));
         //    }
 
-        //    webView.Width = contentWidth;
+        //    MailView.Width = contentWidth;
 
         //    // resize height to content
-        //    double originalHeight = webView.Height;
-        //    var heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
+        //    double originalHeight = MailView.Height;
+        //    var heightString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
         //    int contentHeight;
 
         //    if (!int.TryParse(heightString, out contentHeight))
@@ -518,32 +518,32 @@ namespace EmlReader
         //        throw new Exception(string.Format("failure/height:{0}", heightString));
         //    }
 
-        //    webView.Height = contentHeight;
+        //    MailView.Height = contentHeight;
 
         //    // create brush
-        //    var originalVisibilty = webView.Visibility;
-        //    webView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+        //    var originalVisibilty = MailView.Visibility;
+        //    MailView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
         //    WebViewBrush brush = new WebViewBrush
         //    {
-        //        SourceName = webView.Name,
+        //        SourceName = MailView.Name,
         //        Stretch = Stretch.Uniform
         //    };
 
         //    brush.Redraw();
 
         //    // reset, return
-        //    webView.Width = originalWidth;
-        //    webView.Height = originalHeight;
-        //    webView.Visibility = originalVisibilty;
+        //    MailView.Width = originalWidth;
+        //    MailView.Height = originalHeight;
+        //    MailView.Visibility = originalVisibilty;
 
         //    return brush;
         //}
 
-        //public async Task<IEnumerable<FrameworkElement>> GetWebPages(WebView webView, Windows.Foundation.Size page)
+        //public async Task<IEnumerable<FrameworkElement>> GetWebPages(WebView MailView, Windows.Foundation.Size page)
         //{
         //    // ask the content its width
-        //    var widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
+        //    var widthString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
         //    int contentWidth;
 
         //    if (!int.TryParse(widthString, out contentWidth))
@@ -551,10 +551,10 @@ namespace EmlReader
         //        throw new Exception(string.Format("failure/width:{0}", widthString));
         //    }
 
-        //    webView.Width = contentWidth;
+        //    MailView.Width = contentWidth;
 
         //    // ask the content its height
-        //    var heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
+        //    var heightString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
         //    int contentHeight;
 
         //    if (!int.TryParse(heightString, out contentHeight))
@@ -562,7 +562,7 @@ namespace EmlReader
         //        throw new Exception(string.Format("failure/height:{0}", heightString));
         //    }
 
-        //    webView.Height = contentHeight;
+        //    MailView.Height = contentHeight;
 
         //    // how many pages will there be?
         //    double scale = page.Width / contentWidth;
@@ -588,7 +588,7 @@ namespace EmlReader
         //        rectanglePage.Loaded += (async (s, e) =>
         //        {
         //            var subRectangle = s as Windows.UI.Xaml.Shapes.Rectangle;
-        //            var subBrush = await GetWebViewBrush(webView);
+        //            var subBrush = await GetWebViewBrush(MailView);
         //            subBrush.Stretch = Stretch.UniformToFill;
         //            subBrush.AlignmentY = AlignmentY.Top;
         //            subBrush.Transform = subRectangle.Tag as TranslateTransform;

@@ -128,7 +128,7 @@
             <Button x:Name="SaveAllButton" Margin="30,0" Content="Save all attachments" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}"/>
             <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
         </StackPanel>
-        <WebView x:Name="webView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="webView_NavigationStarting"/>
+        <WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="MailView_NavigationStarting"/>
 
         <!--// "container" is a XAML panel that will be used to host printable control.
             // It needs to be in your visual tree but can be hidden with Opacity = 0-->
