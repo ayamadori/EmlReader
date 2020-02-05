@@ -69,7 +69,6 @@ namespace EmlReader
 					// construct our response containing the decoded content
 					HttpResponseMessage _response = new HttpResponseMessage();
 					_response.Content = new HttpStreamContent(stream.AsInputStream());
-
 					args.Response = _response;
 				}
 			}

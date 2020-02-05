@@ -40,7 +40,7 @@ namespace EmlReader
     {
         readonly List<MultipartRelated> stack = new List<MultipartRelated>();
         readonly List<MimeEntity> attachments = new List<MimeEntity>();
-        readonly WebView MailView;
+        readonly WebView webView;
         bool renderedBody;
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace EmlReader
         /// </summary>
         public HtmlPreviewVisitor(WebView webView)
         {
-            this.MailView = webView;
+            this.webView = webView;
         }
 
         /// <summary>
@@ -141,8 +141,8 @@ namespace EmlReader
             var client = new MultipartRelatedWebViewClient(stack);
             var html = converter.Convert(entity.Text);
 
-            MailView.WebResourceRequested += client.ShouldInterceptRequest;
-            MailView.NavigateToString(html);
+            webView.WebResourceRequested += client.ShouldInterceptRequest;
+            webView.NavigateToString(html);
             renderedBody = true;
         }
 
