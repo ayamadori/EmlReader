@@ -37,7 +37,7 @@ namespace EmlReader
                 {
                     var storageFile = items[0] as StorageFile;
                     string filetype = storageFile.FileType.ToLower();
-                    if (filetype.Equals(".eml"))
+                    if (filetype.Equals(".eml") || filetype.Equals(".msg"))
                     {
                         Frame.Navigate(typeof(MailPage), storageFile);
                     }
@@ -54,6 +54,7 @@ namespace EmlReader
             //picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
             //picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
             picker.FileTypeFilter.Add(".eml");
+            picker.FileTypeFilter.Add(".msg");
 
             StorageFile file = await picker.PickSingleFileAsync();
             if (file != null)

@@ -43,6 +43,7 @@
             <uap:Logo>Assets\FileIcon.png</uap:Logo>
             <uap:SupportedFileTypes>
               <uap:FileType>.eml</uap:FileType>
+              <uap:FileType>.msg</uap:FileType>
             </uap:SupportedFileTypes>
           </uap:FileTypeAssociation>
         </uap:Extension>
