@@ -223,7 +223,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="MimeKitLite">
-      <Version>2.5.0</Version>
+      <Version>2.5.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
