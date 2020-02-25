@@ -7,39 +7,21 @@
     mc:Ignorable="d">
 
     <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <Pivot>
-            <PivotItem Header="Usage">
-                <StackPanel Margin="0,8,0,0">
-                    <TextBlock Text="Open *.eml file via:&#xA;&#xA; - [Open File] Button shown below&#xA;&#xA; - Click *.eml file directly&#xA;&#xA; - [Share] menu (in File Explorer etc.)&#xA;&#xA; - Drag &amp; Drop to this app (PC only)" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <Button Content="Open File" Click="FileOpenButton_Click" Margin="0,24,0,0"/>
-                </StackPanel>
-            </PivotItem>
-            <PivotItem Header="About">
-                <StackPanel>
-                    <TextBlock Text="EML Reader&#xA;Version 1.2.6&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
-                    <HyperlinkButton Content="https://ayamadori.github.io/" NavigateUri="https://ayamadori.github.io/"/>
-                    <HyperlinkButton Content="Privacy Policy" NavigateUri="https://ayamadori.github.io/EmlReader/PrivacyPolicy.html"/>
-                    <Button x:Name="RateButton" Margin="0,12,0,0" Click="RateButton_Click">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE728;" Margin="0,0,8,0"/>
-                                <TextBlock Text="Rate &amp; Review"/>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-                    <Button x:Name="FeedbackButton" Margin="0,12,0,0" Click="FeedbackButton_Click" Visibility="Collapsed">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE939;" Margin="0,0,8,0"/>
-                                <TextBlock Text="Send feedback"/>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-                    <ScrollViewer Height="200" Margin="0,12,0,0">
-                        <TextBlock Text="Third party licenses&#xA;=============&#xA;- MimeKit (http://mimekit.net/)&#xA;MimeKit is Copyright (C) 2012-2020 Xamarin Inc. and is licensed under the MIT license:&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE." TextWrapping="Wrap"/>
-                    </ScrollViewer>
-                </StackPanel>
-            </PivotItem>
-        </Pivot>
+        <Rectangle Stroke="{ThemeResource ApplicationForegroundThemeBrush}" StrokeDashArray="8" Margin="8"/>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <FontIcon Glyph="&#xE715;" FontSize="80"/>
+            <TextBlock Text="Drop .eml/.msg here (PC only)" TextWrapping="Wrap"/>
+            <TextBlock Text="or" TextWrapping="Wrap" HorizontalAlignment="Center"/>
+            <HyperlinkButton Content="Open File" HorizontalAlignment="Center" Click="FileOpenButton_Click"/>
+        </StackPanel>
     </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="bottomCommandBar">
+            <AppBarButton Label="About" Click="AboutButton_Click">
+                <FontIcon Glyph="&#xE946;" />
+            </AppBarButton>
+        </CommandBar>
+    </Page.BottomAppBar>
+    
 </Page>
