@@ -35,11 +35,17 @@ namespace EmlReader
                 var items = await e.DataView.GetStorageItemsAsync();
                 if (items.Count > 0)
                 {
-                    var storageFile = items[0] as StorageFile;
-                    string filetype = storageFile.FileType.ToLower();
-                    if (filetype.Equals(".eml") || filetype.Equals(".msg"))
+                    for (int i=0; i < items.Count; i++)
                     {
-                        Frame.Navigate(typeof(MailPage), storageFile);
+                        StorageFile storageFile = items[i] as StorageFile;
+                        string filetype = storageFile.FileType.ToLower();
+                        if (filetype.Equals(".eml") || filetype.Equals(".msg"))
+                        {
+                            if(i == 0)
+                                Frame.Navigate(typeof(MailPage), storageFile);
+                            else
+                                await Launcher.LaunchFileAsync(storageFile);
+                        }
                     }
                 }
             }
