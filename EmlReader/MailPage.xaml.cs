@@ -55,7 +55,7 @@ namespace EmlReader
                 }
                 catch
                 {
-                    var dlg = new MessageDialog("The app can NOT open this file.", "Unsupported file");
+                    var dlg = new ContentDialog() { Title = "Unsupported file", Content = "The app can NOT open this file.", CloseButtonText = "OK"};
                     await dlg.ShowAsync();
 
                     // Exit app
@@ -285,7 +285,7 @@ namespace EmlReader
             bool success = await MimePart2FileAsync(item, file);
             if (!success)
             {
-                var dlg = new MessageDialog("File " + file.Name + " couldn't be opened.");
+                var dlg = new ContentDialog() { Content = "File " + file.Name + " couldn't be opened.", CloseButtonText = "OK" };
                 await dlg.ShowAsync();
                 return;
             }
@@ -317,7 +317,7 @@ namespace EmlReader
                 bool success = await MimePart2FileAsync(_item, file);
                 if (!success)
                 {
-                    var dlg = new MessageDialog("File " + file.Name + " couldn't be saved.");
+                    var dlg = new ContentDialog() { Content = "File " + file.Name + " couldn't be saved.", CloseButtonText = "OK" };
                     await dlg.ShowAsync();
                 }
             }
@@ -414,7 +414,7 @@ namespace EmlReader
                     bool success = await MimePart2FileAsync(_item, file);
                     if (!success)
                     {
-                        var dlg = new MessageDialog("File " + file.Name + " couldn't be saved. Aborted.");
+                        var dlg = new ContentDialog() { Title = "Aborted" , Content = "File " + file.Name + " couldn't be saved.", CloseButtonText = "OK"};
                         await dlg.ShowAsync();
                         return;
                     }

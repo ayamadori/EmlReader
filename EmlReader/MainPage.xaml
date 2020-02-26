@@ -10,18 +10,15 @@
         <Rectangle Stroke="{ThemeResource ApplicationForegroundThemeBrush}" StrokeDashArray="8" Margin="8"/>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <FontIcon Glyph="&#xE715;" FontSize="80"/>
-            <TextBlock Text="Drop .eml/.msg here (PC only)" TextWrapping="Wrap"/>
-            <TextBlock Text="or" TextWrapping="Wrap" HorizontalAlignment="Center"/>
-            <HyperlinkButton Content="Open File" HorizontalAlignment="Center" Click="FileOpenButton_Click"/>
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" HorizontalTextAlignment="Center" Tapped="FileOpenButton_Click">
+                <Run Text="Drop .eml/.msg here (PC only)"/><LineBreak/>
+                <Run Text="or"/><LineBreak/>
+                <Underline Foreground="{ThemeResource SystemAccentColor}">Open File</Underline>
+            </TextBlock>
         </StackPanel>
+        <Button Click="AboutButton_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,16" ToolTipService.ToolTip="About">
+            <FontIcon Glyph="&#xE946;" />
+        </Button>
     </Grid>
 
-    <Page.BottomAppBar>
-        <CommandBar x:Name="bottomCommandBar">
-            <AppBarButton Label="About" Click="AboutButton_Click">
-                <FontIcon Glyph="&#xE946;" />
-            </AppBarButton>
-        </CommandBar>
-    </Page.BottomAppBar>
-    
 </Page>

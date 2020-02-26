@@ -77,56 +77,5 @@ namespace EmlReader
             await dlg.ShowAsync();
         }
 
-        private async void AssociationButton_Click(object sender, RoutedEventArgs e)
-        {
-            // https://msdn.microsoft.com/en-us/library/windows/apps/mt299102.asp
-
-            // FileOpenPicker
-            // https://msdn.microsoft.com/ja-jp/library/windows/apps/mt186456.aspx
-
-            var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            picker.FileTypeFilter.Add(".eml");
-            picker.FileTypeFilter.Add(".msg");
-
-            StorageFile file = await picker.PickSingleFileAsync();
-            if (file != null)
-            {
-                // Set the option to show the picker
-                var options = new LauncherOptions();
-                options.DisplayApplicationPicker = true;
-                options.TargetApplicationPackageFamilyName = "22164ayamadori.EMLReader_rtpjcevvdcnva";
-
-                file = await file.CopyAsync(ApplicationData.Current.TemporaryFolder, file.Name, NameCollisionOption.ReplaceExisting);
-
-                var a = await Launcher.QueryFileSupportAsync(file);
-                var b = await Launcher.FindFileHandlersAsync(".eml");
-                string res = "FindFileHandlersAsync: ";
-                foreach(AppInfo info in b)
-                {
-                    res += info.PackageFamilyName + "; ";
-                }
-                Debug.WriteLine(res);
-                var c = await Launcher.FindFileHandlersAsync(".msg");
-                string res2 = "FindFileHandlersAsync: ";
-                foreach (AppInfo info in c)
-                {
-                    res2 += info.PackageFamilyName + "; ";
-                }
-                Debug.WriteLine(res2);
-
-                // Launch the retrieved file
-                bool success = await Launcher.LaunchFileAsync(file, options);
-                if (success)
-                {
-                    // File launched
-                    await new MessageDialog("File launched").ShowAsync();
-                }
-                else
-                {
-                    // File launch failed
-                    await new MessageDialog("File launch failed").ShowAsync();
-                }
-            }
-        }
     }
 }
