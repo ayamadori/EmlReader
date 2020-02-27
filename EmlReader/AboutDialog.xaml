@@ -11,7 +11,11 @@
 
     <Grid>
         <StackPanel>
-            <TextBlock Text="EML Reader&#xA;Version 1.2.6&#xA;&#xA;Copyright (C) Ayamadori" TextWrapping="Wrap"/>
+            <TextBlock>
+                <Run>EML Reader</Run><LineBreak/>
+                <Run>Version 1.3.0</Run><LineBreak/>
+                <Run>Copyright (C) Ayamadori</Run>
+            </TextBlock>
             <HyperlinkButton Content="https://github.com/ayamadori/EmlReader" NavigateUri="https://github.com/ayamadori/EmlReader"/>
             <HyperlinkButton Content="Privacy Policy" NavigateUri="https://ayamadori.github.io/EmlReader/PrivacyPolicy.html"/>
             <Button x:Name="RateButton" Margin="0,12,0,0" Click="RateButton_Click">
