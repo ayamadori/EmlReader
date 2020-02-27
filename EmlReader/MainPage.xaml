@@ -10,7 +10,7 @@
         <Rectangle Stroke="{ThemeResource ApplicationForegroundThemeBrush}" StrokeDashArray="8" Margin="8"/>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <FontIcon Glyph="&#xE715;" FontSize="80"/>
-            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" HorizontalTextAlignment="Center" Tapped="FileOpenButton_Click">
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" HorizontalTextAlignment="Center">
                 <Run Text="Drop .eml/.msg here (PC only)"/><LineBreak/>
                 <Run Text="or"/><LineBreak/>
                 <Hyperlink Click="FileOpenButton_Click">Open File</Hyperlink>

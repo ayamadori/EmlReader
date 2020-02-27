@@ -62,12 +62,12 @@ namespace EmlReader
             picker.FileTypeFilter.Add(".eml");
             picker.FileTypeFilter.Add(".msg");
 
-            var files = await picker.PickMultipleFilesAsync();
-            if (files != null)
+            var items = await picker.PickMultipleFilesAsync();
+            if (items.Count > 0)
             {
-                for (int i = 0; i < files.Count; i++)
+                for (int i = 0; i < items.Count; i++)
                 {
-                    StorageFile storageFile = files[i] as StorageFile;
+                    StorageFile storageFile = items[i] as StorageFile;
 
                     if (i == 0)
                         Frame.Navigate(typeof(MailPage), storageFile);
@@ -82,12 +82,12 @@ namespace EmlReader
             }
         }
 
-    private async void AboutButton_Click(object sender, RoutedEventArgs e)
-    {
-        // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
-        var dlg = new AboutDialog();
-        await dlg.ShowAsync();
-    }
+        private async void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
+            var dlg = new AboutDialog();
+            await dlg.ShowAsync();
+        }
 
-}
+    }
 }
