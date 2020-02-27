@@ -1,11 +1,8 @@
 using System;
-using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Services.Store;
 using Windows.Storage;
 using Windows.System;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -35,16 +32,21 @@ namespace EmlReader
                 var items = await e.DataView.GetStorageItemsAsync();
                 if (items.Count > 0)
                 {
-                    for (int i=0; i < items.Count; i++)
+                    for (int i = 0; i < items.Count; i++)
                     {
                         StorageFile storageFile = items[i] as StorageFile;
                         string filetype = storageFile.FileType.ToLower();
                         if (filetype.Equals(".eml") || filetype.Equals(".msg"))
                         {
-                            if(i == 0)
+                            if (i == 0)
                                 Frame.Navigate(typeof(MailPage), storageFile);
                             else
-                                await Launcher.LaunchFileAsync(storageFile);
+                            {
+                                // Open file on this app
+                                var options = new LauncherOptions();
+                                options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
+                                await Launcher.LaunchFileAsync(storageFile, options);
+                            }
                         }
                     }
                 }
@@ -57,25 +59,35 @@ namespace EmlReader
             // https://msdn.microsoft.com/ja-jp/library/windows/apps/mt186456.aspx
 
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            //picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-            //picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
             picker.FileTypeFilter.Add(".eml");
             picker.FileTypeFilter.Add(".msg");
 
-            StorageFile file = await picker.PickSingleFileAsync();
-            if (file != null)
+            var files = await picker.PickMultipleFilesAsync();
+            if (files != null)
             {
-                // Application now has read/write access to the picked file
-                Frame.Navigate(typeof(MailPage), file);
+                for (int i = 0; i < files.Count; i++)
+                {
+                    StorageFile storageFile = files[i] as StorageFile;
+
+                    if (i == 0)
+                        Frame.Navigate(typeof(MailPage), storageFile);
+                    else
+                    {
+                        // Open file on this app
+                        var options = new LauncherOptions();
+                        options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
+                        await Launcher.LaunchFileAsync(storageFile, options);
+                    }
+                }
             }
         }
 
-        private async void AboutButton_Click(object sender, RoutedEventArgs e)
-        {
-            // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
-            var dlg = new AboutDialog();
-            await dlg.ShowAsync();
-        }
-
+    private async void AboutButton_Click(object sender, RoutedEventArgs e)
+    {
+        // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
+        var dlg = new AboutDialog();
+        await dlg.ShowAsync();
     }
+
+}
 }

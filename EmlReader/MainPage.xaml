@@ -13,7 +13,7 @@
             <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" HorizontalTextAlignment="Center" Tapped="FileOpenButton_Click">
                 <Run Text="Drop .eml/.msg here (PC only)"/><LineBreak/>
                 <Run Text="or"/><LineBreak/>
-                <Underline Foreground="{ThemeResource SystemAccentColor}">Open File</Underline>
+                <Hyperlink Click="FileOpenButton_Click">Open File</Hyperlink>
             </TextBlock>
         </StackPanel>
         <Button Click="AboutButton_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,16" ToolTipService.ToolTip="About">
