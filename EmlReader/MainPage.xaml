@@ -11,7 +11,7 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <FontIcon Glyph="&#xE715;" FontSize="80"/>
             <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" HorizontalTextAlignment="Center">
-                <Run>Drop .eml/.msg here (PC only)</Run><LineBreak/>
+                <Run>Drop .eml here (PC only)</Run><LineBreak/>
                 <Run>or</Run><LineBreak/>
                 <Hyperlink Click="FileOpenButton_Click">Open File</Hyperlink>
             </TextBlock>
