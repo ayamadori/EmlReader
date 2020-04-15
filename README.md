@@ -35,7 +35,6 @@ EmlReader is Copyright (C) Ayamadori. and is licensed under the MIT license:
 - Version 1.3.0 (2020/02/28)
   * Open multiple files on this app from D&D and FilePicker
   * Support multipart/related
-  * Support .msg file
   * Refresh UI
   * Update library
   * Remove support for Windows 10 Version 1803 and older
