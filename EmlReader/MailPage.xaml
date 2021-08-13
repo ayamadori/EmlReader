@@ -7,7 +7,8 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     xmlns:data="using:MimeKit"
-    RequestedTheme="Light">
+    RequestedTheme="Light"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
 
     <!--Need to add [xmlns:data="using:MimeKit"] to use x:Bind in DataTeplate-->
     <Page.Resources>
@@ -62,15 +63,15 @@
 
         <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
             <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
-            <AppBarButton Icon="MailReplyAll" Label="Reply All" Click="ReplyAllButton_Click"/>
+            <AppBarButton Icon="MailReplyAll" Label="Reply all" Click="ReplyAllButton_Click"/>
             <!--<AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>-->
         </CommandBar>
 
         <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="36,0">
             <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,12"/>
             <StackPanel Orientation="Horizontal" Margin="0,8">
-                <PersonPicture x:Name="fromPersonPicture" Width="40"/>
-                <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
+                    <muxc:PersonPicture x:Name="fromPersonPicture" Width="40"/>
+                    <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
                     <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold"/>
                     <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="Gray"/>
                 </StackPanel>
