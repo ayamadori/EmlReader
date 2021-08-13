@@ -7,10 +7,10 @@
     mc:Ignorable="d">
 
     <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <Rectangle Stroke="{ThemeResource ApplicationForegroundThemeBrush}" StrokeDashArray="8" Margin="8"/>
+        <Rectangle Stroke="{ThemeResource ApplicationForegroundThemeBrush}" StrokeDashArray="4" RadiusX="4" RadiusY="4" Margin="8"/>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <FontIcon Glyph="&#xE715;" FontSize="80"/>
-            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" HorizontalTextAlignment="Center">
+            <TextBlock FontSize="20" HorizontalTextAlignment="Center">
                 <Run>Drop .eml here (PC only)</Run><LineBreak/>
                 <Run>or</Run><LineBreak/>
                 <Hyperlink Click="FileOpenButton_Click">Open File</Hyperlink>

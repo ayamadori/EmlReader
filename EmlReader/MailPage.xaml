@@ -30,20 +30,13 @@
 
     </Page.Resources>
 
-    <Page.BottomAppBar>
-        <CommandBar x:Name="bottomCommandBar">
-            <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
-            <AppBarButton Icon="MailReplyAll" Label="Reply All" Click="ReplyAllButton_Click"/>
-            <!--<AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>-->
-        </CommandBar>
-    </Page.BottomAppBar>
-
-    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="White">
+    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <VisualStateManager.VisualStateGroups>
@@ -53,8 +46,7 @@
                         <AdaptiveTrigger MinWindowWidth="320" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="ReplyPanel.(StackPanel.Visibility)" Value="Collapsed"/>
-                        <Setter Target="bottomCommandBar.Visibility" Value="Visible"/>
+                        <Setter Target="MailCommandBar.(Grid.Row)" Value="4"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateMin720">
@@ -62,46 +54,24 @@
                         <AdaptiveTrigger MinWindowWidth="720" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="ReplyPanel.(StackPanel.Visibility)" Value="Visible"/>
-                        <Setter Target="bottomCommandBar.Visibility" Value="Collapsed"/>
+                        <Setter Target="MailCommandBar.(Grid.Row)" Value="0"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <StackPanel x:Name="ReplyPanel" Grid.Row="0" Orientation="Horizontal" FlowDirection="RightToLeft" Height="32" Margin="32,4">
-            <!--<Button x:Name="PrintButton" Click="PrintButton_Click" Background="White">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-                        <SymbolIcon Symbol="Print"/>
-                        <TextBlock Text="Print" Margin="8,0"/>
-                    </StackPanel>
-                </Button.Content>
-            </Button>-->
-            <Button x:Name="ReplyAllButton" Click="ReplyAllButton_Click" Background="White">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-                        <SymbolIcon Symbol="MailReplyAll"/>
-                        <TextBlock Text="Reply All" Margin="8,0"/>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-            <Button x:Name="ReplyButton" Click="ReplyButton_Click" Background="White">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-                        <SymbolIcon Symbol="MailReply"/>
-                        <TextBlock Text="Reply" Margin="8,0"/>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-        </StackPanel>
+        <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
+            <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
+            <AppBarButton Icon="MailReplyAll" Label="Reply All" Click="ReplyAllButton_Click"/>
+            <!--<AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>-->
+        </CommandBar>
 
         <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="36,0">
             <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,12"/>
             <StackPanel Orientation="Horizontal" Margin="0,8">
                 <PersonPicture x:Name="fromPersonPicture" Width="40"/>
                 <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
-                    <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold" Foreground="Black"/>
+                    <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold"/>
                     <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="Gray"/>
                 </StackPanel>
             </StackPanel>
@@ -111,7 +81,7 @@
                     <ColumnDefinition Width="48"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="AddressBlock" Style="{StaticResource CaptionTextBlockStyle}" Grid.Column="0" Height="20" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
-                <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Background="White" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
+                <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
                     <Interactivity:Interaction.Behaviors>
                         <Core:DataTriggerBehavior Binding="{Binding ElementName=AddressBlock.ActualWidth}" Value="{Binding ElementName=AddressBlock.Width}" ComparisonCondition="GreaterThan">
                             <Core:ChangePropertyAction TargetObject="{Binding ElementName=HeaderExpandButton}" PropertyName="Visibility" Value=""/>
@@ -119,7 +89,7 @@
                     </Interactivity:Interaction.Behaviors>
                     <Button.Content>
                         <!--ScrollChevronDownLegacy-->
-                        <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
                     </Button.Content>
                 </Button>
             </Grid>
@@ -128,11 +98,7 @@
             <Button x:Name="SaveAllButton" Margin="30,0" Content="Save all attachments" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}"/>
             <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
         </StackPanel>
-        <WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" NavigationStarting="MailView_NavigationStarting"/>
-
-        <!--// "container" is a XAML panel that will be used to host printable control.
-            // It needs to be in your visual tree but can be hidden with Opacity = 0-->
-        <!--<Grid x:Name="Container" Opacity="0"/>-->
+        <WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
 
     </Grid>
 

@@ -9,6 +9,12 @@
     Title="About"
     CloseButtonText="OK">
 
+    <!--Dirty fix :(-->
+    <!--https://github.com/microsoft/microsoft-ui-xaml/issues/1779#issuecomment-568172996-->
+    <ContentDialog.Resources>
+        <Style TargetType="local:AboutDialog" BasedOn="{StaticResource DefaultContentDialogStyle}" />
+    </ContentDialog.Resources>
+
     <Grid>
         <StackPanel>
             <TextBlock>
@@ -16,12 +22,12 @@
                 <Run>Version 1.3.0</Run><LineBreak/>
                 <Run>Copyright (C) Ayamadori</Run>
             </TextBlock>
-            <HyperlinkButton Content="https://github.com/ayamadori/EmlReader" NavigateUri="https://github.com/ayamadori/EmlReader"/>
+            <HyperlinkButton Content="Website" NavigateUri="https://github.com/ayamadori/EmlReader" Margin="0,8,0,0"/>
             <HyperlinkButton Content="Privacy Policy" NavigateUri="https://ayamadori.github.io/EmlReader/PrivacyPolicy.html"/>
             <Button x:Name="RateButton" Margin="0,12,0,0" Click="RateButton_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE728;" Margin="0,0,8,0"/>
+                        <FontIcon Glyph="&#xE728;" Margin="0,0,8,0"/>
                         <TextBlock Text="Rate &amp; Review"/>
                     </StackPanel>
                 </Button.Content>
@@ -29,7 +35,7 @@
             <Button x:Name="FeedbackButton" Margin="0,12,0,0" Click="FeedbackButton_Click" Visibility="Collapsed">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE939;" Margin="0,0,8,0"/>
+                        <FontIcon Glyph="&#xE939;" Margin="0,0,8,0"/>
                         <TextBlock Text="Send feedback"/>
                     </StackPanel>
                 </Button.Content>
