@@ -348,7 +348,7 @@ namespace EmlReader
             else
                 _scheme += (message.From.First() as MailboxAddress).Address;
 
-            _scheme += "?subject=" + WebUtility.UrlEncode("RE: " + message.Subject).Replace("+", "%20");
+            _scheme += "?subject=" + WebUtility.UrlEncode("RE: " + message.Subject).Replace("+", "%20").Replace("/", "%2F");
 
             _scheme += "&cc=";
             // TO: in "mailto:" scheme can accept only one address...?
@@ -357,7 +357,7 @@ namespace EmlReader
                 foreach (InternetAddress item in message.To)
                 {
                     if (item is MailboxAddress)
-                        _scheme += "," + (item as MailboxAddress).Address + ",";
+                        _scheme += (item as MailboxAddress).Address + ",";
                 }
             }
             if (message.Cc.Count() != 0)
