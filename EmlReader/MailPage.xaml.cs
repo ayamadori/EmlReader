@@ -94,12 +94,12 @@ namespace EmlReader
                 // http://blog.okazuki.jp/entry/2016/02/25/232252
                 if (message.To.Count > 0)
                 {
-                    AddressBlock.Inlines.Add(new Run { Text = "To: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    AddressBlock.Inlines.Add(new Run { Text = "TO: ", Foreground = new SolidColorBrush(Colors.Black) });
                     SetAddressList(message.To);
                 }
                 if (message.Cc.Count > 0)
                 {
-                    AddressBlock.Inlines.Add(new Run { Text = "Cc: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    AddressBlock.Inlines.Add(new Run { Text = "CC: ", Foreground = new SolidColorBrush(Colors.Black) });
                     SetAddressList(message.Cc);
                 }
 
@@ -449,6 +449,18 @@ namespace EmlReader
                 //this.textBlock.Text = "File " + file.Name + " couldn't be saved.";
                 return false;
             }
+        }
+
+        private async void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
+            var dlg = new AboutDialog();
+            await dlg.ShowAsync();
+        }
+
+        private void DonationButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         //// https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper

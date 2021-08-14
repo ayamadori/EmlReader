@@ -40,7 +40,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <VisualStateManager.VisualStateGroups>
+        <!--<VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
                 <VisualState x:Name="VisualStateMin320">
                     <VisualState.StateTriggers>
@@ -59,19 +59,39 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+        </VisualStateManager.VisualStateGroups>-->
 
         <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
             <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
             <AppBarButton Icon="MailReplyAll" Label="Reply all" Click="ReplyAllButton_Click"/>
             <!--<AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>-->
+            <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
+                <AppBarButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuFlyoutItem x:Name="DonationButton" Text="Donation" Icon="Like" Click="DonationButton_Click"/>
+                        <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE946;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <!--<CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="DonationButton" Label="Donation" Icon="Like" Click="DonationButton_Click"/>
+                <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE946;"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
         <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="36,0">
             <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,12"/>
             <StackPanel Orientation="Horizontal" Margin="0,8">
-                    <muxc:PersonPicture x:Name="fromPersonPicture" Width="40"/>
-                    <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
+                <muxc:PersonPicture x:Name="fromPersonPicture" Width="40"/>
+                <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
                     <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold"/>
                     <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="Gray"/>
                 </StackPanel>
