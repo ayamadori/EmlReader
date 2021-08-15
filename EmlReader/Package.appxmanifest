@@ -39,12 +39,12 @@
           </uap:ShareTarget>
         </uap:Extension>
         <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation  Name="eml">
-            <uap:Logo>Assets\FileIcon.png</uap:Logo>
+          <uap:FileTypeAssociation Name="eml">
             <uap:SupportedFileTypes>
               <uap:FileType>.eml</uap:FileType>
             </uap:SupportedFileTypes>
             <uap:DisplayName>EML file</uap:DisplayName>
+            <uap:Logo>Assets\ic_fluent_document_48_regular.png</uap:Logo>
           </uap:FileTypeAssociation>
         </uap:Extension>
       </Extensions>
