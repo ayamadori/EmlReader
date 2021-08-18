@@ -154,6 +154,7 @@
   <ItemGroup>
     <Content Include="Assets\ic_fluent_document_48_regular.png" />
     <Content Include="Assets\ic_fluent_document_48_regular.targetsize-16.png" />
+    <Content Include="Assets\ic_fluent_document_48_regular.targetsize-24.png" />
     <Content Include="Assets\ic_fluent_document_48_regular.targetsize-256.png" />
     <Content Include="Assets\ic_fluent_document_48_regular.targetsize-32.png" />
     <Content Include="Assets\ic_fluent_document_48_regular.targetsize-48.png" />
