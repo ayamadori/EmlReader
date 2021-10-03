@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -119,7 +120,15 @@ namespace EmlReader
 
         void Render()
         {
-            var visitor = new HtmlPreviewVisitor(MailView);
+            string printheader = "<p class=\"printheader\" style=\"background: white; color: black;\">" +
+                "FROM: " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
+                "DATE: " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
+                "TO: " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
+                "CC: " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
+                "SUBJECT: " + HttpUtility.HtmlEncode(message.Subject.ToString()) +
+                "</p>";
+
+            var visitor = new HtmlPreviewVisitor(MailView, printheader);
 
             message.Accept(visitor);
         }
