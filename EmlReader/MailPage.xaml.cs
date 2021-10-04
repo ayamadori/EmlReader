@@ -121,16 +121,7 @@ namespace EmlReader
 
         void Render()
         {
-            string printheader = "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\">" +
-                "<b>FROM:</b> " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
-                "<b>DATE:</b> " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
-                "<b>TO:</b> " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
-                "<b>CC:</b> " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
-                "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
-                " </br>" +
-                "</p>";
-
-            var visitor = new HtmlPreviewVisitor(MailView, printheader);
+            var visitor = new HtmlPreviewVisitor(MailView);
 
             message.Accept(visitor);
         }
@@ -474,29 +465,47 @@ namespace EmlReader
 
         }
 
-        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            SetMargin();
-        }
+        //private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        //{
+        //    SetMargin();
+        //}
 
-        private void MailView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        {
-            SetMargin();
-        }
+        //private void MailView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        //{
+        //    SetMargin();
+        //}
 
-        private async void SetMargin()
+        //private async void SetMargin()
+        //{
+            
+        //}
+
+        private async void SaveAsPdfButton_Click(object sender, RoutedEventArgs e)
         {
+            string printheader =
+                "<b>FROM:</b> " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
+                "<b>DATE:</b> " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
+                "<b>TO:</b> " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
+                "<b>CC:</b> " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
+                "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
+                " </br>";
+
             try
             {
-                var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var clientHeight = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return clientHeight.toString();})()" });
+                // Insert header
+                await MailView.InvokeScriptAsync("eval", new string[] { $"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";" });
+                // Get header height
+                var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h.toString();})()" });
                 double height;
                 _ = double.TryParse(_height, out height);
+                // Set margin of webview
                 MailView.Margin = new Thickness(32, 0 - height, 32, 0);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
             }
+
         }
 
         //// https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper

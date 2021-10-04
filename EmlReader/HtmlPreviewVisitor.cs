@@ -42,15 +42,13 @@ namespace EmlReader
         readonly List<MimeEntity> attachments = new List<MimeEntity>();
         readonly WebView webView;
         bool renderedBody;
-        string header;
 
         /// <summary>
         /// Creates a new HtmlPreviewVisitor.
         /// </summary>
-        public HtmlPreviewVisitor(WebView webView, string header)
+        public HtmlPreviewVisitor(WebView webView)
         {
             this.webView = webView;
-            this.header = header;
         }
 
         /// <summary>
@@ -142,7 +140,8 @@ namespace EmlReader
             var client = new MultipartRelatedWebViewClient(stack);
             var html = converter.Convert(entity.Text);
 
-            html = Regex.Replace(html, "<[Bb][Oo][Dd][Yy].*?>", "$0" + header);
+            // Add print header
+            html = Regex.Replace(html, "<[Bb][Oo][Dd][Yy].*?>", "$0" + "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\"/>");
 
             webView.WebResourceRequested += client.ShouldInterceptRequest;
             webView.NavigateToString(html);
