@@ -57,7 +57,7 @@ namespace EmlReader
                 }
                 catch
                 {
-                    var dlg = new ContentDialog() { Title = "Unsupported file", Content = "The app can NOT open this file.", CloseButtonText = "OK"};
+                    var dlg = new ContentDialog() { Title = "Unsupported file", Content = "The app can NOT open this file.", CloseButtonText = "OK" };
                     await dlg.ShowAsync();
 
                     // Exit app
@@ -127,7 +127,7 @@ namespace EmlReader
                 "<b>TO:</b> " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
                 "<b>CC:</b> " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
                 "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
-                " </br>" + 
+                " </br>" +
                 "</p>";
 
             var visitor = new HtmlPreviewVisitor(MailView, printheader);
@@ -425,7 +425,7 @@ namespace EmlReader
                     bool success = await MimePart2FileAsync(_item, file);
                     if (!success)
                     {
-                        var dlg = new ContentDialog() { Title = "Aborted" , Content = "File " + file.Name + " couldn't be saved.", CloseButtonText = "OK"};
+                        var dlg = new ContentDialog() { Title = "Aborted", Content = "File " + file.Name + " couldn't be saved.", CloseButtonText = "OK" };
                         await dlg.ShowAsync();
                         return;
                     }
@@ -474,26 +474,23 @@ namespace EmlReader
 
         }
 
-        private async void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            try
-            {
-                var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var clientHeight = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return clientHeight.toString();})()" });
-                double height = double.Parse(_height);
-                MailView.Margin = new Thickness(32, 0 - height, 32, 0);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-            }
+            SetMargin();
         }
 
-        private async void MailView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        private void MailView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        {
+            SetMargin();
+        }
+
+        private async void SetMargin()
         {
             try
             {
                 var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var clientHeight = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return clientHeight.toString();})()" });
-                double height = double.Parse(_height);
+                double height;
+                _ = double.TryParse(_height, out height);
                 MailView.Margin = new Thickness(32, 0 - height, 32, 0);
             }
             catch (Exception ex)
