@@ -2,6 +2,7 @@
 using MimeKit;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -120,12 +121,13 @@ namespace EmlReader
 
         void Render()
         {
-            string printheader = "<p class=\"printheader\" style=\"background: white; color: black;\">" +
-                "FROM: " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
-                "DATE: " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
-                "TO: " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
-                "CC: " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
-                "SUBJECT: " + HttpUtility.HtmlEncode(message.Subject.ToString()) +
+            string printheader = "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\">" +
+                "<b>FROM:</b> " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
+                "<b>DATE:</b> " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
+                "<b>TO:</b> " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
+                "<b>CC:</b> " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
+                "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
+                " </br>" + 
                 "</p>";
 
             var visitor = new HtmlPreviewVisitor(MailView, printheader);
@@ -470,6 +472,34 @@ namespace EmlReader
         private void DonationButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private async void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            try
+            {
+                var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var clientHeight = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return clientHeight.toString();})()" });
+                double height = double.Parse(_height);
+                MailView.Margin = new Thickness(32, 0 - height, 32, 0);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
+        private async void MailView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        {
+            try
+            {
+                var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var clientHeight = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return clientHeight.toString();})()" });
+                double height = double.Parse(_height);
+                MailView.Margin = new Thickness(32, 0 - height, 32, 0);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         //// https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper

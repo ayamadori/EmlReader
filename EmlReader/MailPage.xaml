@@ -8,7 +8,8 @@
     mc:Ignorable="d"
     xmlns:data="using:MimeKit"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    RequestedTheme="Light">
+    RequestedTheme="Light"
+    SizeChanged="Page_SizeChanged">
 
     <!--Need to add [xmlns:data="using:MimeKit"] to use x:Bind in DataTeplate-->
     <Page.Resources>
@@ -87,39 +88,42 @@
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
-        <StackPanel x:Name="HeaderPanel" Grid.Row="1" Margin="36,0">
-            <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,12"/>
-            <StackPanel Orientation="Horizontal" Margin="0,8">
-                <muxc:PersonPicture x:Name="fromPersonPicture" Width="40"/>
-                <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
-                    <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold"/>
-                    <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="Gray"/>
+        <WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting" NavigationCompleted="MailView_NavigationCompleted" DefaultBackgroundColor="White"/>
+
+        <Border x:Name="HeaderPanel" Grid.Row="1" Background="White">
+            <StackPanel Margin="36,0">
+                <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,12"/>
+                <StackPanel Orientation="Horizontal" Margin="0,8">
+                    <muxc:PersonPicture x:Name="fromPersonPicture" Width="40"/>
+                    <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
+                        <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold"/>
+                        <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="Gray"/>
+                    </StackPanel>
                 </StackPanel>
+                <Grid x:Name="ToArea" Margin="0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="48"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="AddressBlock" Style="{StaticResource CaptionTextBlockStyle}" Grid.Column="0" Height="20" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+                    <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
+                        <Interactivity:Interaction.Behaviors>
+                            <Core:DataTriggerBehavior Binding="{Binding ElementName=AddressBlock.ActualWidth}" Value="{Binding ElementName=AddressBlock.Width}" ComparisonCondition="GreaterThan">
+                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=HeaderExpandButton}" PropertyName="Visibility" Value=""/>
+                            </Core:DataTriggerBehavior>
+                        </Interactivity:Interaction.Behaviors>
+                        <Button.Content>
+                            <!--ScrollChevronDownLegacy-->
+                            <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
             </StackPanel>
-            <Grid x:Name="ToArea" Margin="0,8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="48"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="AddressBlock" Style="{StaticResource CaptionTextBlockStyle}" Grid.Column="0" Height="20" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
-                <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
-                    <Interactivity:Interaction.Behaviors>
-                        <Core:DataTriggerBehavior Binding="{Binding ElementName=AddressBlock.ActualWidth}" Value="{Binding ElementName=AddressBlock.Width}" ComparisonCondition="GreaterThan">
-                            <Core:ChangePropertyAction TargetObject="{Binding ElementName=HeaderExpandButton}" PropertyName="Visibility" Value=""/>
-                        </Core:DataTriggerBehavior>
-                    </Interactivity:Interaction.Behaviors>
-                    <Button.Content>
-                        <!--ScrollChevronDownLegacy-->
-                        <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
-                    </Button.Content>
-                </Button>
-            </Grid>
-        </StackPanel>
-        <StackPanel x:Name="AttachmentArea" Grid.Row="2">
+        </Border>
+        <StackPanel x:Name="AttachmentArea" Grid.Row="2" Background="White">
             <Button x:Name="SaveAllButton" Margin="30,0" Content="Save all attachments" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}"/>
             <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
         </StackPanel>
-        <WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
 
     </Grid>
 
