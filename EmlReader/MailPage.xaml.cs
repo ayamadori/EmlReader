@@ -57,10 +57,12 @@ namespace EmlReader
                 {
                     Message = MimeMessage.Load(_stream.AsStreamForRead());
                 }
-                catch
+                catch (Exception ex)
                 {
                     var dlg = new ContentDialog() { Title = "Unsupported file", Content = "The app can NOT open this file.", CloseButtonText = "OK" };
                     await dlg.ShowAsync();
+
+                    Debug.WriteLine(ex.ToString());
 
                     // Exit app
                     Windows.UI.Xaml.Application.Current.Exit();
@@ -130,13 +132,13 @@ namespace EmlReader
         // Hook navigation
         private async void MailView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
         {
-            Uri uri = new Uri(args.Uri);
-            if (uri != null && uri.AbsoluteUri.StartsWith("http"))
+            string uri = args.Uri;
+            if (uri != null && uri.StartsWith("http"))
             {
                 // Cancel navigation
                 args.Cancel = true;
                 // Launch browser
-                bool success = await Launcher.LaunchUriAsync(uri);
+                bool success = await Launcher.LaunchUriAsync(new Uri(uri));
             }
         }
 
@@ -498,7 +500,7 @@ namespace EmlReader
                 await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";");
                 // Get header height
                 //var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h.toString();})()" });
-                var _height = await MailView.ExecuteScriptAsync("(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h.toString();})()");
+                var _height = await MailView.ExecuteScriptAsync("(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h;})()");
                 double height;
                 _ = double.TryParse(_height, out height);
                 // Set margin of webview

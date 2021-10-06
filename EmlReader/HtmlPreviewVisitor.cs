@@ -31,6 +31,7 @@ using MimeKit;
 using MimeKit.Text;
 using MimeKit.Tnef;
 using Microsoft.UI.Xaml.Controls;
+using System;
 
 namespace EmlReader
 {
@@ -52,7 +53,6 @@ namespace EmlReader
         public HtmlPreviewVisitor(WebView2 webView)
         {
             this.webView = webView;
-            this.webView.EnsureCoreWebView2Async();
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace EmlReader
             }
         }
 
-        protected override void VisitTextPart(TextPart entity)
+        protected async override void VisitTextPart(TextPart entity)
         {
             TextConverter converter;
 
@@ -149,6 +149,7 @@ namespace EmlReader
 
             //webView.WebResourceRequested += client.ShouldInterceptRequest;
             //webView.CoreWebView2.WebResourceRequested += client.ShouldInterceptRequest;
+            await webView.EnsureCoreWebView2Async();
             webView.NavigateToString(html);
             renderedBody = true;
         }
