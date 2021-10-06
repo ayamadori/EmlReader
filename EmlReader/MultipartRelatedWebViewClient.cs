@@ -50,12 +50,12 @@ namespace EmlReader
 			this.stack = new List<MultipartRelated> (stack);
 		}
 
-        public void ShouldInterceptRequest(WebView view, WebViewWebResourceRequestedEventArgs args)
-		//public void ShouldInterceptRequest(WebView2 view, CoreWebView2WebResourceRequestedEventArgs args)
-		{ 
-			var uri = args.Request.RequestUri;
-			//var uri = new Uri(args.Request.Uri);
-			int index;
+        //public void ShouldInterceptRequest(WebView view, WebViewWebResourceRequestedEventArgs args)
+        public async void ShouldInterceptRequest(CoreWebView2 view, CoreWebView2WebResourceRequestedEventArgs args)
+        {
+            //var uri = args.Request.RequestUri;
+            var uri = new Uri(args.Request.Uri);
+            int index;
 
 			// walk up our multipart/related stack looking for the MIME part for the requested URL
 			for (int i = stack.Count - 1; i >= 0; i--) {
@@ -67,13 +67,18 @@ namespace EmlReader
 				if (related[index] is MimePart part) {
 					var mimeType = part.ContentType.MimeType;
 					var charset = part.ContentType.Charset;
-					var stream = part.Content.Open ();
+					var stream = part.Content.Open();
 
-                    // construct our response containing the decoded content
-                    HttpResponseMessage _response = new HttpResponseMessage();
-                    //CoreWebView2WebResourceResponse _response = new CoreWebView2WebResourceResponse();
-                    //_response.Content = new HttpStreamContent(stream.AsInputStream());
-                    args.Response = _response;
+					// construct our response containing the decoded content
+					//HttpResponseMessage _response = new HttpResponseMessage();
+					//_response.Content = new HttpStreamContent(stream.AsInputStream());
+					//args.Response = _response;
+					CoreWebView2Environment cwv2e = await CoreWebView2Environment.CreateAsync();
+					// https://stackoverflow.com/questions/7669311/is-there-a-way-to-convert-a-system-io-stream-to-a-windows-storage-streams-irandovar memStream = new MemoryStream();
+					var memStream = new MemoryStream();
+					await stream.CopyToAsync(memStream);
+					memStream.Position = 0;
+					args.Response = cwv2e.CreateWebResourceResponse(memStream.AsRandomAccessStream(), 200, "OK", $"Content-Type: {mimeType}; charset={charset}");                   
 				}
 			}
 		}

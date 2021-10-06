@@ -32,6 +32,7 @@ using MimeKit.Text;
 using MimeKit.Tnef;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using Microsoft.Web.WebView2.Core;
 
 namespace EmlReader
 {
@@ -148,8 +149,9 @@ namespace EmlReader
             html = Regex.Replace(html, "<[Bb][Oo][Dd][Yy].*?>", "$0" + "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\"></p>");
 
             //webView.WebResourceRequested += client.ShouldInterceptRequest;
-            //webView.CoreWebView2.WebResourceRequested += client.ShouldInterceptRequest;
             await webView.EnsureCoreWebView2Async();
+            webView.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
+            webView.CoreWebView2.WebResourceRequested += client.ShouldInterceptRequest;
             webView.NavigateToString(html);
             renderedBody = true;
         }
