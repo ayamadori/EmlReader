@@ -26,10 +26,11 @@
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Microsoft.UI.Xaml.Controls;
 using MimeKit;
 using MimeKit.Text;
 using MimeKit.Tnef;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace EmlReader
 {
@@ -40,15 +41,18 @@ namespace EmlReader
     {
         readonly List<MultipartRelated> stack = new List<MultipartRelated>();
         readonly List<MimeEntity> attachments = new List<MimeEntity>();
-        readonly WebView webView;
+        //readonly WebView webView;
+        readonly WebView2 webView;
         bool renderedBody;
 
         /// <summary>
         /// Creates a new HtmlPreviewVisitor.
         /// </summary>
-        public HtmlPreviewVisitor(WebView webView)
+        //public HtmlPreviewVisitor(WebView webView)
+        public HtmlPreviewVisitor(WebView2 webView)
         {
             this.webView = webView;
+            this.webView.EnsureCoreWebView2Async();
         }
 
         /// <summary>
@@ -143,7 +147,8 @@ namespace EmlReader
             // Add print header
             html = Regex.Replace(html, "<[Bb][Oo][Dd][Yy].*?>", "$0" + "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\"></p>");
 
-            webView.WebResourceRequested += client.ShouldInterceptRequest;
+            //webView.WebResourceRequested += client.ShouldInterceptRequest;
+            //webView.CoreWebView2.WebResourceRequested += client.ShouldInterceptRequest;
             webView.NavigateToString(html);
             renderedBody = true;
         }

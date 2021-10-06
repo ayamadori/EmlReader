@@ -88,7 +88,8 @@
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
-        <WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
+        <!--<WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>-->
+        <muxc:WebView2 x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
 
         <Border x:Name="HeaderPanel" Grid.Row="1" Background="White">
             <StackPanel Margin="36,0">

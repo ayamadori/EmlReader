@@ -1,4 +1,6 @@
 ﻿//using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -126,9 +128,9 @@ namespace EmlReader
         }
 
         // Hook navigation
-        private async void MailView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        private async void MailView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
         {
-            Uri uri = args.Uri;
+            Uri uri = new Uri(args.Uri);
             if (uri != null && uri.AbsoluteUri.StartsWith("http"))
             {
                 // Cancel navigation
@@ -476,7 +478,7 @@ namespace EmlReader
 
         //private async void SetMargin()
         //{
-            
+
         //}
 
         private async void SaveAsPdfButton_Click(object sender, RoutedEventArgs e)
@@ -492,9 +494,11 @@ namespace EmlReader
             try
             {
                 // Insert header
-                await MailView.InvokeScriptAsync("eval", new string[] { $"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";" });
+                //await MailView.InvokeScriptAsync("eval", new string[] { $"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";" });
+                await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";");
                 // Get header height
-                var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h.toString();})()" });
+                //var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h.toString();})()" });
+                var _height = await MailView.ExecuteScriptAsync("(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h.toString();})()");
                 double height;
                 _ = double.TryParse(_height, out height);
                 // Set margin of webview

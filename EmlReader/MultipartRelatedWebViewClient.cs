@@ -24,8 +24,11 @@
 // THE SOFTWARE.
 //
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using MimeKit;
 using Windows.UI.Xaml.Controls;
 using Windows.Web.Http;
@@ -47,9 +50,11 @@ namespace EmlReader
 			this.stack = new List<MultipartRelated> (stack);
 		}
 
-		public void ShouldInterceptRequest (WebView view, WebViewWebResourceRequestedEventArgs args)
-		{
+        public void ShouldInterceptRequest(WebView view, WebViewWebResourceRequestedEventArgs args)
+		//public void ShouldInterceptRequest(WebView2 view, CoreWebView2WebResourceRequestedEventArgs args)
+		{ 
 			var uri = args.Request.RequestUri;
+			//var uri = new Uri(args.Request.Uri);
 			int index;
 
 			// walk up our multipart/related stack looking for the MIME part for the requested URL
@@ -64,10 +69,11 @@ namespace EmlReader
 					var charset = part.ContentType.Charset;
 					var stream = part.Content.Open ();
 
-					// construct our response containing the decoded content
-					HttpResponseMessage _response = new HttpResponseMessage();
-					_response.Content = new HttpStreamContent(stream.AsInputStream());
-					args.Response = _response;
+                    // construct our response containing the decoded content
+                    HttpResponseMessage _response = new HttpResponseMessage();
+                    //CoreWebView2WebResourceResponse _response = new CoreWebView2WebResourceResponse();
+                    //_response.Content = new HttpStreamContent(stream.AsInputStream());
+                    args.Response = _response;
 				}
 			}
 		}
