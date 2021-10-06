@@ -141,7 +141,7 @@ namespace EmlReader
             var html = converter.Convert(entity.Text);
 
             // Add print header
-            html = Regex.Replace(html, "<[Bb][Oo][Dd][Yy].*?>", "$0" + "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\"/>");
+            html = Regex.Replace(html, "<[Bb][Oo][Dd][Yy].*?>", "$0" + "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\"></p>");
 
             webView.WebResourceRequested += client.ShouldInterceptRequest;
             webView.NavigateToString(html);

@@ -122,7 +122,6 @@ namespace EmlReader
         void Render()
         {
             var visitor = new HtmlPreviewVisitor(MailView);
-
             message.Accept(visitor);
         }
 
