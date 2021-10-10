@@ -27,18 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.Web.WebView2.Core;
 using MimeKit;
-using Windows.UI.Xaml.Controls;
-using Windows.Web.Http;
+using Microsoft.Web.WebView2.Core;
 
 namespace EmlReader
 {
-	/// <summary>
-	/// A WebViewClient based on a multipart/related stack.
-	/// </summary>
-	public class MultipartRelatedWebViewClient
+    /// <summary>
+    /// A WebViewClient based on a multipart/related stack.
+    /// </summary>
+    public class MultipartRelatedWebViewClient
 	{
 		readonly IList<MultipartRelated> stack;
 
@@ -50,7 +47,6 @@ namespace EmlReader
 			this.stack = new List<MultipartRelated> (stack);
 		}
 
-        //public void ShouldInterceptRequest(WebView view, WebViewWebResourceRequestedEventArgs args)
         public async void ShouldInterceptRequest(CoreWebView2 view, CoreWebView2WebResourceRequestedEventArgs args)
         {
             //var uri = args.Request.RequestUri;
@@ -70,9 +66,6 @@ namespace EmlReader
 					var stream = part.Content.Open();
 
 					// construct our response containing the decoded content
-					//HttpResponseMessage _response = new HttpResponseMessage();
-					//_response.Content = new HttpStreamContent(stream.AsInputStream());
-					//args.Response = _response;
 					CoreWebView2Environment cwv2e = await CoreWebView2Environment.CreateAsync();
 					// https://stackoverflow.com/questions/7669311/is-there-a-way-to-convert-a-system-io-stream-to-a-windows-storage-streams-irandovar memStream = new MemoryStream();
 					var memStream = new MemoryStream();

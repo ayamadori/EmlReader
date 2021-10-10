@@ -88,8 +88,13 @@
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
-        <!--<WebView x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>-->
         <muxc:WebView2 x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
+        <muxc:ProgressRing x:Name="Progress" Width="100" Height="100" Grid.Row="3" IsActive="False"/>
+        <muxc:InfoBar x:Name="NotificationBar" Grid.Row="3" Margin="0,24,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <muxc:InfoBar.ActionButton>
+                <Button Content="Open" Click="NotificationBar_Click" />
+            </muxc:InfoBar.ActionButton>
+        </muxc:InfoBar>
 
         <Border x:Name="HeaderPanel" Grid.Row="1" Background="White">
             <StackPanel Margin="36,0">

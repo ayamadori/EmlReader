@@ -30,7 +30,6 @@ using Microsoft.UI.Xaml.Controls;
 using MimeKit;
 using MimeKit.Text;
 using MimeKit.Tnef;
-using Microsoft.UI.Xaml.Controls;
 using System;
 using Microsoft.Web.WebView2.Core;
 
@@ -43,14 +42,12 @@ namespace EmlReader
     {
         readonly List<MultipartRelated> stack = new List<MultipartRelated>();
         readonly List<MimeEntity> attachments = new List<MimeEntity>();
-        //readonly WebView webView;
         readonly WebView2 webView;
         bool renderedBody;
 
         /// <summary>
         /// Creates a new HtmlPreviewVisitor.
         /// </summary>
-        //public HtmlPreviewVisitor(WebView webView)
         public HtmlPreviewVisitor(WebView2 webView)
         {
             this.webView = webView;
@@ -148,7 +145,6 @@ namespace EmlReader
             // Add print header
             html = Regex.Replace(html, "<[Bb][Oo][Dd][Yy].*?>", "$0" + "<p id=\"emlReaderPrintHeader\" style=\"background: white; color: black;\"></p>");
 
-            //webView.WebResourceRequested += client.ShouldInterceptRequest;
             await webView.EnsureCoreWebView2Async();
             webView.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
             webView.CoreWebView2.WebResourceRequested += client.ShouldInterceptRequest;

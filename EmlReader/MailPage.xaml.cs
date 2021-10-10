@@ -37,8 +37,8 @@ namespace EmlReader
     public sealed partial class MailPage : Page
     {
         MimeMessage message;
-        //PrintHelper printHelper;
         StorageFile file;
+        private StorageFile pdfdocument;
 
         public MailPage()
         {
@@ -468,21 +468,6 @@ namespace EmlReader
 
         }
 
-        //private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
-        //{
-        //    SetMargin();
-        //}
-
-        //private void MailView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        //{
-        //    SetMargin();
-        //}
-
-        //private async void SetMargin()
-        //{
-
-        //}
-
         private async void SaveAsPdfButton_Click(object sender, RoutedEventArgs e)
         {
             string printheader =
@@ -493,175 +478,87 @@ namespace EmlReader
                 "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
                 " </br>";
 
+            Progress.IsActive = true;
+            SaveAsPdfButton.IsEnabled = false;
+
+            _ = MailView.EnsureCoreWebView2Async();
+
+            // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-save-a-file-with-a-picker
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("PDF document", new List<string>() { ".pdf" });
+            // Default file name if the user does not type one in or select a file to replace
+            // The filename must NOT include extention
+            savePicker.SuggestedFileName = message.Subject.ToString();
+
+            pdfdocument = await savePicker.PickSaveFileAsync();
+            if (pdfdocument == null)
+            {
+                Progress.IsActive = false;
+                SaveAsPdfButton.IsEnabled = true;
+                return;
+            }
+
             try
             {
                 // Insert header
-                //await MailView.InvokeScriptAsync("eval", new string[] { $"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";" });
                 await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";");
                 // Get header height
-                //var _height = await MailView.InvokeScriptAsync("eval", new string[] { "(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h.toString();})()" });
                 var _height = await MailView.ExecuteScriptAsync("(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h;})()");
                 double height;
                 _ = double.TryParse(_height, out height);
                 // Set margin of webview
-                MailView.Margin = new Thickness(32, 0 - height, 32, 0);
+                MailView.Margin = new Thickness(28, 0 - height, 28, 0);
+
+                // Print PDF document to temp folder
+                bool success = await MailView.CoreWebView2.PrintToPdfAsync(ApplicationData.Current.TemporaryFolder.Path + "\\temp.pdf", default);
+
+                // Load temporary file as StorageFile
+                StorageFile tempfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///temp/temp.pdf"));
+                if (success && tempfile != null)
+                {
+                    await tempfile.CopyAndReplaceAsync(pdfdocument);
+                    await tempfile.DeleteAsync();
+
+                    NotificationBar.Severity = InfoBarSeverity.Success;
+                    NotificationBar.Title = "Success";
+                    NotificationBar.Message = pdfdocument.Name + " is saved";
+                    NotificationBar.ActionButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    NotificationBar.Severity = InfoBarSeverity.Error;
+                    NotificationBar.Title = "Error";
+                    NotificationBar.Message = "PDF document couldn't be saved";
+                    NotificationBar.ActionButton.Visibility = Visibility.Collapsed;
+                }
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
             }
+            finally
+            {
+                // Remove header
+                await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"\";");
+                // Reset margin of webview
+                MailView.Margin = new Thickness(28, 12, 28, 0);
 
+                NotificationBar.IsOpen = true;
+                Progress.IsActive = false;
+                SaveAsPdfButton.IsEnabled = true;
+            }
         }
 
-        //// https://docs.microsoft.com/en-us/windows/communitytoolkit/helpers/printhelper
-        //private async void PrintButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //// https://stackoverflow.com/questions/39033318/how-to-save-webviewbrush-as-image-uwp-universal
-        //    var pages = await GetWebPages(MailView, new Windows.Foundation.Size(210, 297)); // A4 size
+        private async void NotificationBar_Click(object sender, RoutedEventArgs e)
+        {
+            // Launch the retrieved file
+            _ = await Launcher.LaunchFileAsync(pdfdocument);
+            NotificationBar.IsOpen = false;
+        }
 
-        //    // Create a new PrintHelper instance
-        //    // "container" is a XAML panel that will be used to host printable control.
-        //    // It needs to be in your visual tree but can be hidden with Opacity = 0
-        //    printHelper = new PrintHelper(Container);
-
-        //    // Add controls that you want to print
-        //    foreach (FrameworkElement page in pages)
-        //    {
-        //        printHelper.AddFrameworkElementToPrint(page);
-        //    }
-
-        //    // Connect to relevant events
-        //    printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
-        //    printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
-        //    printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
-
-        //    // Start printing process
-        //    await printHelper.ShowPrintUIAsync(file.DisplayName);
-        //}
-
-        //// Event handlers
-
-        //private void PrintHelper_OnPrintSucceeded()
-        //{
-        //    printHelper.Dispose();
-        //}
-
-        //private void PrintHelper_OnPrintFailed()
-        //{
-        //    printHelper.Dispose();
-        //}
-
-        //private void PrintHelper_OnPrintCanceled()
-        //{
-        //    printHelper.Dispose();
-        //}
-
-        //public async Task<WebViewBrush> GetWebViewBrush(WebView MailView)
-        //{
-        //    // resize width to content
-        //    double originalWidth = MailView.Width;
-        //    var widthString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
-        //    int contentWidth;
-
-        //    if (!int.TryParse(widthString, out contentWidth))
-        //    {
-        //        throw new Exception(string.Format("failure/width:{0}", widthString));
-        //    }
-
-        //    MailView.Width = contentWidth;
-
-        //    // resize height to content
-        //    double originalHeight = MailView.Height;
-        //    var heightString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
-        //    int contentHeight;
-
-        //    if (!int.TryParse(heightString, out contentHeight))
-        //    {
-        //        throw new Exception(string.Format("failure/height:{0}", heightString));
-        //    }
-
-        //    MailView.Height = contentHeight;
-
-        //    // create brush
-        //    var originalVisibilty = MailView.Visibility;
-        //    MailView.Visibility = Windows.UI.Xaml.Visibility.Visible;
-
-        //    WebViewBrush brush = new WebViewBrush
-        //    {
-        //        SourceName = MailView.Name,
-        //        Stretch = Stretch.Uniform
-        //    };
-
-        //    brush.Redraw();
-
-        //    // reset, return
-        //    MailView.Width = originalWidth;
-        //    MailView.Height = originalHeight;
-        //    MailView.Visibility = originalVisibilty;
-
-        //    return brush;
-        //}
-
-        //public async Task<IEnumerable<FrameworkElement>> GetWebPages(WebView MailView, Windows.Foundation.Size page)
-        //{
-        //    // ask the content its width
-        //    var widthString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
-        //    int contentWidth;
-
-        //    if (!int.TryParse(widthString, out contentWidth))
-        //    {
-        //        throw new Exception(string.Format("failure/width:{0}", widthString));
-        //    }
-
-        //    MailView.Width = contentWidth;
-
-        //    // ask the content its height
-        //    var heightString = await MailView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
-        //    int contentHeight;
-
-        //    if (!int.TryParse(heightString, out contentHeight))
-        //    {
-        //        throw new Exception(string.Format("failure/height:{0}", heightString));
-        //    }
-
-        //    MailView.Height = contentHeight;
-
-        //    // how many pages will there be?
-        //    double scale = page.Width / contentWidth;
-        //    double scaledHeight = (contentHeight * scale);
-        //    double pageCount = (double)scaledHeight / page.Height;
-        //    pageCount = pageCount + ((pageCount > (int)pageCount) ? 1 : 0);
-
-        //    // create the pages
-        //    var pages = new List<Windows.UI.Xaml.Shapes.Rectangle>();
-
-        //    for (int i = 0; i < (int)pageCount; i++)
-        //    {
-        //        var translateY = -page.Height * i;
-
-        //        var rectanglePage = new Windows.UI.Xaml.Shapes.Rectangle
-        //        {
-        //            Height = page.Height,
-        //            Width = page.Width,
-        //            Margin = new Thickness(5),
-        //            Tag = new TranslateTransform { Y = translateY },
-        //        };
-
-        //        rectanglePage.Loaded += (async (s, e) =>
-        //        {
-        //            var subRectangle = s as Windows.UI.Xaml.Shapes.Rectangle;
-        //            var subBrush = await GetWebViewBrush(MailView);
-        //            subBrush.Stretch = Stretch.UniformToFill;
-        //            subBrush.AlignmentY = AlignmentY.Top;
-        //            subBrush.Transform = subRectangle.Tag as TranslateTransform;
-        //            subRectangle.Fill = subBrush;
-        //        });
-
-        //        pages.Add(rectanglePage);
-        //    }
-
-        //    return pages;
-        //}
     }
 }
 
