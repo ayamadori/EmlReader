@@ -1,5 +1,4 @@
-﻿//using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using MimeKit;
 using System;
@@ -93,7 +92,6 @@ namespace EmlReader
 
                 subjectTextBlock.Text = message.Subject;
 
-                InternetAddressList addressList = new InternetAddressList();
                 AddressBlock.Text = "";
 
                 // Set Address

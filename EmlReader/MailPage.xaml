@@ -64,11 +64,10 @@
         <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
             <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
             <AppBarButton Icon="MailReplyAll" Label="Reply all" Click="ReplyAllButton_Click"/>
-            <!--<AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>-->
             <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
                 <AppBarButton.Flyout>
                     <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <MenuFlyoutItem x:Name="SaveAsPdfButton" Text="Seva as PDF" Icon="Save" Click="SaveAsPdfButton_Click"/>
+                        <MenuFlyoutItem x:Name="SaveAsPdfButton" Text="Save as PDF" Icon="Save" Click="SaveAsPdfButton_Click"/>
                         <MenuFlyoutItem x:Name="DonationButton" Text="Donation" Icon="Like" Click="DonationButton_Click"/>
                         <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
                             <MenuFlyoutItem.Icon>
@@ -79,6 +78,7 @@
                 </AppBarButton.Flyout>
             </AppBarButton>
             <!--<CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="SaveAsPdfButton" Label="Save as PDF" Icon="Save" Click="SaveAsPdfButton_Click"/>
                 <AppBarButton x:Name="DonationButton" Label="Donation" Icon="Like" Click="DonationButton_Click"/>
                 <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
                     <AppBarButton.Icon>
