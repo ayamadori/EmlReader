@@ -87,12 +87,6 @@
                 </AppBarButton>
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
-        <muxc:InfoBar x:Name="NotificationBar" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <muxc:InfoBar.ActionButton>
-                <Button Content="Open" Click="NotificationBar_Click" />
-            </muxc:InfoBar.ActionButton>
-        </muxc:InfoBar>
-
 
         <muxc:WebView2 x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
         <muxc:ProgressRing x:Name="Progress" Width="100" Height="100" Grid.Row="3" IsActive="False"/>
@@ -131,6 +125,12 @@
             <Button x:Name="SaveAllButton" Margin="30,0" Content="Save all attachments" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}"/>
             <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
         </StackPanel>
+
+        <muxc:InfoBar x:Name="NotificationBar" Grid.Row="0" Grid.RowSpan="2" Margin="0,4,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <muxc:InfoBar.ActionButton>
+                <Button Content="Open" Click="NotificationBar_Click" />
+            </muxc:InfoBar.ActionButton>
+        </muxc:InfoBar>
 
     </Grid>
 
