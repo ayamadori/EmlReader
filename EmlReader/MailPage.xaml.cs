@@ -36,6 +36,7 @@ namespace EmlReader
     public sealed partial class MailPage : Page
     {
         MimeMessage message;
+        string filename;
  
         public MailPage()
         {
@@ -48,6 +49,7 @@ namespace EmlReader
 
             // Load the message
             StorageFile file = e.Parameter as StorageFile;
+            filename = file.Name.Remove(file.Name.LastIndexOf("."));
             using (var _stream = await file.OpenReadAsync())
             {
                 try
@@ -491,13 +493,11 @@ namespace EmlReader
                 // Set margin of webview
                 MailView.Margin = new Thickness(28, 0 - height, 28, 0);
 
-                string filename = message.Subject.ToString();
-
                 // Print PDF document to temp folder
-                bool success = await MailView.CoreWebView2.PrintToPdfAsync($"{ApplicationData.Current.TemporaryFolder.Path}\\{filename}.pdf", default);
+                bool success = await MailView.CoreWebView2.PrintToPdfAsync($"{ApplicationData.Current.TemporaryFolder.Path}\\{this.filename}.pdf", default);
 
                 // Load temporary file as StorageFile
-                StorageFile tempfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appdata:///temp/{filename}.pdf"));
+                StorageFile tempfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appdata:///temp/{this.filename}.pdf"));
                 if (success && tempfile != null)
                 {
                     // Launch the retrieved file
@@ -511,6 +511,7 @@ namespace EmlReader
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
+                NotificationBar.IsOpen = true;
             }
             finally
             {
