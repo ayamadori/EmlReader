@@ -67,7 +67,11 @@
             <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
                 <AppBarButton.Flyout>
                     <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <MenuFlyoutItem x:Name="SaveAsPdfButton" Text="Save as PDF" Icon="Save" Click="SaveAsPdfButton_Click"/>
+                        <MenuFlyoutItem x:Name="OpenAsPdfButton" Text="Open as PDF" Click="OpenAsPdfButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xEA90;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
                         <MenuFlyoutItem x:Name="DonationButton" Text="Donation" Icon="Like" Click="DonationButton_Click"/>
                         <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
                             <MenuFlyoutItem.Icon>
@@ -126,11 +130,7 @@
             <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
         </StackPanel>
 
-        <muxc:InfoBar x:Name="NotificationBar" Grid.Row="0" Grid.RowSpan="2" Margin="0,4,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <muxc:InfoBar.ActionButton>
-                <Button Content="Open" Click="NotificationBar_Click" />
-            </muxc:InfoBar.ActionButton>
-        </muxc:InfoBar>
+        <muxc:InfoBar x:Name="NotificationBar" Grid.Row="0" Grid.RowSpan="2" Margin="0,4,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Severity="Error" Title="Error" Message="PDF document couldn't be saved"/>
 
     </Grid>
 

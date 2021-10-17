@@ -36,9 +36,7 @@ namespace EmlReader
     public sealed partial class MailPage : Page
     {
         MimeMessage message;
-        StorageFile file;
-        private StorageFile pdfdocument;
-
+ 
         public MailPage()
         {
             InitializeComponent();
@@ -49,7 +47,7 @@ namespace EmlReader
             base.OnNavigatedTo(e);
 
             // Load the message
-            file = e.Parameter as StorageFile;
+            StorageFile file = e.Parameter as StorageFile;
             using (var _stream = await file.OpenReadAsync())
             {
                 try
@@ -410,6 +408,7 @@ namespace EmlReader
                 // (including other sub-folder contents)
                 Windows.Storage.AccessCache.StorageApplicationPermissions.
                 FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                StorageFile file;
                 foreach (MimePart _item in message.Attachments)
                 {
                     file = await folder.CreateFileAsync(_item.FileName, CreationCollisionOption.GenerateUniqueName);
@@ -466,7 +465,7 @@ namespace EmlReader
 
         }
 
-        private async void SaveAsPdfButton_Click(object sender, RoutedEventArgs e)
+        private async void OpenAsPdfButton_Click(object sender, RoutedEventArgs e)
         {
             string printheader =
                 "<b>FROM:</b> " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
@@ -477,26 +476,9 @@ namespace EmlReader
                 " </br>";
 
             Progress.IsActive = true;
-            SaveAsPdfButton.IsEnabled = false;
+            OpenAsPdfButton.IsEnabled = false;
 
             _ = MailView.EnsureCoreWebView2Async();
-
-            // https://docs.microsoft.com/en-us/windows/uwp/files/quickstart-save-a-file-with-a-picker
-            var savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            // Dropdown of file types the user can save the file as
-            savePicker.FileTypeChoices.Add("PDF document", new List<string>() { ".pdf" });
-            // Default file name if the user does not type one in or select a file to replace
-            // The filename must NOT include extention
-            savePicker.SuggestedFileName = message.Subject.ToString();
-
-            pdfdocument = await savePicker.PickSaveFileAsync();
-            if (pdfdocument == null)
-            {
-                Progress.IsActive = false;
-                SaveAsPdfButton.IsEnabled = true;
-                return;
-            }
 
             try
             {
@@ -509,29 +491,22 @@ namespace EmlReader
                 // Set margin of webview
                 MailView.Margin = new Thickness(28, 0 - height, 28, 0);
 
+                string filename = message.Subject.ToString();
+
                 // Print PDF document to temp folder
-                bool success = await MailView.CoreWebView2.PrintToPdfAsync(ApplicationData.Current.TemporaryFolder.Path + "\\temp.pdf", default);
+                bool success = await MailView.CoreWebView2.PrintToPdfAsync($"{ApplicationData.Current.TemporaryFolder.Path}\\{filename}.pdf", default);
 
                 // Load temporary file as StorageFile
-                StorageFile tempfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///temp/temp.pdf"));
+                StorageFile tempfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appdata:///temp/{filename}.pdf"));
                 if (success && tempfile != null)
                 {
-                    await tempfile.CopyAndReplaceAsync(pdfdocument);
-                    await tempfile.DeleteAsync();
-
-                    NotificationBar.Severity = InfoBarSeverity.Success;
-                    NotificationBar.Title = "Success";
-                    NotificationBar.Message = pdfdocument.Name + " is saved";
-                    NotificationBar.ActionButton.Visibility = Visibility.Visible;
+                    // Launch the retrieved file
+                    _ = await Launcher.LaunchFileAsync(tempfile);
                 }
                 else
                 {
-                    NotificationBar.Severity = InfoBarSeverity.Error;
-                    NotificationBar.Title = "Error";
-                    NotificationBar.Message = "PDF document couldn't be saved";
-                    NotificationBar.ActionButton.Visibility = Visibility.Collapsed;
+                    NotificationBar.IsOpen = true;
                 }
-
             }
             catch (Exception ex)
             {
@@ -544,19 +519,10 @@ namespace EmlReader
                 // Reset margin of webview
                 MailView.Margin = new Thickness(28, 12, 28, 0);
 
-                NotificationBar.IsOpen = true;
                 Progress.IsActive = false;
-                SaveAsPdfButton.IsEnabled = true;
+                OpenAsPdfButton.IsEnabled = true;
             }
         }
-
-        private async void NotificationBar_Click(object sender, RoutedEventArgs e)
-        {
-            // Launch the retrieved file
-            _ = await Launcher.LaunchFileAsync(pdfdocument);
-            NotificationBar.IsOpen = false;
-        }
-
     }
 }
 
