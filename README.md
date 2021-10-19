@@ -4,7 +4,7 @@ Open EML files(*.eml).
 https://www.microsoft.com/store/apps/9nblggh5k5vp
 
 ## Notice
-- If you use the newest version of Windows 10, you DON'T HAVE TO use this app because EML file can be opened with the Outlook Mail app;)
+- If you use the newest version of Windows 10, you DON'T HAVE TO use this app because EML file can be opened with the Outlook Mail app ;)
 
 ## Feature
 - Open EML files(*.eml).

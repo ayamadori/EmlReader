@@ -18,6 +18,7 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -55,6 +56,7 @@ namespace EmlReader
                 try
                 {
                     Message = MimeMessage.Load(_stream.AsStreamForRead());
+                    ApplicationView.GetForCurrentView().Title = Message.Subject;
                 }
                 catch (Exception ex)
                 {
