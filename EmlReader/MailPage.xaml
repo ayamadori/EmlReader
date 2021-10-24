@@ -130,7 +130,7 @@
             <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
         </StackPanel>
 
-        <muxc:InfoBar x:Name="NotificationBar" Grid.Row="0" Grid.RowSpan="2" Margin="0,4,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Severity="Error" Title="Error" Message="PDF document couldn't be saved"/>
+        <muxc:InfoBar x:Name="NotificationBar" Grid.Row="0" Grid.RowSpan="2" Margin="0,4,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Severity="Error" Title="Error" Message="PDF file couldn't be opened"/>
 
     </Grid>
 
