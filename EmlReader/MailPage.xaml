@@ -72,7 +72,7 @@
                                 <FontIcon Glyph="&#xEA90;"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="DonationButton" Text="Donation" Icon="Like" Click="DonationButton_Click"/>
+                        <MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>
                         <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE946;"/>

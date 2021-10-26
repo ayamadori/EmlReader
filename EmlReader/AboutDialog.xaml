@@ -32,6 +32,14 @@
                     </StackPanel>
                 </Button.Content>
             </Button>
+            <Button x:Name="DonateButton" Margin="0,12,0,0" Click="DonateButton_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE19F;" Margin="0,0,8,0"/>
+                        <TextBlock Text="Donate"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
             <Button x:Name="FeedbackButton" Margin="0,12,0,0" Click="FeedbackButton_Click" Visibility="Collapsed">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">

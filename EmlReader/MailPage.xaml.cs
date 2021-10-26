@@ -13,6 +13,7 @@ using System.Web;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Services.Store;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -38,7 +39,7 @@ namespace EmlReader
     {
         MimeMessage message;
         string filename;
- 
+
         public MailPage()
         {
             InitializeComponent();
@@ -464,9 +465,43 @@ namespace EmlReader
             await dlg.ShowAsync();
         }
 
-        private void DonationButton_Click(object sender, RoutedEventArgs e)
+        private async void DonateButton_Click(object sender, RoutedEventArgs e)
         {
+            StoreContext storeContext = StoreContext.GetDefault();
+            string StoreId = "9PNWXP9VHK05";
+            StorePurchaseResult result = await storeContext.RequestPurchaseAsync(StoreId);
+            if (result.ExtendedError != null)
+            {
+                Debug.WriteLine(result.ExtendedError);
+                return;
+            }
 
+            switch (result.Status)
+            {
+                case StorePurchaseStatus.AlreadyPurchased: // should never get this for a managed consumable since they are stackable
+                    Debug.WriteLine("You already bought this consumable.");
+                    break;
+
+                case StorePurchaseStatus.Succeeded:
+                    Debug.WriteLine("You bought.");
+                    break;
+
+                case StorePurchaseStatus.NotPurchased:
+                    Debug.WriteLine("Product was not purchased, it may have been canceled.");
+                    break;
+
+                case StorePurchaseStatus.NetworkError:
+                    Debug.WriteLine("Product was not purchased due to a network error.");
+                    break;
+
+                case StorePurchaseStatus.ServerError:
+                    Debug.WriteLine("Product was not purchased due to a server error.");
+                    break;
+
+                default:
+                    Debug.WriteLine("Product was not purchased due to an unknown error.");
+                    break;
+            }
         }
 
         private async void OpenAsPdfButton_Click(object sender, RoutedEventArgs e)
