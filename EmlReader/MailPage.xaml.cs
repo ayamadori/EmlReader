@@ -58,6 +58,8 @@ namespace EmlReader
                 {
                     Message = MimeMessage.Load(_stream.AsStreamForRead());
                     ApplicationView.GetForCurrentView().Title = Message.Subject;
+                    //await MailView.EnsureCoreWebView2Async();
+                    //MailView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
                 }
                 catch (Exception ex)
                 {
@@ -517,7 +519,7 @@ namespace EmlReader
             Progress.IsActive = true;
             OpenAsPdfButton.IsEnabled = false;
 
-            _ = MailView.EnsureCoreWebView2Async();
+            await MailView.EnsureCoreWebView2Async();
 
             try
             {
