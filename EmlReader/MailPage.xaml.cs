@@ -533,10 +533,11 @@ namespace EmlReader
                 MailView.Margin = new Thickness(28, 0 - height, 28, 0);
 
                 // Print PDF document to temp folder
-                bool success = await MailView.CoreWebView2.PrintToPdfAsync($"{ApplicationData.Current.TemporaryFolder.Path}\\{this.filename}.pdf", default);
+                string temppath = $"{ApplicationData.Current.TemporaryFolder.Path}\\{this.filename}.pdf";
+                bool success = await MailView.CoreWebView2.PrintToPdfAsync(temppath, default);
 
-                // Load temporary file as StorageFile
-                StorageFile tempfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appdata:///temp/{this.filename}.pdf"));
+                // Load temp file as StorageFile
+                StorageFile tempfile = await StorageFile.GetFileFromPathAsync(temppath);
                 if (success && tempfile != null)
                 {
                     // Launch the retrieved file
