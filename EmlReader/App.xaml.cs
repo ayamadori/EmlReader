@@ -173,7 +173,7 @@ namespace EmlReader
             Window.Current.Activate();
         }
 
-        protected override void OnFileActivated(FileActivatedEventArgs args)
+        protected async override void OnFileActivated(FileActivatedEventArgs args)
         {
             // TODO: Handle file activation
 
@@ -210,6 +210,16 @@ namespace EmlReader
             var storageFile = args.Files[0] as StorageFile;
 
             rootFrame.Navigate(typeof(MailPage), storageFile);
+
+            // Launch secondary file
+            for (int i = 1; i < args.Files.Count; i++)
+            {
+                storageFile = args.Files[i] as StorageFile;
+                // Open file on this app
+                var options = new Windows.System.LauncherOptions();
+                options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
+                await Windows.System.Launcher.LaunchFileAsync(storageFile, options);
+            }
 
             // 現在のウィンドウがアクティブであることを確認します
             Window.Current.Activate();
