@@ -24,6 +24,10 @@ namespace EmlReader
             this.Suspending += OnSuspending;
         }
 
+        // https://github.com/microsoft/AppModelSamples/blob/master/Samples/BananaEdit/BananaEdit/App.xaml.cs
+        private static Guid id = Guid.NewGuid();
+        public static Guid Id { get { return id; } }
+
         /// <summary>
         /// アプリケーションがエンド ユーザーによって正常に起動されたときに呼び出されます。他のエントリ ポイントは、
         /// アプリケーションが特定のファイルを開くために起動されたときなどに使用されます。

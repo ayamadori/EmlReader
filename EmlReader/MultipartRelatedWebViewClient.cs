@@ -66,12 +66,11 @@ namespace EmlReader
 					var stream = part.Content.Open();
 
 					// construct our response containing the decoded content
-					CoreWebView2Environment cwv2e = await CoreWebView2Environment.CreateAsync();
 					// https://stackoverflow.com/questions/7669311/is-there-a-way-to-convert-a-system-io-stream-to-a-windows-storage-streams-irando
 					var memStream = new MemoryStream();
 					await stream.CopyToAsync(memStream);
 					memStream.Position = 0;
-					args.Response = cwv2e.CreateWebResourceResponse(memStream.AsRandomAccessStream(), 200, "OK", $"Content-Type: {mimeType}; charset={charset}");                   
+					args.Response = view.Environment.CreateWebResourceResponse(memStream.AsRandomAccessStream(), 200, "OK", $"Content-Type: {mimeType}; charset={charset}");                   
 				}
 			}
 		}
