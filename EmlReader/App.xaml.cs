@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
@@ -128,59 +129,23 @@ namespace EmlReader
         protected override async void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
         {
             // Code to handle activation goes here.	
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
+
+            // https://msdn.microsoft.com/en-us/library/windows/apps/windows.applicationmodel.datatransfer.datapackageview.getstorageitemsasync.aspx?cs-save-lang=1&cs-lang=csharp#code-snippet-1
+            var shareOperation = args.ShareOperation;
+            if (shareOperation.Data.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.StorageItems))
             {
-                this.DebugSettings.EnableFrameRateCounter = false;
+                var items = await shareOperation.Data.GetStorageItemsAsync();
+                LaunchFiles(items);
             }
-#endif
-
-            Frame rootFrame = Window.Current.Content as Frame;
-
-            // ウィンドウに既にコンテンツが表示されている場合は、アプリケーションの初期化を繰り返さずに、
-            // ウィンドウがアクティブであることだけを確認してください
-            if (rootFrame == null)
-            {
-                // ナビゲーション コンテキストとして動作するフレームを作成し、最初のページに移動します
-                rootFrame = new Frame();
-
-                rootFrame.NavigationFailed += OnNavigationFailed;
-
-                if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: 以前中断したアプリケーションから状態を読み込みます
-                }
-
-                // フレームを現在のウィンドウに配置します
-                Window.Current.Content = rootFrame;
-            }
-
-            if (rootFrame.Content == null)
-            {
-                // https://msdn.microsoft.com/en-us/library/windows/apps/windows.applicationmodel.datatransfer.datapackageview.getstorageitemsasync.aspx?cs-save-lang=1&cs-lang=csharp#code-snippet-1
-                var shareOperation = args.ShareOperation;
-                StorageFile storageFile = null;
-                if (shareOperation.Data.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.StorageItems))
-                {
-                    //shareOperation.ReportStarted();
-                    var items = await shareOperation.Data.GetStorageItemsAsync();
-                    storageFile = items[0] as StorageFile;
-                    //shareOperation.ReportCompleted();
-                }
-
-                // ナビゲーション スタックが復元されない場合は、最初のページに移動します。
-                // このとき、必要な情報をナビゲーション パラメーターとして渡して、新しいページを
-                //構成します
-                rootFrame.Navigate(typeof(MailPage), storageFile);
-            }
-            // 現在のウィンドウがアクティブであることを確認します
-            Window.Current.Activate();
         }
 
-        protected async override void OnFileActivated(FileActivatedEventArgs args)
+        protected override void OnFileActivated(FileActivatedEventArgs args)
         {
-            // TODO: Handle file activation
+            LaunchFiles(args.Files);
+        }
 
+        private async void LaunchFiles(IReadOnlyList<IStorageItem> files)
+        {
             // The number of files received is args.Files.Size
             // The name of the first file is args.Files[0].Name
 
@@ -202,31 +167,34 @@ namespace EmlReader
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: 以前中断したアプリケーションから状態を読み込みます
-                }
-
                 // フレームを現在のウィンドウに配置します
                 Window.Current.Content = rootFrame;
             }
 
-            var storageFile = args.Files[0] as StorageFile;
+            StorageFile file;
 
-            rootFrame.Navigate(typeof(MailPage), storageFile);
+            // Launch primary file
+            if (rootFrame.Content == null)
+            {
+                // We always want to navigate to the MainPage, regardless
+                // of whether or not this is a redirection.
+                file = files[0] as StorageFile;
+                rootFrame.Navigate(typeof(MailPage), file);
+            }
 
             // Launch secondary file
-            for (int i = 1; i < args.Files.Count; i++)
+            for (int i = 1; i < files.Count; i++)
             {
-                storageFile = args.Files[i] as StorageFile;
                 // Open file on this app
                 var options = new Windows.System.LauncherOptions();
                 options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
-                await Windows.System.Launcher.LaunchFileAsync(storageFile, options);
+                file = files[i] as StorageFile;
+                await Windows.System.Launcher.LaunchFileAsync(file, options);
             }
 
             // 現在のウィンドウがアクティブであることを確認します
             Window.Current.Activate();
         }
+
     }
 }
