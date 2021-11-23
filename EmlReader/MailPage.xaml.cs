@@ -74,6 +74,14 @@ namespace EmlReader
             }
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            // Reset title
+            ApplicationView.GetForCurrentView().Title = "";
+        }
+
         public MimeMessage Message
         {
             get { return message; }

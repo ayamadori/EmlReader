@@ -4,21 +4,59 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wsa="using:Windows.Storage.AccessCache"
     mc:Ignorable="d">
 
-    <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <Rectangle Stroke="{ThemeResource ApplicationForegroundThemeBrush}" StrokeDashArray="4" RadiusX="4" RadiusY="4" Margin="8"/>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <FontIcon Glyph="&#xE715;" FontSize="80"/>
-            <TextBlock FontSize="20" HorizontalTextAlignment="Center">
-                <Run>Drop .eml here (PC only)</Run><LineBreak/>
-                <Run>or</Run><LineBreak/>
-                <Hyperlink Click="FileOpenButton_Click">Open File</Hyperlink>
-            </TextBlock>
-        </StackPanel>
-        <Button Click="AboutButton_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,16" ToolTipService.ToolTip="About">
-            <FontIcon Glyph="&#xE946;" />
-        </Button>
+    <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
+            <CommandBar.Content>
+                <TextBlock Text="Recenly opened" Style="{StaticResource TitleTextBlockStyle}" Margin="12,4,0,0"/>
+            </CommandBar.Content>
+            <AppBarButton x:Name="FileOpenButton" Label="Open" Icon="OpenFile" Click="FileOpenButton_Click"/>
+            <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
+                <AppBarButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>
+                        <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE946;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <!--<CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="DonationButton" Label="Donation" Icon="Like" Click="DonationButton_Click"/>
+                <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE946;"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>-->
+        </CommandBar>
+
+        <ListView x:Name="MruList" Grid.Row="1" ItemsSource="{x:Bind mru}" Margin="12" CornerRadius="4" BorderThickness="1" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}">
+            <!--https://stackoverflow.com/questions/43094395/how-to-stretch-listviewitem-in-listview/43114173-->
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Resources>
+                <DataTemplate x:Key="MruListTemplate" x:DataType="wsa:AccessListEntry">
+                    <TextBlock Text="{x:Bind Metadata}" Margin="0,5,0,5"/>
+                </DataTemplate>
+            </ListView.Resources>
+            <ListView.ItemTemplate>
+                <StaticResource ResourceKey="MruListTemplate"/>
+            </ListView.ItemTemplate>
+        </ListView>
+
     </Grid>
 
 </Page>

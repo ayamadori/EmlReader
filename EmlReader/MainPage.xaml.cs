@@ -1,7 +1,10 @@
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Services.Store;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -15,9 +18,11 @@ namespace EmlReader
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        AccessListEntryView mru;
         public MainPage()
         {
             this.InitializeComponent();
+            mru = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
         }
 
         private void Grid_DragOver(object sender, DragEventArgs e)
@@ -86,6 +91,45 @@ namespace EmlReader
             // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
             var dlg = new AboutDialog();
             await dlg.ShowAsync();
+        }
+
+        private async void DonateButton_Click(object sender, RoutedEventArgs e)
+        {
+            StoreContext storeContext = StoreContext.GetDefault();
+            string StoreId = "9PNWXP9VHK05";
+            StorePurchaseResult result = await storeContext.RequestPurchaseAsync(StoreId);
+            if (result.ExtendedError != null)
+            {
+                Debug.WriteLine(result.ExtendedError);
+                return;
+            }
+
+            switch (result.Status)
+            {
+                case StorePurchaseStatus.AlreadyPurchased: // should never get this for a managed consumable since they are stackable
+                    Debug.WriteLine("You already bought this consumable.");
+                    break;
+
+                case StorePurchaseStatus.Succeeded:
+                    Debug.WriteLine("You bought.");
+                    break;
+
+                case StorePurchaseStatus.NotPurchased:
+                    Debug.WriteLine("Product was not purchased, it may have been canceled.");
+                    break;
+
+                case StorePurchaseStatus.NetworkError:
+                    Debug.WriteLine("Product was not purchased due to a network error.");
+                    break;
+
+                case StorePurchaseStatus.ServerError:
+                    Debug.WriteLine("Product was not purchased due to a server error.");
+                    break;
+
+                default:
+                    Debug.WriteLine("Product was not purchased due to an unknown error.");
+                    break;
+            }
         }
 
     }

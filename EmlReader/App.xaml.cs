@@ -178,8 +178,13 @@ namespace EmlReader
             {
                 // We always want to navigate to the MainPage, regardless
                 // of whether or not this is a redirection.
-                file = files[0] as StorageFile;
+                file = files[0] as StorageFile;                
                 rootFrame.Navigate(typeof(MailPage), file);
+
+                // Add to MRU
+                // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
+                var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+                string mruToken = mru.Add(file, file.Name);
             }
 
             // Launch secondary file
