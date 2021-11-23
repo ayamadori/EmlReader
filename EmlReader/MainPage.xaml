@@ -40,7 +40,7 @@
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
-        <ListView x:Name="MruList" Grid.Row="1" ItemsSource="{x:Bind mru}" Margin="12" CornerRadius="4" BorderThickness="1" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}">
+        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mru}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}">
             <!--https://stackoverflow.com/questions/43094395/how-to-stretch-listviewitem-in-listview/43114173-->
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -49,7 +49,18 @@
             </ListView.ItemContainerStyle>
             <ListView.Resources>
                 <DataTemplate x:Key="MruListTemplate" x:DataType="wsa:AccessListEntry">
-                    <TextBlock Text="{x:Bind Metadata}" Margin="0,5,0,5"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{x:Bind Metadata}" Margin="0,5"/>
+                        <Button Grid.Column="1" x:Name="OpenWindowButton" Click="OpenWindowButton_Click" ToolTipService.ToolTip="Open in new window">
+                            <Button.Content>
+                                <FontIcon Glyph="&#xE2B4;" />
+                            </Button.Content>
+                        </Button>
+                    </Grid>
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ItemTemplate>

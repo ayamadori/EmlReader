@@ -132,5 +132,43 @@ namespace EmlReader
             }
         }
 
+        private async void MruList_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            if ((sender as ListView).SelectedItem == null) return;
+            AccessListEntry entry = (AccessListEntry)(sender as ListView).SelectedItem;
+            StorageFile file = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync(entry.Token) as StorageFile;
+            
+            if (file != null)
+            {
+                Frame rootFrame = Window.Current.Content as Frame;
+                rootFrame.Navigate(typeof(MailPage), file);
+
+                // Add to MRU
+                // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
+                var mru = StorageApplicationPermissions.MostRecentlyUsedList;
+                string mruToken = mru.Add(file, file.Name);
+            }
+        }
+
+        private async void OpenWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            // https://stackoverflow.com/questions/34445579/how-to-get-listview-item-content-on-righttapped-event-of-an-universal-windows-ap
+            AccessListEntry entry = (AccessListEntry)((FrameworkElement)e.OriginalSource).DataContext;
+            StorageFile file = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync(entry.Token) as StorageFile;
+
+            if (file != null)
+            {
+                // Open file on this app
+                var options = new LauncherOptions();
+                options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
+                await Launcher.LaunchFileAsync(file, options);
+
+                // Add to MRU
+                // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
+                var mru = StorageApplicationPermissions.MostRecentlyUsedList;
+                string mruToken = mru.Add(file, file.Name);
+            }
+
+        }
     }
 }
