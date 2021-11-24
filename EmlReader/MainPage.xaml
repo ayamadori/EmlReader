@@ -15,7 +15,7 @@
         
         <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
             <CommandBar.Content>
-                <TextBlock Text="Recenly opened" Style="{StaticResource TitleTextBlockStyle}" Margin="12,4,0,0"/>
+                <TextBlock Text="Recently opened" Style="{StaticResource TitleTextBlockStyle}" Margin="12,4,0,0"/>
             </CommandBar.Content>
             <AppBarButton x:Name="FileOpenButton" Label="Open" Icon="OpenFile" Click="FileOpenButton_Click"/>
             <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
