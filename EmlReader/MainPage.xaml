@@ -40,7 +40,7 @@
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
-        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mru}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}">
+        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mru}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource SystemControlBackgroundAltMediumLowBrush}" Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
             <!--https://stackoverflow.com/questions/43094395/how-to-stretch-listviewitem-in-listview/43114173-->
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
