@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wsa="using:Windows.Storage.AccessCache"
     mc:Ignorable="d">
-
+    
     <Grid AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -40,7 +40,7 @@
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
-        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mru}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource SystemControlBackgroundAltMediumLowBrush}" Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mru}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
             <!--https://stackoverflow.com/questions/43094395/how-to-stretch-listviewitem-in-listview/43114173-->
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -54,7 +54,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{x:Bind Metadata}" Margin="0,5"/>
+                        <TextBlock Grid.Column="0" Text="{x:Bind Metadata}" Margin="0,5,12,5" TextTrimming="CharacterEllipsis"/>
                         <Button Grid.Column="1" x:Name="OpenWindowButton" Click="OpenWindowButton_Click" ToolTipService.ToolTip="Open in new window">
                             <Button.Content>
                                 <FontIcon Glyph="&#xE2B4;" />
