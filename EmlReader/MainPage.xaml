@@ -31,7 +31,7 @@
                 </AppBarButton.Flyout>
             </AppBarButton>
             <!--<CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="DonationButton" Label="Donation" Icon="Like" Click="DonationButton_Click"/>
+                <AppBarButton x:Name="DonateButton" Label="Donate" Icon="Like" Click="DonateButton_Click"/>
                 <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE946;"/>
@@ -40,7 +40,7 @@
             </CommandBar.SecondaryCommands>-->
         </CommandBar>
 
-        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mru}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mruView}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
             <!--https://stackoverflow.com/questions/43094395/how-to-stretch-listviewitem-in-listview/43114173-->
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">

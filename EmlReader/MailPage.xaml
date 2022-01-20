@@ -60,8 +60,12 @@
                 </AppBarButton.Flyout>
             </AppBarButton>
             <!--<CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="SaveAsPdfButton" Label="Save as PDF" Icon="Save" Click="SaveAsPdfButton_Click"/>
-                <AppBarButton x:Name="DonationButton" Label="Donation" Icon="Like" Click="DonationButton_Click"/>
+                <AppBarButton x:Name="OpenAsPdfButton" Label="Open as PDF" Click="OpenAsPdfButton_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xEA90;"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton x:Name="DonateButton" Label="Donation" Icon="Like" Click="DonateButton_Click"/>
                 <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE946;"/>

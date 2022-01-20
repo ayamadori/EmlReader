@@ -18,11 +18,11 @@ namespace EmlReader
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        AccessListEntryView mru;
+        AccessListEntryView mruView;
         public MainPage()
         {
             this.InitializeComponent();
-            mru = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
+            mruView = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
         }
 
         private void Grid_DragOver(object sender, DragEventArgs e)
@@ -136,17 +136,39 @@ namespace EmlReader
         {
             if ((sender as ListView).SelectedItem == null) return;
             AccessListEntry entry = (AccessListEntry)(sender as ListView).SelectedItem;
-            StorageFile file = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync(entry.Token) as StorageFile;
-            
-            if (file != null)
+            string token = entry.Token;
+            try
             {
-                Frame rootFrame = Window.Current.Content as Frame;
-                rootFrame.Navigate(typeof(MailPage), file);
+                StorageFile file = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync(token) as StorageFile;
 
-                // Add to MRU
+                if (file != null)
+                {
+                    Frame rootFrame = Window.Current.Content as Frame;
+                    rootFrame.Navigate(typeof(MailPage), file);
+
+                    // Add to MRU
+                    // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
+                    var mru = StorageApplicationPermissions.MostRecentlyUsedList;
+                    string mruToken = mru.Add(file, file.Name);
+                    MruList.ItemsSource = null;
+                    mruView = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
+                    MruList.ItemsSource = mruView;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+
+                ContentDialog dlg = new ContentDialog() { Title = $"\"{entry.Metadata}\" is not available", Content = "Selected file may be moved/renamed/deleted.", CloseButtonText = "OK" };
+                _ = dlg.ShowAsync();
+
+                // Remove from MRU
                 // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
                 var mru = StorageApplicationPermissions.MostRecentlyUsedList;
-                string mruToken = mru.Add(file, file.Name);
+                mru.Remove(token);
+                MruList.ItemsSource = null;
+                mruView = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
+                MruList.ItemsSource = mruView;
             }
         }
 
@@ -154,19 +176,41 @@ namespace EmlReader
         {
             // https://stackoverflow.com/questions/34445579/how-to-get-listview-item-content-on-righttapped-event-of-an-universal-windows-ap
             AccessListEntry entry = (AccessListEntry)((FrameworkElement)e.OriginalSource).DataContext;
-            StorageFile file = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync(entry.Token) as StorageFile;
-
-            if (file != null)
+            string token = entry.Token;
+            try
             {
-                // Open file on this app
-                var options = new LauncherOptions();
-                options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
-                await Launcher.LaunchFileAsync(file, options);
+                StorageFile file = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync(token) as StorageFile;
 
-                // Add to MRU
+                if (file != null)
+                {
+                    // Open file on this app
+                    var options = new LauncherOptions();
+                    options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
+                    await Launcher.LaunchFileAsync(file, options);
+
+                    // Add to MRU
+                    // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
+                    var mru = StorageApplicationPermissions.MostRecentlyUsedList;
+                    string mruToken = mru.Add(file, file.Name);
+                    MruList.ItemsSource = null;
+                    mruView = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
+                    MruList.ItemsSource = mruView;
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+
+                ContentDialog dlg = new ContentDialog() { Title = $"\"{entry.Metadata}\" is not available", Content = "Selected file may be moved/renamed/deleted.", CloseButtonText = "OK" };
+                _ = dlg.ShowAsync();
+
+                // Remove from MRU
                 // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
                 var mru = StorageApplicationPermissions.MostRecentlyUsedList;
-                string mruToken = mru.Add(file, file.Name);
+                mru.Remove(token);
+                MruList.ItemsSource = null;
+                mruView = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
+                MruList.ItemsSource = mruView;
             }
 
         }

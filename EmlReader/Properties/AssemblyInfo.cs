@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EmlReader")]
-[assembly: AssemblyCopyright("Copyright © 2021 Ayamadori")]
+[assembly: AssemblyCopyright("Copyright © 2022 Ayamadori")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
