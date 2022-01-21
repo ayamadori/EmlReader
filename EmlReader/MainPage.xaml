@@ -60,6 +60,15 @@
                                 <FontIcon Glyph="&#xE2B4;" />
                             </Button.Content>
                         </Button>
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Remove" Click="RemoveItem_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <SymbolIcon Symbol="Cancel"/>
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
                     </Grid>
                 </DataTemplate>
             </ListView.Resources>

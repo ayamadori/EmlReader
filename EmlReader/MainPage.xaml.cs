@@ -212,7 +212,20 @@ namespace EmlReader
                 mruView = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
                 MruList.ItemsSource = mruView;
             }
+        }
+        private void RemoveItem_Click(object sender, RoutedEventArgs e)
+        {
+            // https://stackoverflow.com/questions/34445579/how-to-get-listview-item-content-on-righttapped-event-of-an-universal-windows-ap
+            AccessListEntry entry = (AccessListEntry)((FrameworkElement)e.OriginalSource).DataContext;
+            string token = entry.Token;
 
+            // Remove from MRU
+            // https://docs.microsoft.com/en-us/windows/uwp/files/how-to-track-recently-used-files-and-folders
+            var mru = StorageApplicationPermissions.MostRecentlyUsedList;
+            mru.Remove(token);
+            MruList.ItemsSource = null;
+            mruView = StorageApplicationPermissions.MostRecentlyUsedList.Entries;
+            MruList.ItemsSource = mruView;
         }
     }
 }
