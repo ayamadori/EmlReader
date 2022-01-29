@@ -213,7 +213,7 @@ namespace EmlReader
                 MruList.ItemsSource = mruView;
             }
         }
-        private void RemoveItem_Click(object sender, RoutedEventArgs e)
+        private void DeleteItem_Click(object sender, RoutedEventArgs e)
         {
             // https://stackoverflow.com/questions/34445579/how-to-get-listview-item-content-on-righttapped-event-of-an-universal-windows-ap
             AccessListEntry entry = (AccessListEntry)((FrameworkElement)e.OriginalSource).DataContext;

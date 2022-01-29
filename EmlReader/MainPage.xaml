@@ -62,7 +62,7 @@
                         </Button>
                         <Grid.ContextFlyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem Text="Remove" Click="RemoveItem_Click">
+                                <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click">
                                     <MenuFlyoutItem.Icon>
                                         <SymbolIcon Symbol="Cancel"/>
                                     </MenuFlyoutItem.Icon>
