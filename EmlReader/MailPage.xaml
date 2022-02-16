@@ -42,6 +42,7 @@
         <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
             <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
             <AppBarButton Icon="MailReplyAll" Label="Reply all" Click="ReplyAllButton_Click"/>
+            <AppBarButton x:Name="DonateButton" Icon="Like" Label="Donate" Click="DonateButton_Click"/>
             <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
                 <AppBarButton.Flyout>
                     <MenuFlyout Placement="BottomEdgeAlignedRight">
@@ -50,7 +51,7 @@
                                 <FontIcon Glyph="&#xEA90;"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>
+                        <!--<MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>-->
                         <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE946;"/>

@@ -18,10 +18,11 @@
                 <TextBlock Text="Recently opened" Style="{StaticResource TitleTextBlockStyle}" Margin="12,4,0,0"/>
             </CommandBar.Content>
             <AppBarButton x:Name="FileOpenButton" Label="Open" Icon="OpenFile" Click="FileOpenButton_Click"/>
+            <AppBarButton x:Name="DonateButton" Icon="Like" Label="Donate" Click="DonateButton_Click"/>
             <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
                 <AppBarButton.Flyout>
                     <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>
+                        <!--<MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>-->
                         <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE946;"/>
