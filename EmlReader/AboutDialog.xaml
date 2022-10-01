@@ -19,7 +19,7 @@
         <StackPanel>
             <TextBlock>
                 <Run>EML Reader</Run><LineBreak/>
-                <Run>Version 2.0.0</Run><LineBreak/>
+                <Run>Version 2.0.4</Run><LineBreak/>
                 <Run>Copyright (C) Ayamadori</Run>
             </TextBlock>
             <HyperlinkButton Content="Website" NavigateUri="https://github.com/ayamadori/EmlReader" Margin="0,8,0,0"/>
