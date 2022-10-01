@@ -1,9 +1,9 @@
 ﻿//
 // MultipartRelatedWebViewClient.cs
 //
-// Author: Jeffrey Stedfast <jestedfa@microsoft.com>
+// Original Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
-// Copyright (c) 2014-2020 Jeffrey Stedfast
+// Copyright (c) 2014-2022 Jeffrey Stedfast
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
