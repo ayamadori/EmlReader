@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -165,13 +166,21 @@ namespace EmlReader
                 var items = await e.DataView.GetStorageItemsAsync();
                 if (items.Count > 0)
                 {
-                    var storageFile = items[0] as StorageFile;
-                    string filetype = storageFile.FileType.ToLower();
-                    if (filetype.Equals(".eml"))
+                    for (int i = 0; i < items.Count; i++)
                     {
-                        using (var _stream = await storageFile.OpenReadAsync())
+                        StorageFile storageFile = items[i] as StorageFile;
+                        string filetype = storageFile.FileType.ToLower();
+                        if (filetype.Equals(".eml"))
                         {
-                            Message = MimeMessage.Load(_stream.AsStreamForRead());
+                            if (i == 0)
+                                Frame.Navigate(typeof(MailPage), storageFile);
+                            else
+                            {
+                                // Open file on this app
+                                var options = new LauncherOptions();
+                                options.TargetApplicationPackageFamilyName = Package.Current.Id.FamilyName;
+                                await Launcher.LaunchFileAsync(storageFile, options);
+                            }
                         }
                     }
                 }
