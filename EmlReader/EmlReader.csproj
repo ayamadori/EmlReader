@@ -11,7 +11,7 @@
     <AssemblyName>EmlReader</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.22000.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -247,7 +247,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="MimeKitLite">
-      <Version>3.4.1</Version>
+      <Version>3.4.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
