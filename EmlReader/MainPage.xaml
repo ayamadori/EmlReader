@@ -19,26 +19,13 @@
             </CommandBar.Content>
             <AppBarButton x:Name="FileOpenButton" Label="Open" Icon="OpenFile" Click="FileOpenButton_Click"/>
             <AppBarButton x:Name="DonateButton" Icon="Like" Label="Donate" Click="DonateButton_Click"/>
-            <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
-                <AppBarButton.Flyout>
-                    <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <!--<MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>-->
-                        <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE946;"/>
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                    </MenuFlyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
-            <!--<CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="DonateButton" Label="Donate" Icon="Like" Click="DonateButton_Click"/>
+            <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE946;"/>
                     </AppBarButton.Icon>
                 </AppBarButton>
-            </CommandBar.SecondaryCommands>-->
+            </CommandBar.SecondaryCommands>
         </CommandBar>
 
         <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mruView}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="4" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">

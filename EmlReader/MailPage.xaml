@@ -43,36 +43,18 @@
             <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
             <AppBarButton Icon="MailReplyAll" Label="Reply all" Click="ReplyAllButton_Click"/>
             <AppBarButton x:Name="DonateButton" Icon="Like" Label="Donate" Click="DonateButton_Click"/>
-            <AppBarButton Icon="More" ToolTipService.ToolTip="See more">
-                <AppBarButton.Flyout>
-                    <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <MenuFlyoutItem x:Name="OpenAsPdfButton" Text="Open as PDF" Click="OpenAsPdfButton_Click">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xEA90;"/>
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <!--<MenuFlyoutItem x:Name="DonateButton" Text="Donate" Icon="Like" Click="DonateButton_Click"/>-->
-                        <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE946;"/>
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                    </MenuFlyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
-            <!--<CommandBar.SecondaryCommands>
+            <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="OpenAsPdfButton" Label="Open as PDF" Click="OpenAsPdfButton_Click">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xEA90;"/>
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton x:Name="DonateButton" Label="Donation" Icon="Like" Click="DonateButton_Click"/>
                 <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE946;"/>
                     </AppBarButton.Icon>
                 </AppBarButton>
-            </CommandBar.SecondaryCommands>-->
+            </CommandBar.SecondaryCommands>
         </CommandBar>
 
         <muxc:WebView2 x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
