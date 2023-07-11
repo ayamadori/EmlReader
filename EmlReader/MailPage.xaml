@@ -44,6 +44,11 @@
             <AppBarButton Icon="MailReplyAll" Label="Reply all" Click="ReplyAllButton_Click"/>
             <AppBarButton x:Name="DonateButton" Icon="Like" Label="Donate" Click="DonateButton_Click"/>
             <CommandBar.SecondaryCommands>
+                <!--<AppBarButton x:Name="PrintButton" Label="Print" Click="PrintButton_Click">
+                    <AppBarButton.Icon>
+                        <SymbolIcon Symbol="Print"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>-->
                 <AppBarButton x:Name="OpenAsPdfButton" Label="Open as PDF" Click="OpenAsPdfButton_Click">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xEA90;"/>

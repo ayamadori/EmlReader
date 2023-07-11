@@ -253,33 +253,40 @@ namespace EmlReader
             if (ContactManager.IsShowContactCardSupported())
             {
                 Rect selectionRect = GetElementRect(element);
-
-                // https://docs.microsoft.com/en-us/windows/uwp/contacts-and-calendar/integrating-with-contacts
-                ContactStore contactStore = await ContactManager.RequestStoreAsync();
-                IReadOnlyList<Contact> contacts = await contactStore.FindContactsAsync(address);
-
-                // Retrieve the contact to display
-                Contact contact;
-                if (contacts.Count > 0)
+                try
                 {
-                    contact = contacts[0];
-                }
-                else
-                {
-                    // Create new contact
-                    contact = new Contact();
-                    var email = new ContactEmail();
-                    email.Address = address;
-                    contact.Emails.Add(email);
-                    if (!string.IsNullOrEmpty(name)) contact.Name = name;
-                }
+                    // https://docs.microsoft.com/en-us/windows/uwp/contacts-and-calendar/integrating-with-contacts
+                    ContactStore contactStore = await ContactManager.RequestStoreAsync();
+                    IReadOnlyList<Contact> contacts = await contactStore.FindContactsAsync(address);
 
-                ContactManager.ShowContactCard(contact, selectionRect, Placement.Default);
+                    // Retrieve the contact to display
+                    Contact contact;
+                    if (contacts.Count > 0)
+                    {
+                        contact = contacts[0];
+                    }
+                    else
+                    {
+                        // Create new contact
+                        contact = new Contact();
+                        var email = new ContactEmail();
+                        email.Address = address;
+                        contact.Emails.Add(email);
+                        if (!string.IsNullOrEmpty(name)) contact.Name = name;
+                    }
+
+                    ContactManager.ShowContactCard(contact, selectionRect, Placement.Default);
+                }
+                catch(Exception e)
+                {
+                    // Launch People app
+                    bool success = await Launcher.LaunchUriAsync(new Uri("ms-people:viewcontact?Email=" + address + "&ContactName=" + name));
+                }
             }
             else
             {
                 // Launch People app
-                bool success = await Launcher.LaunchUriAsync(new Uri("ms-people:viewcontact?Email=" + address));
+                bool success = await Launcher.LaunchUriAsync(new Uri("ms-people:viewcontact?Email=" + address + "&ContactName=" + name));
             }
         }
 
@@ -581,6 +588,51 @@ namespace EmlReader
                 OpenAsPdfButton.IsEnabled = true;
             }
         }
+
+        //private async void PrintButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    string printheader =
+        //        "<b>FROM:</b> " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
+        //        "<b>DATE:</b> " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
+        //        "<b>TO:</b> " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
+        //        "<b>CC:</b> " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
+        //        "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
+        //        " </br>";
+
+        //    Progress.IsActive = true;
+        //    PrintButton.IsEnabled = false;
+
+        //    await MailView.EnsureCoreWebView2Async();
+
+        //    try
+        //    {
+        //        // Insert header
+        //        await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";");
+        //        // Get header height
+        //        var _height = await MailView.ExecuteScriptAsync("(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h;})()");
+        //        double height;
+        //        _ = double.TryParse(_height, out height);
+        //        // Set margin of webview
+        //        MailView.Margin = new Thickness(28, 0 - height, 28, 0);
+
+        //        MailView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.Browser);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.ToString());
+        //        NotificationBar.IsOpen = true;
+        //    }
+        //    finally
+        //    {
+        //        // Remove header
+        //        await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"\";");
+        //        // Reset margin of webview
+        //        MailView.Margin = new Thickness(28, 12, 28, 0);
+
+        //        Progress.IsActive = false;
+        //        PrintButton.IsEnabled = true;
+        //    }
+        //}
     }
 }
 

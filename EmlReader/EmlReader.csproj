@@ -238,16 +238,16 @@
       <Version>6.2.14</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Services.Store.Engagement">
-      <Version>10.1901.28001</Version>
+      <Version>10.2307.3001</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.8.2</Version>
+      <Version>2.8.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="MimeKitLite">
-      <Version>3.4.3</Version>
+      <Version>4.1.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
