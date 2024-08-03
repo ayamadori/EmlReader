@@ -57,7 +57,7 @@
         <muxc:ProgressRing x:Name="Progress" Width="100" Height="100" Grid.Row="2" IsActive="False"/>
 
         <Border x:Name="HeaderPanel" Grid.Row="1" Margin="10,0,10,0" Background="White" BorderThickness="1,1,1,0" CornerRadius="4,4,0,0" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
-            <StackPanel Margin="12,0">
+            <StackPanel Margin="12,0,12,12">
                 <Grid x:Name="CommBar" HorizontalAlignment="Stretch">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -88,7 +88,7 @@
                             </Button.Content>
                         </Button>
                     </Grid>
-                    <TextBlock x:Name="dateTextBlock" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Text="Date" TextWrapping="NoWrap" Style="{StaticResource CaptionTextBlockStyle}"  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock x:Name="DateTextBlock" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Text="Date" TextWrapping="NoWrap" Style="{StaticResource CaptionTextBlockStyle}"  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
                     <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,-12,0">
                         <Button x:Name="ReplyButton" Click="ReplyButton_Click" ToolTipService.ToolTip="Reply" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}">
                             <Button.Content>

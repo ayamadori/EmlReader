@@ -106,7 +106,7 @@ namespace EmlReader
                     FromTextBlock.Text = from.Name + " <" + from.Address + ">";
                 }
 
-                dateTextBlock.Text = message.Date.ToString(CultureInfo.CurrentCulture);
+                DateTextBlock.Text = message.Date.ToString(CultureInfo.InstalledUICulture);
 
                 SubjectTextBlock.Text = message.Subject;
 
@@ -116,12 +116,12 @@ namespace EmlReader
                 // http://blog.okazuki.jp/entry/2016/02/25/232252
                 if (message.To.Count > 0)
                 {
-                    AddressBlock.Inlines.Add(new Run { Text = "To: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    AddressBlock.Inlines.Add(new Run { Text = "To: " });
                     SetAddressList(message.To);
                 }
                 if (message.Cc.Count > 0)
                 {
-                    AddressBlock.Inlines.Add(new Run { Text = "\nCc: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    AddressBlock.Inlines.Add(new Run { Text = "\nCc: " });
                     SetAddressList(message.Cc);
                 }
 
