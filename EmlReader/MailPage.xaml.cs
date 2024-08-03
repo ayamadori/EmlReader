@@ -44,6 +44,9 @@ namespace EmlReader
         public MailPage()
         {
             InitializeComponent();
+
+            // https://github.com/jstedfast/MimeKit/issues/1047
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
