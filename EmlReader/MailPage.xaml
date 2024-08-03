@@ -17,13 +17,21 @@
         <DataTemplate x:Key="AttachmentTemplate" x:DataType="data:MimePart">
             <!--add tooltip-->
             <!--http://sourcechord.hatenablog.com/entry/2015/09/19/233538-->
-            <StackPanel Orientation="Horizontal" RightTapped="AttachmentTemplate_RightTapped" Width="260" Height="56" Background="#F3F3F3" ToolTipService.ToolTip="{x:Bind FileName}">
+            <StackPanel Orientation="Horizontal" RightTapped="AttachmentTemplate_RightTapped" Width="260" Height="48" BorderThickness="2" BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}" ToolTipService.ToolTip="{x:Bind FileName}">
                 <SymbolIcon Symbol="Page2" Margin="12,0"/>
-                <TextBlock Text="{x:Bind FileName}" VerticalAlignment="Center"/>
+                <TextBlock Text="{x:Bind FileName}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem Text="Open" Click="OpenFlyoutItem_Click"/>
-                        <MenuFlyoutItem Text="Save" Click="SaveFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Open" Click="OpenFlyoutItem_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8E5;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Save" Click="SaveFlyoutItem_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE74E;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
             </StackPanel>
@@ -31,74 +39,107 @@
 
     </Page.Resources>
 
-    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop">
+    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="Grid_DragOver" Drop="Grid_Drop" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <CommandBar x:Name="MailCommandBar" Grid.Row="0" DefaultLabelPosition="Right">
-            <AppBarButton Icon="MailReply" Label="Reply" Click="ReplyButton_Click"/>
-            <AppBarButton Icon="MailReplyAll" Label="Reply all" Click="ReplyAllButton_Click"/>
-            <AppBarButton x:Name="DonateButton" Icon="Like" Label="Donate" Click="DonateButton_Click"/>
-            <CommandBar.SecondaryCommands>
-                <!--<AppBarButton x:Name="PrintButton" Label="Print" Click="PrintButton_Click">
-                    <AppBarButton.Icon>
-                        <SymbolIcon Symbol="Print"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>-->
-                <AppBarButton x:Name="OpenAsPdfButton" Label="Open as PDF" Click="OpenAsPdfButton_Click">
-                    <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xEA90;"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click">
-                    <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xE946;"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
+        <Border x:Name="Subject" Grid.Row="0" Margin="10" Background="White" BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+            <TextBlock x:Name="SubjectTextBlock" Margin="12" Text="Subject" TextWrapping="Wrap" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+        </Border>
 
-        <muxc:WebView2 x:Name="MailView" Grid.Row="3" Margin="28,12,28,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
-        <muxc:ProgressRing x:Name="Progress" Width="100" Height="100" Grid.Row="3" IsActive="False"/>
+        <Border Grid.Row="2" Margin="10,0" BorderThickness="1,0" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="White">
+            <muxc:WebView2 x:Name="MailView" Margin="4,0,0,0" VerticalAlignment="Stretch" NavigationStarting="MailView_NavigationStarting"/>
+        </Border>
 
-        <Border x:Name="HeaderPanel" Grid.Row="1" Background="White">
-            <StackPanel Margin="36,0">
-                <TextBlock x:Name="subjectTextBlock" Text="Subject" TextWrapping="Wrap" Style="{StaticResource SubtitleTextBlockStyle}" FontWeight="Bold" Margin="0,8,0,12"/>
-                <StackPanel Orientation="Horizontal" Margin="0,8">
-                    <muxc:PersonPicture x:Name="fromPersonPicture" Width="40"/>
-                    <StackPanel x:Name="FromView" Margin="12,0,0,0" Tapped="FromView_Tapped">
-                        <TextBlock x:Name="fromTextBlock" Text="From" TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}" FontWeight="Bold"/>
-                        <TextBlock x:Name="dateTextBlock" Text="Date" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="Gray"/>
-                    </StackPanel>
-                </StackPanel>
-                <Grid x:Name="ToArea" Margin="0,8">
+        <muxc:ProgressRing x:Name="Progress" Width="100" Height="100" Grid.Row="2" IsActive="False"/>
+
+        <Border x:Name="HeaderPanel" Grid.Row="1" Margin="10,0,10,0" Background="White" BorderThickness="1,1,1,0" CornerRadius="4,4,0,0" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+            <StackPanel Margin="12,0">
+                <Grid x:Name="CommBar" HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="AddressBlock" Style="{StaticResource CaptionTextBlockStyle}" Grid.Column="0" Height="20" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
-                    <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Click="HeaderExpandButton_Click">
-                        <Interactivity:Interaction.Behaviors>
-                            <Core:DataTriggerBehavior Binding="{Binding ElementName=AddressBlock.ActualWidth}" Value="{Binding ElementName=AddressBlock.Width}" ComparisonCondition="GreaterThan">
-                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=HeaderExpandButton}" PropertyName="Visibility" Value=""/>
-                            </Core:DataTriggerBehavior>
-                        </Interactivity:Interaction.Behaviors>
-                        <Button.Content>
-                            <!--ScrollChevronDownLegacy-->
-                            <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE011;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
-                        </Button.Content>
-                    </Button>
+                    <muxc:PersonPicture x:Name="FromPicture" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Top" Width="40" Margin="0,16,12,0" Tapped="FromView_Tapped"/>
+                    <TextBlock x:Name="FromTextBlock" Grid.Row="0" Grid.Column="1" Text="From" TextWrapping="Wrap" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,12,0,0" Tapped="FromView_Tapped"/>
+                    <Grid x:Name="ToArea" Grid.Row="1" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="48"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="AddressBlock" Style="{StaticResource BodyTextBlockStyle}" Grid.Column="0" Height="20" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+                        <Button x:Name="HeaderExpandButton" Padding="0" Grid.Column="1" Width="48" Height="20" Foreground="{ThemeResource SystemControlForegroundAccentBrush}" VerticalAlignment="Top" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}" Click="HeaderExpandButton_Click">
+                            <Interactivity:Interaction.Behaviors>
+                                <Core:DataTriggerBehavior Binding="{Binding ElementName=AddressBlock.ActualWidth}" Value="{Binding ElementName=AddressBlock.Width}" ComparisonCondition="GreaterThan">
+                                    <Core:ChangePropertyAction TargetObject="{Binding ElementName=HeaderExpandButton}" PropertyName="Visibility" Value=""/>
+                                </Core:DataTriggerBehavior>
+                            </Interactivity:Interaction.Behaviors>
+                            <Button.Content>
+                                <!--ChevronDown-->
+                                <TextBlock x:Name="HeaderExpandButtonText" Text="&#xE70D;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Center" Foreground="Black"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                    <TextBlock x:Name="dateTextBlock" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Text="Date" TextWrapping="NoWrap" Style="{StaticResource CaptionTextBlockStyle}"  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                    <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,-12,0">
+                        <Button x:Name="ReplyButton" Click="ReplyButton_Click" ToolTipService.ToolTip="Reply" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}">
+                            <Button.Content>
+                                <FontIcon Glyph="&#xE8CA;" Foreground="Purple" FontSize="16"/>
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="ReplyAllButton" Click="ReplyAllButton_Click" ToolTipService.ToolTip="Reply all" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}">
+                            <Button.Content>
+                                <FontIcon Glyph="&#xE8C2;" Foreground="Purple" FontSize="16"/>
+                            </Button.Content>
+                        </Button>
+                        <Border Width="1" BorderThickness="1" Margin="-4,8,0,8" BorderBrush="{StaticResource SurfaceStrokeColorDefaultBrush}"/>
+                        <Button x:Name="DonateButton" Click="DonateButton_Click" ToolTipService.ToolTip="Donate" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}">
+                            <Button.Content>
+                                <FontIcon Glyph="&#xE8E1;" Foreground="DodgerBlue" FontSize="16" />
+                            </Button.Content>
+                        </Button>
+                        <Border Width="1" BorderThickness="1" Margin="-4,8,0,8" BorderBrush="{StaticResource SurfaceStrokeColorDefaultBrush}"/>
+                        <Button ToolTipService.ToolTip="See more" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}">
+                            <Button.Content>
+                                <FontIcon Glyph="&#xE10C;" FontSize="16"/>
+                            </Button.Content>
+                            <Button.Flyout>
+                                <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                    <MenuFlyoutItem x:Name="OpenAsPdfButton" Text="Open as PDF" Click="OpenAsPdfButton_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xEA90;"/>
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Name="AboutButton" Text="About" Click="AboutButton_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE946;"/>
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                        </Button>
+                    </StackPanel>
                 </Grid>
+
+                <StackPanel x:Name="AttachmentArea" Margin="0,12">
+                    <GridView x:Name="AttachmentView" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
+                    <Button x:Name="SaveAllButton" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}" Foreground="{StaticResource TextFillColorSecondaryBrush}">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE74E;" FontSize="12" Margin="0,0,8,0"/>
+                            <TextBlock Text="Save all attachments"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </Border>
-        <StackPanel x:Name="AttachmentArea" Grid.Row="2" Background="White">
-            <Button x:Name="SaveAllButton" Margin="30,0" Content="Save all attachments" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}"/>
-            <GridView x:Name="AttachmentView" Height="68" Margin="40,0" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
-        </StackPanel>
 
         <muxc:InfoBar x:Name="NotificationBar" Grid.Row="0" Grid.RowSpan="2" Margin="0,4,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Severity="Error" Title="Error" Message="PDF file couldn't be opened"/>
 

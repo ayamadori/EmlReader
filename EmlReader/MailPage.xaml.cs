@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Windows.ApplicationModel;
@@ -96,18 +97,18 @@ namespace EmlReader
                 var from = message.From.First() as MailboxAddress;
                 if (string.IsNullOrEmpty(from.Name))
                 {
-                    fromPersonPicture.DisplayName = from.Address;
-                    fromTextBlock.Text = from.Address;
+                    FromPicture.DisplayName = from.Address;
+                    FromTextBlock.Text = from.Address;
                 }
                 else
                 {
-                    fromPersonPicture.DisplayName = from.Name;
-                    fromTextBlock.Text = from.Name + " <" + from.Address + ">";
+                    FromPicture.DisplayName = from.Name;
+                    FromTextBlock.Text = from.Name + " <" + from.Address + ">";
                 }
 
                 dateTextBlock.Text = message.Date.ToString(CultureInfo.CurrentCulture);
 
-                subjectTextBlock.Text = message.Subject;
+                SubjectTextBlock.Text = message.Subject;
 
                 AddressBlock.Text = "";
 
@@ -115,12 +116,12 @@ namespace EmlReader
                 // http://blog.okazuki.jp/entry/2016/02/25/232252
                 if (message.To.Count > 0)
                 {
-                    AddressBlock.Inlines.Add(new Run { Text = "TO: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    AddressBlock.Inlines.Add(new Run { Text = "To: ", Foreground = new SolidColorBrush(Colors.Black) });
                     SetAddressList(message.To);
                 }
                 if (message.Cc.Count > 0)
                 {
-                    AddressBlock.Inlines.Add(new Run { Text = "CC: ", Foreground = new SolidColorBrush(Colors.Black) });
+                    AddressBlock.Inlines.Add(new Run { Text = "\nCc: ", Foreground = new SolidColorBrush(Colors.Black) });
                     SetAddressList(message.Cc);
                 }
 
@@ -211,14 +212,14 @@ namespace EmlReader
                         link.Inlines.Add(new Run
                         {
                             Text = _address + "; ",
-                            Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
+                            Foreground = new SolidColorBrush(Colors.Black)
                         });
                     else
                         link.Inlines.Add(new Run
                         {
                             //Text = item.Name + "<" + _address + ">; ",
                             Text = item.Name + "; ",
-                            Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
+                            Foreground = new SolidColorBrush(Colors.Black)
                         });
                     AddressBlock.Inlines.Add(link);
                 }
@@ -236,7 +237,7 @@ namespace EmlReader
         private void FromView_Tapped(object sender, TappedRoutedEventArgs e)
         {
             MailboxAddress item = (message.From.First() as MailboxAddress);
-            OnUserClickShowContactCard(FromView, item.Name, item.Address);
+            OnUserClickShowContactCard(FromPicture, item.Name, item.Address);
         }
 
         // https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/contact-card
@@ -367,7 +368,7 @@ namespace EmlReader
             else
                 _scheme += (message.From.First() as MailboxAddress).Address;
 
-            _scheme += "?Subject=" + WebUtility.UrlEncode("RE: " + message.Subject).Replace("+", "%20");
+            _scheme += "?Subject=" + WebUtility.UrlEncode("Re: " + message.Subject).Replace("+", "%20");
 
             Uri uri = new Uri(_scheme);
             // Launch browser
@@ -383,7 +384,7 @@ namespace EmlReader
             else
                 _scheme += (message.From.First() as MailboxAddress).Address;
 
-            _scheme += "?subject=" + WebUtility.UrlEncode("RE: " + message.Subject).Replace("+", "%20").Replace("/", "%2F");
+            _scheme += "?subject=" + WebUtility.UrlEncode("Re: " + message.Subject).Replace("+", "%20").Replace("/", "%2F");
 
             _scheme += "&cc=";
             // TO: in "mailto:" scheme can accept only one address...?
@@ -413,17 +414,17 @@ namespace EmlReader
 
         private void HeaderExpandButton_Click(object sender, RoutedEventArgs e)
         {
-            if (HeaderExpandButtonText.Text.Equals("\uE011"))
+            if (HeaderExpandButtonText.Text.Equals("\uE70D")) // ChevronDown
             {
                 // Expand
-                HeaderExpandButtonText.Text = "\uE010"; // ScrollChevronUpLegacy
+                HeaderExpandButtonText.Text = "\uE70E"; // ChevronUp
                 // http://stackoverflow.com/questions/11385026/setting-height-of-textbox-to-auto-in-code-behind-for-a-dynamically-created-textb
                 AddressBlock.Height = double.NaN;
             }
             else
             {
                 // Shrink
-                HeaderExpandButtonText.Text = "\uE011"; // ScrollChevronDownLegacy
+                HeaderExpandButtonText.Text = "\uE70D"; // ChevronDown
                 AddressBlock.Height = HeaderExpandButton.Height;
             }
         }
@@ -535,13 +536,26 @@ namespace EmlReader
 
         private async void OpenAsPdfButton_Click(object sender, RoutedEventArgs e)
         {
-            string printheader =
-                "<b>FROM:</b> " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
-                "<b>DATE:</b> " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
-                "<b>TO:</b> " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
-                "<b>CC:</b> " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
-                "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
-                " </br>";
+            StringBuilder printheader = new StringBuilder();
+            printheader
+                .Append("<b>").Append(HttpUtility.HtmlEncode(message.Subject.ToString())).Append("</b></br></br>")
+                .Append(HttpUtility.HtmlEncode(message.From.ToString())).Append("</br>")
+                .Append(HttpUtility.HtmlEncode(message.Date.ToString())).Append("</br>")
+                .Append("To: ").Append(HttpUtility.HtmlEncode(message.To.ToString())).Append("</br>");
+            if (message.Cc.Count() > 0)
+                printheader.Append("Cc: ").Append(HttpUtility.HtmlEncode(message.Cc.ToString())).Append("</br>");
+            printheader.Append("</br>");
+
+            int count = message.Attachments.Count();
+            if (count > 0)
+            {
+                printheader.Append(count).Append(" attachments</br>");
+                foreach (MimePart _item in message.Attachments)
+                {
+                    printheader.Append(_item.FileName).Append("; ");
+                }
+                printheader.Append("</br></br>");
+            }
 
             Progress.IsActive = true;
             OpenAsPdfButton.IsEnabled = false;
@@ -551,7 +565,7 @@ namespace EmlReader
             try
             {
                 // Insert header
-                await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";");
+                await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader.ToString()}\";");
                 // Get header height
                 var _height = await MailView.ExecuteScriptAsync("(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h;})()");
                 double height;
@@ -591,51 +605,6 @@ namespace EmlReader
                 OpenAsPdfButton.IsEnabled = true;
             }
         }
-
-        //private async void PrintButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string printheader =
-        //        "<b>FROM:</b> " + HttpUtility.HtmlEncode(message.From.ToString()) + "</br>" +
-        //        "<b>DATE:</b> " + HttpUtility.HtmlEncode(message.Date.ToString()) + "</br>" +
-        //        "<b>TO:</b> " + HttpUtility.HtmlEncode(message.To.ToString()) + "</br>" +
-        //        "<b>CC:</b> " + HttpUtility.HtmlEncode(message.Cc.ToString()) + "</br>" +
-        //        "<b>SUBJECT:</b> " + HttpUtility.HtmlEncode(message.Subject.ToString()) + "</br>" +
-        //        " </br>";
-
-        //    Progress.IsActive = true;
-        //    PrintButton.IsEnabled = false;
-
-        //    await MailView.EnsureCoreWebView2Async();
-
-        //    try
-        //    {
-        //        // Insert header
-        //        await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"{printheader}\";");
-        //        // Get header height
-        //        var _height = await MailView.ExecuteScriptAsync("(function(){var h = document.getElementById(\"emlReaderPrintHeader\").clientHeight; return h;})()");
-        //        double height;
-        //        _ = double.TryParse(_height, out height);
-        //        // Set margin of webview
-        //        MailView.Margin = new Thickness(28, 0 - height, 28, 0);
-
-        //        MailView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.Browser);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine(ex.ToString());
-        //        NotificationBar.IsOpen = true;
-        //    }
-        //    finally
-        //    {
-        //        // Remove header
-        //        await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"\";");
-        //        // Reset margin of webview
-        //        MailView.Margin = new Thickness(28, 12, 28, 0);
-
-        //        Progress.IsActive = false;
-        //        PrintButton.IsEnabled = true;
-        //    }
-        //}
     }
 }
 
