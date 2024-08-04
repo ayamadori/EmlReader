@@ -23,6 +23,9 @@ namespace EmlReader
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            // https://github.com/jstedfast/MimeKit/issues/1047
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
         // https://github.com/microsoft/AppModelSamples/blob/master/Samples/BananaEdit/BananaEdit/App.xaml.cs

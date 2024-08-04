@@ -45,9 +45,6 @@ namespace EmlReader
         public MailPage()
         {
             InitializeComponent();
-
-            // https://github.com/jstedfast/MimeKit/issues/1047
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -106,6 +103,7 @@ namespace EmlReader
                     FromTextBlock.Text = from.Name + " <" + from.Address + ">";
                 }
 
+                // https://stackoverflow.com/questions/479300/detect-os-language-from-c-sharp
                 DateTextBlock.Text = message.Date.ToString(CultureInfo.InstalledUICulture);
 
                 SubjectTextBlock.Text = message.Subject;
