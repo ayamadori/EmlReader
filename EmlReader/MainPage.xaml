@@ -45,7 +45,7 @@
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Margin="-4,8,4,8" Height="32" Source="Assets/ic_fluent_document_48_regular.png"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Metadata}" Margin="0,5,12,5" TextTrimming="CharacterEllipsis"/>
-                        <Button Grid.Column="2" x:Name="OpenWindowButton" Click="OpenWindowButton_Click" ToolTipService.ToolTip="Open in new window">
+                        <Button Grid.Column="2" x:Name="OpenWindowButton" Click="OpenWindowButton_Click" ToolTipService.ToolTip="Open in new window" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}">
                             <Button.Content>
                                 <FontIcon Glyph="&#xE2B4;" />
                             </Button.Content>

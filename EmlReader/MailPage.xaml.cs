@@ -60,8 +60,6 @@ namespace EmlReader
                 {
                     Message = MimeMessage.Load(_stream.AsStreamForRead());
                     ApplicationView.GetForCurrentView().Title = Message.Subject;
-                    //await MailView.EnsureCoreWebView2Async();
-                    //MailView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
                 }
                 catch (Exception ex)
                 {
@@ -104,7 +102,7 @@ namespace EmlReader
                 }
 
                 // https://stackoverflow.com/questions/479300/detect-os-language-from-c-sharp
-                DateTextBlock.Text = message.Date.ToString(CultureInfo.InstalledUICulture);
+                DateTextBlock.Text = message.Date.LocalDateTime.ToString(CultureInfo.InstalledUICulture);
 
                 SubjectTextBlock.Text = message.Subject;
 
@@ -534,25 +532,27 @@ namespace EmlReader
 
         private async void OpenAsPdfButton_Click(object sender, RoutedEventArgs e)
         {
+            // https://itc.tokyo/html/html-font-size/
             StringBuilder printheader = new StringBuilder();
             printheader
-                .Append("<b>").Append(HttpUtility.HtmlEncode(message.Subject.ToString())).Append("</b></br></br>")
-                .Append(HttpUtility.HtmlEncode(message.From.ToString())).Append("</br>")
-                .Append(HttpUtility.HtmlEncode(message.Date.ToString())).Append("</br>")
+                //.Append("<style>.bigtext{font-size:18px;}.smalltext{font-size:12px;}</style>")
+                .Append("<big><b>").Append(SubjectTextBlock.Text).Append("</b></big></br></br>")
+                .Append("<big>").Append(HttpUtility.HtmlEncode(message.From.ToString())).Append("</big></br>")
+                .Append("<small>").Append(DateTextBlock.Text).Append("</br>")
                 .Append("To: ").Append(HttpUtility.HtmlEncode(message.To.ToString())).Append("</br>");
             if (message.Cc.Count() > 0)
                 printheader.Append("Cc: ").Append(HttpUtility.HtmlEncode(message.Cc.ToString())).Append("</br>");
-            printheader.Append("</br>");
+            printheader.Append("</small></br>");
 
             int count = message.Attachments.Count();
             if (count > 0)
             {
-                printheader.Append(count).Append(" attachments</br>");
+                printheader.Append("<small>").Append(count).Append(" attachments</br>");
                 foreach (MimePart _item in message.Attachments)
                 {
                     printheader.Append(_item.FileName).Append("; ");
                 }
-                printheader.Append("</br></br>");
+                printheader.Append("</small></br></br>");
             }
 
             Progress.IsActive = true;
@@ -569,7 +569,7 @@ namespace EmlReader
                 double height;
                 _ = double.TryParse(_height, out height);
                 // Set margin of webview
-                MailView.Margin = new Thickness(28, 0 - height, 28, 0);
+                MailView.Margin = new Thickness(4, 0 - height, 0, 0);
 
                 // Print PDF document to temp folder
                 string temppath = $"{ApplicationData.Current.TemporaryFolder.Path}\\{this.filename}.pdf";
@@ -597,7 +597,7 @@ namespace EmlReader
                 // Remove header
                 await MailView.ExecuteScriptAsync($"document.getElementById(\"emlReaderPrintHeader\").innerHTML = \"\";");
                 // Reset margin of webview
-                MailView.Margin = new Thickness(28, 12, 28, 0);
+                MailView.Margin = new Thickness(4, 12, 0, 0);
 
                 Progress.IsActive = false;
                 OpenAsPdfButton.IsEnabled = true;
