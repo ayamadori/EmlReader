@@ -17,7 +17,7 @@
         <DataTemplate x:Key="AttachmentTemplate" x:DataType="data:MimePart">
             <!--add tooltip-->
             <!--http://sourcechord.hatenablog.com/entry/2015/09/19/233538-->
-            <StackPanel Orientation="Horizontal" RightTapped="AttachmentTemplate_RightTapped" Width="260" Height="48" BorderThickness="2" BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}" ToolTipService.ToolTip="{x:Bind FileName}">
+            <StackPanel Orientation="Horizontal" RightTapped="AttachmentTemplate_RightTapped" Width="260" Height="48" BorderThickness="2" BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}" Background="White" ToolTipService.ToolTip="{x:Bind FileName}" CanDrag="True" Tapped="AttachmentTemplate_Tapped" DragStarting="StackPanel_DragStarting">
                 <SymbolIcon Symbol="Page2" Margin="12,0"/>
                 <TextBlock Text="{x:Bind FileName}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                 <FlyoutBase.AttachedFlyout>
@@ -135,7 +135,7 @@
                 </Grid>
 
                 <StackPanel x:Name="AttachmentArea" Margin="0,12">
-                    <GridView x:Name="AttachmentView" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}" Tapped="AttachmentView_Tapped"/>
+                    <GridView x:Name="AttachmentView" Height="68" ItemTemplate="{StaticResource AttachmentTemplate}"/>
                     <Button x:Name="SaveAllButton" Click="SaveAllButton_Click" Style="{StaticResource TextBlockButtonStyle}" Foreground="{StaticResource TextFillColorSecondaryBrush}">
                         <StackPanel Orientation="Horizontal">
                             <FontIcon Glyph="&#xE74E;" FontSize="12" Margin="0,0,8,0"/>

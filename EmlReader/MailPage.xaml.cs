@@ -102,7 +102,7 @@ namespace EmlReader
                 }
 
                 // https://stackoverflow.com/questions/479300/detect-os-language-from-c-sharp
-                DateTextBlock.Text = message.Date.LocalDateTime.ToString(CultureInfo.InstalledUICulture);
+                DateTextBlock.Text = message.Date.LocalDateTime.ToString("g");
 
                 SubjectTextBlock.Text = message.Subject;
 
@@ -290,9 +290,9 @@ namespace EmlReader
             }
         }
 
-        private void AttachmentView_Tapped(object sender, TappedRoutedEventArgs e)
+        private void AttachmentTemplate_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MimePart item = AttachmentView.SelectedItem as MimePart;
+            MimePart item = (sender as FrameworkElement).DataContext as MimePart;
             if (item != null) OpenFile(item);
         }
 
@@ -603,6 +603,31 @@ namespace EmlReader
                 OpenAsPdfButton.IsEnabled = true;
             }
         }
+
+        private async void StackPanel_DragStarting(UIElement sender, DragStartingEventArgs args)
+        {
+            args.AllowedOperations = DataPackageOperation.Copy;
+            MimePart item = (sender as FrameworkElement).DataContext as MimePart;
+
+            // https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/AssociationLaunching
+            //Can't launch files directly from install folder so copy it over 
+            //to temporary folder first
+            // ** Unnessesary for PC, but needed for Mobile
+            StorageFolder tempfolder = ApplicationData.Current.TemporaryFolder;
+            StorageFile file = await tempfolder.CreateFileAsync(item.FileName, CreationCollisionOption.ReplaceExisting);
+            bool success = await MimePart2FileAsync(item, file);
+            if (!success)
+            {
+                var dlg = new ContentDialog() { Content = "File " + file.Name + " couldn't be copied.", CloseButtonText = "OK" };
+                await dlg.ShowAsync();
+                return;
+            }
+
+            // Set file to DataPackage
+            StorageFile[] files = { file };
+            args.Data.SetStorageItems(files);
+        }
+
     }
 }
 
