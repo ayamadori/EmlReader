@@ -196,7 +196,8 @@ namespace EmlReader
                     var _address = (item as MailboxAddress).Address;
                     var link = new Hyperlink
                     {
-                        UnderlineStyle = UnderlineStyle.None
+                        UnderlineStyle = UnderlineStyle.None,
+                        Foreground = new SolidColorBrush(Colors.Black)
                     };
                     // https://docs.microsoft.com/ja-jp/uwp/api/windows.ui.xaml.documents.hyperlink.click
                     link.Click += (sender, args) =>
@@ -205,27 +206,14 @@ namespace EmlReader
                     };
 
                     if (string.IsNullOrEmpty(item.Name))
-                        link.Inlines.Add(new Run
-                        {
-                            Text = _address + "; ",
-                            Foreground = new SolidColorBrush(Colors.Black)
-                        });
+                        link.Inlines.Add(new Run { Text = _address + "; " });
                     else
-                        link.Inlines.Add(new Run
-                        {
-                            //Text = item.Name + "<" + _address + ">; ",
-                            Text = item.Name + "; ",
-                            Foreground = new SolidColorBrush(Colors.Black)
-                        });
+                        link.Inlines.Add(new Run { Text = item.Name + "; " });
                     AddressBlock.Inlines.Add(link);
                 }
                 else
                 {
-                    AddressBlock.Inlines.Add(new Run
-                    {
-                        Text = item.Name + "; ",
-                        Foreground = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73))
-                    });
+                    AddressBlock.Inlines.Add(new Run { Text = item.Name + "; " });
                 }
             }
         }
@@ -303,7 +291,8 @@ namespace EmlReader
 
         private void OpenFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            OpenFile((sender as FrameworkElement).DataContext as MimePart);
+            MimePart item = (sender as FrameworkElement).DataContext as MimePart;
+            if (item != null) OpenFile(item);
         }
 
         private async void OpenFile(MimePart item)
@@ -604,7 +593,7 @@ namespace EmlReader
             }
         }
 
-        private async void StackPanel_DragStarting(UIElement sender, DragStartingEventArgs args)
+        private async void AttachmentTemplate_DragStarting(UIElement sender, DragStartingEventArgs args)
         {
             args.AllowedOperations = DataPackageOperation.Copy;
             MimePart item = (sender as FrameworkElement).DataContext as MimePart;
@@ -624,8 +613,7 @@ namespace EmlReader
             }
 
             // Set file to DataPackage
-            StorageFile[] files = { file };
-            args.Data.SetStorageItems(files);
+            args.Data.SetStorageItems(new StorageFile[] { file });
         }
 
     }

@@ -17,9 +17,9 @@
         <DataTemplate x:Key="AttachmentTemplate" x:DataType="data:MimePart">
             <!--add tooltip-->
             <!--http://sourcechord.hatenablog.com/entry/2015/09/19/233538-->
-            <StackPanel Orientation="Horizontal" RightTapped="AttachmentTemplate_RightTapped" Width="260" Height="48" BorderThickness="2" BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}" Background="White" ToolTipService.ToolTip="{x:Bind FileName}" CanDrag="True" Tapped="AttachmentTemplate_Tapped" DragStarting="StackPanel_DragStarting">
+            <StackPanel Orientation="Horizontal" RightTapped="AttachmentTemplate_RightTapped" Width="260" Height="48" BorderThickness="2" BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}" Background="White" ToolTipService.ToolTip="{x:Bind FileName}" CanDrag="True" Tapped="AttachmentTemplate_Tapped" DragStarting="AttachmentTemplate_DragStarting">
                 <SymbolIcon Symbol="Page2" Margin="12,0"/>
-                <TextBlock Text="{x:Bind FileName}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                <TextBlock Text="{x:Bind FileName}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout Placement="Bottom">
                         <MenuFlyoutItem Text="Open" Click="OpenFlyoutItem_Click">
@@ -87,7 +87,7 @@
                             </Button.Content>
                         </Button>
                     </Grid>
-                    <TextBlock x:Name="DateTextBlock" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Text="Date" TextWrapping="NoWrap" Style="{StaticResource CaptionTextBlockStyle}"  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock x:Name="DateTextBlock" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Text="Date" TextWrapping="NoWrap" Style="{StaticResource CaptionTextBlockStyle}"/>
                     <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,-12,0">
                         <Button x:Name="ReplyButton" Click="ReplyButton_Click" ToolTipService.ToolTip="Reply (Ctrl+R)" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}">
                             <Button.Content>

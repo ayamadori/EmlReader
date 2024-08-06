@@ -134,8 +134,8 @@ namespace EmlReader
 
         private async void MruList_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            if ((sender as ListView).SelectedItem == null) return;
-            AccessListEntry entry = (AccessListEntry)(sender as ListView).SelectedItem;
+            // https://stackoverflow.com/questions/34445579/how-to-get-listview-item-content-on-righttapped-event-of-an-universal-windows-ap
+            AccessListEntry entry = (AccessListEntry)((FrameworkElement)e.OriginalSource).DataContext;
             string token = entry.Token;
             try
             {

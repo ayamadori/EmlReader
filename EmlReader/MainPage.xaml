@@ -28,7 +28,7 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
 
-        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mruView}" Tapped="MruList_Tapped" BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+        <ListView x:Name="MruList" Grid.Row="1" Margin="12" ItemsSource="{x:Bind mruView}" BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
             <!--https://stackoverflow.com/questions/43094395/how-to-stretch-listviewitem-in-listview/43114173-->
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -37,7 +37,7 @@
             </ListView.ItemContainerStyle>
             <ListView.Resources>
                 <DataTemplate x:Key="MruListTemplate" x:DataType="wsa:AccessListEntry">
-                    <Grid>
+                    <Grid Tapped="MruList_Tapped">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
