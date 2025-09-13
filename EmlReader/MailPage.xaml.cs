@@ -19,16 +19,15 @@ using Windows.Services.Store;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
-using Windows.UI;
+using Microsoft.UI;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 // 空白ページのアイテム テンプレートについては、http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 を参照してください
 
@@ -59,17 +58,17 @@ namespace EmlReader
                 try
                 {
                     Message = MimeMessage.Load(_stream.AsStreamForRead());
-                    ApplicationView.GetForCurrentView().Title = Message.Subject;
+                    App.Window.Title = Message.Subject;
                 }
                 catch (Exception ex)
                 {
                     var dlg = new ContentDialog() { Title = "Unsupported file", Content = "The app can NOT open this file.", CloseButtonText = "OK" };
-                    await dlg.ShowAsync();
+                    ContentDialogResult result = await dlg.ShowAsync();
 
                     Debug.WriteLine(ex.ToString());
 
                     // Exit app
-                    Windows.UI.Xaml.Application.Current.Exit();
+                    Application.Current.Exit();
                 }
             }
         }
@@ -477,14 +476,14 @@ namespace EmlReader
         {
             // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
             var dlg = new AboutDialog();
+            dlg.XamlRoot = this.Content.XamlRoot;
             await dlg.ShowAsync();
         }
 
         private async void DonateButton_Click(object sender, RoutedEventArgs e)
         {
-            StoreContext storeContext = StoreContext.GetDefault();
             string StoreId = "9PNWXP9VHK05";
-            StorePurchaseResult result = await storeContext.RequestPurchaseAsync(StoreId);
+            StorePurchaseResult result = await App.StoreContext.RequestPurchaseAsync(StoreId);
             if (result.ExtendedError != null)
             {
                 Debug.WriteLine(result.ExtendedError);

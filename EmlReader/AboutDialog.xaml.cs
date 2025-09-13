@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using Windows.Services.Store;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 // コンテンツ ダイアログの項目テンプレートについては、https://go.microsoft.com/fwlink/?LinkId=234238 を参照してください
 
@@ -19,19 +19,17 @@ namespace EmlReader
             {
                 this.FeedbackButton.Visibility = Visibility.Visible;
             }
-        }
 
+        }
         private async void RateButton_Click(object sender, RoutedEventArgs e)
         {
-            // https://docs.microsoft.com/en-us/windows/uwp/monetize/request-ratings-and-reviews
-            var success = await StoreContext.GetDefault().RequestRateAndReviewAppAsync();
+            var success = await App.StoreContext.RequestRateAndReviewAppAsync();
         }
 
         private async void DonateButton_Click(object sender, RoutedEventArgs e)
         {
-            StoreContext storeContext = StoreContext.GetDefault();
             string StoreId = "9PNWXP9VHK05";
-            StorePurchaseResult result = await storeContext.RequestPurchaseAsync(StoreId);
+            StorePurchaseResult result = await App.StoreContext.RequestPurchaseAsync(StoreId);
             if (result.ExtendedError != null)
             {
                 Debug.WriteLine(result.ExtendedError);

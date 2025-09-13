@@ -6,15 +6,16 @@ using Windows.Services.Store;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using WinRT.Interop;
 
-// ‹ó”’ƒy[ƒW‚ÌƒAƒCƒeƒ€ ƒeƒ“ƒvƒŒ[ƒg‚É‚Â‚¢‚Ä‚ÍAhttp://go.microsoft.com/fwlink/?LinkId=234238 ‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢
+// ç©ºç™½ãƒšãƒ¼ã‚¸ã®ã‚¢ã‚¤ãƒ†ãƒ  ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã«ã¤ã„ã¦ã¯ã€http://go.microsoft.com/fwlink/?LinkId=234238 ã‚’å‚ç…§ã—ã¦ãã ã•ã„
 
 namespace EmlReader
 {
     /// <summary>
-    /// ‚»‚ê©‘Ì‚Åg—p‚Å‚«‚é‹ó”’ƒy[ƒW‚Ü‚½‚ÍƒtƒŒ[ƒ€“à‚ÉˆÚ“®‚Å‚«‚é‹ó”’ƒy[ƒWB
+    /// ãã‚Œè‡ªä½“ã§ä½¿ç”¨ã§ãã‚‹ç©ºç™½ãƒšãƒ¼ã‚¸ã¾ãŸã¯ãƒ•ãƒ¬ãƒ¼ãƒ å†…ã«ç§»å‹•ã§ãã‚‹ç©ºç™½ãƒšãƒ¼ã‚¸ã€‚
     /// </summary>
     public sealed partial class MainPage : Page
     {
@@ -66,6 +67,9 @@ namespace EmlReader
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             picker.FileTypeFilter.Add(".eml");
 
+            IntPtr hWnd = WindowNative.GetWindowHandle(App.Window);
+            InitializeWithWindow.Initialize(picker, hWnd);
+
             var items = await picker.PickMultipleFilesAsync();
             if (items.Count > 0)
             {
@@ -90,14 +94,14 @@ namespace EmlReader
         {
             // https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.contentdialog.aspx
             var dlg = new AboutDialog();
+            dlg.XamlRoot = this.Content.XamlRoot;
             await dlg.ShowAsync();
         }
 
         private async void DonateButton_Click(object sender, RoutedEventArgs e)
         {
-            StoreContext storeContext = StoreContext.GetDefault();
             string StoreId = "9PNWXP9VHK05";
-            StorePurchaseResult result = await storeContext.RequestPurchaseAsync(StoreId);
+            StorePurchaseResult result = await App.StoreContext.RequestPurchaseAsync(StoreId);
             if (result.ExtendedError != null)
             {
                 Debug.WriteLine(result.ExtendedError);
@@ -132,7 +136,7 @@ namespace EmlReader
             }
         }
 
-        private async void MruList_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private async void MruList_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             // https://stackoverflow.com/questions/34445579/how-to-get-listview-item-content-on-righttapped-event-of-an-universal-windows-ap
             AccessListEntry entry = (AccessListEntry)((FrameworkElement)e.OriginalSource).DataContext;
