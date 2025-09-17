@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EmlReader (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "EmlReader (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

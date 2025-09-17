@@ -1,32 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--https://docs.microsoft.com/en-us/windows/uwp/launch-resume/multi-instance-uwp-->
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-         xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
-         xmlns:iot2="http://schemas.microsoft.com/appx/manifest/iot/windows10/2"
-         IgnorableNamespaces="uap mp desktop4 iot2">
-  <Identity Name="22164ayamadori.EMLReader" Publisher="CN=owner" Version="2.1.0.0" />
-  <mp:PhoneIdentity PhoneProductId="52b85fcc-1580-4a5e-9cf1-9c0e0e5a64a6" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap rescap">
+
+  <Identity
+    Name="22164ayamadori.EMLReader"
+    Publisher="CN=owner"
+    Version="2.1.0.0" />
+
+  <mp:PhoneIdentity PhoneProductId="52b85fcc-1580-4a5e-9cf1-9c0e0e5a64a6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
   <Properties>
     <DisplayName>EML Reader</DisplayName>
     <PublisherDisplayName>ayamadori</PublisherDisplayName>
     <Logo>Assets\NewStoreLogo.png</Logo>
   </Properties>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
   </Dependencies>
   <Resources>
-    <Resource Language="x-generate" />
+    <Resource Language="x-generate"/>
   </Resources>
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="EmlReader.App"
-                 desktop4:SupportsMultipleInstances="true"
-                 iot2:SupportsMultipleInstances="true">
-    <uap:VisualElements DisplayName="EML Reader" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Open EML file" BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\Square310x310Logo.png" Square71x71Logo="Assets\Square71x71Logo.png">
-          <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="square310x310Logo" />
-          </uap:ShowNameOnTiles>
-        </uap:DefaultTile>
+    <Application Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="$targetentrypoint$">
+      <uap:VisualElements
+        DisplayName="EML Reader"
+        Description="Open EML file"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
@@ -51,7 +60,6 @@
     </Application>
   </Applications>
   <Capabilities>
-    <Capability Name="internetClient" />
-    <uap:Capability Name="contacts"/>
+    <rescap:Capability Name="runFullTrust"/>
   </Capabilities>
 </Package>
